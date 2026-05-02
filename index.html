@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Page</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>My Page</h1>
+  </header>
+
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="tasks">やること</button>
+    <button class="tab-btn" data-tab="news">ニュース</button>
+    <button class="tab-btn" data-tab="sports">スポーツ動画</button>
+  </nav>
+
+  <main>
+    <section id="tasks" class="tab-content active">
+      <h2>やること</h2>
+      <p>タスク管理の内容がここに入ります。</p>
+    </section>
+
+    <section id="news" class="tab-content">
+      <h2>ニュース</h2>
+      <p>ニュースの内容がここに入ります。</p>
+    </section>
+
+    <section id="sports" class="tab-content">
+      <h2>スポーツ動画</h2>
+      <p>確認すべきスポーツ動画がここに入ります。</p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

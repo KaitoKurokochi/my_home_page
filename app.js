@@ -85,11 +85,11 @@ let activeIndex = -1;
 
 async function fetchSuggestions(query) {
   if (!query) { closeSuggestions(); return; }
-  const url = `https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}`;
+  const url = `https://duckduckgo.com/ac/?q=${encodeURIComponent(query)}&type=list`;
   try {
     const res = await fetch(url);
     const data = await res.json();
-    showSuggestions(data[1]);
+    showSuggestions(data.map(item => item.phrase));
   } catch {
     closeSuggestions();
   }

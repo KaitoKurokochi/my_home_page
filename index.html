@@ -10,13 +10,17 @@
 
   <!-- Thin search bar -->
   <div class="top-bar">
-    <form class="search-form" action="https://www.google.com/search" target="_blank" autocomplete="off">
+    <form class="search-form" action="https://www.google.com/search" autocomplete="off">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
       <input class="search-input" type="text" name="q" placeholder="Search Google or type a URL" />
       <ul class="search-suggestions"></ul>
     </form>
+    <div class="weather-widget" id="weather-widget">
+      <button class="weather-summary" id="weather-summary">WF: <span id="weather-text">--</span></button>
+      <div class="weather-panel hidden" id="weather-panel"></div>
+    </div>
   </div>
 
   <!-- Tab groups -->

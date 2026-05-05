@@ -253,6 +253,116 @@ groupModal.addEventListener('click', (e) => {
 
 render();
 
+// ── Weather ───────────────────────────────────────────────────────────────────
+
+const WEATHER_CACHE_KEY = 'mypage_weather';
+const WEATHER_TTL = 30 * 60 * 1000; // 30 min
+
+function wmoEmoji(code) {
+  if (code === 0) return '☀️';
+  if (code <= 3) return '⛅';
+  if (code <= 48) return '🌫️';
+  if (code <= 55) return '🌦️';
+  if (code <= 65) return '🌧️';
+  if (code <= 77) return '🌨️';
+  if (code <= 82) return '🌦️';
+  return '⛈️';
+}
+
+async function fetchWeatherData(lat, lon) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+    `&current_weather=true&hourly=temperature_2m,precipitation_probability,weathercode` +
+    `&forecast_days=2&timezone=auto`;
+  const res = await fetch(url);
+  return res.json();
+}
+
+function renderWeather(data) {
+  const cw = data.current_weather;
+  const hourly = data.hourly;
+
+  // Find the index for the current hour using local time
+  const now = new Date();
+  const localStr = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, '0'),
+    String(now.getDate()).padStart(2, '0'),
+  ].join('-') + 'T' + String(now.getHours()).padStart(2, '0');
+  let idx = hourly.time.findIndex(t => t.startsWith(localStr));
+  if (idx < 0) idx = 0;
+
+  // Build forecast points: Now, +6h, +12h, +18h, +24h
+  const offsets = [0, 6, 12, 18, 24];
+  const points = offsets.map(h => {
+    const i = idx + h;
+    const hour = parseInt((hourly.time[i] ?? hourly.time[idx]).slice(11, 13));
+    return {
+      label: `${hour}時`,
+      emoji: wmoEmoji(h === 0 ? cw.weathercode : (hourly.weathercode[i] ?? cw.weathercode)),
+      temp: Math.round(h === 0 ? cw.temperature : (hourly.temperature_2m[i] ?? cw.temperature)),
+      precip: h === 0 ? (hourly.precipitation_probability[idx] ?? 0) : (hourly.precipitation_probability[i] ?? 0),
+    };
+  });
+
+  // Summary: current + 24h
+  const p24 = points[4];
+  document.getElementById('weather-text').textContent =
+    `${points[0].emoji} ${points[0].temp}°C → ${p24.emoji} ${p24.temp}°C 💧${p24.precip}%`;
+
+  // Detail panel
+  document.getElementById('weather-panel').innerHTML = points.map(p => `
+    <div class="forecast-col">
+      <span class="forecast-label">${p.label}</span>
+      <span class="forecast-emoji">${p.emoji}</span>
+      <span class="forecast-temp">${p.temp}°C</span>
+      <span class="forecast-precip">💧${p.precip}%</span>
+    </div>
+  `).join('');
+}
+
+async function initWeather() {
+  const textEl = document.getElementById('weather-text');
+
+  // Use cache if fresh
+  const cached = JSON.parse(localStorage.getItem(WEATHER_CACHE_KEY) || 'null');
+  if (cached && Date.now() - cached.ts < WEATHER_TTL) {
+    renderWeather(cached.data);
+    return;
+  }
+
+  textEl.textContent = 'loading...';
+
+  if (!navigator.geolocation) {
+    textEl.textContent = 'unavailable';
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async ({ coords }) => {
+      try {
+        const data = await fetchWeatherData(coords.latitude, coords.longitude);
+        localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
+        renderWeather(data);
+      } catch {
+        textEl.textContent = 'unavailable';
+      }
+    },
+    () => { textEl.textContent = 'location denied'; }
+  );
+}
+
+document.getElementById('weather-summary').addEventListener('click', () => {
+  document.getElementById('weather-panel').classList.toggle('hidden');
+});
+
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('weather-widget').contains(e.target)) {
+    document.getElementById('weather-panel').classList.add('hidden');
+  }
+});
+
+initWeather();
+
 // ── Search suggestions ────────────────────────────────────────────────────────
 
 const searchInput = document.querySelector('.search-input');

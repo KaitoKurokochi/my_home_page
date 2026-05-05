@@ -14,11 +14,256 @@ header {
   background: #1a1a2e;
   color: white;
   padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 header h1 {
   font-size: 1.4rem;
   font-weight: 600;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.search-wrapper {
+  position: relative;
+}
+
+.search-input {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  width: 200px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.search-input:focus {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.search-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 4px;
+}
+
+.search-btn:hover {
+  color: white;
+}
+
+.search-suggestions {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  width: 100%;
+  min-width: 240px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  list-style: none;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.search-suggestions.open {
+  display: block;
+}
+
+.search-suggestions li {
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  color: #333;
+  cursor: pointer;
+}
+
+.search-suggestions li:hover,
+.search-suggestions li.active {
+  background: #f0f0f0;
+}
+
+/* Shortcuts */
+.shortcuts {
+  background: #f5f5f5;
+  padding: 20px 24px 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.shortcuts-grid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.shortcut-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 72px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #333;
+  padding: 8px 4px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  position: relative;
+}
+
+.shortcut-item:hover {
+  background: rgba(0, 0, 0, 0.07);
+}
+
+.shortcut-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.shortcut-icon img {
+  width: 24px;
+  height: 24px;
+}
+
+.shortcut-label {
+  font-size: 0.75rem;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 72px;
+}
+
+.shortcut-remove {
+  display: none;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #888;
+  color: white;
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.shortcut-item:hover .shortcut-remove {
+  display: block;
+}
+
+.shortcut-add-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px dashed #bbb;
+  background: none;
+  font-size: 1.4rem;
+  color: #aaa;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.shortcut-add-btn:hover {
+  border-color: #888;
+  color: #555;
+}
+
+/* Modal */
+.shortcut-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.shortcut-modal.hidden {
+  display: none;
+}
+
+.shortcut-modal-box {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shortcut-modal-box h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.shortcut-modal-box input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.shortcut-modal-box input:focus {
+  border-color: #888;
+}
+
+.shortcut-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.shortcut-modal-actions button {
+  padding: 7px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+#shortcut-cancel {
+  background: #f0f0f0;
+  color: #555;
+}
+
+#shortcut-save {
+  background: #1a1a2e;
+  color: white;
 }
 
 .tab-nav {

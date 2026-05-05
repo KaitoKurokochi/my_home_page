@@ -1,14 +1,14 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with code in this repository.
 
 ## Purpose
 
-ブラウザを開いたときのホームページ（スタートページ）。GitHub Pages で公開し、ブラウザのホームページURLに設定して使う。
+A browser start page served via GitHub Pages. Set the GitHub Pages URL as the browser's homepage URL to use it.
 
 ## Development
 
-ビルドツール・パッケージマネージャなし。ブラウザで `index.html` を直接開けば動作確認できる。
+No build tools or package manager. Open `index.html` directly in the browser to test.
 
 ```bash
 open index.html
@@ -16,14 +16,14 @@ open index.html
 
 ## Architecture
 
-バニラ HTML/CSS/JS のシングルページ。タブ切り替えのみ `app.js` が担当し、それ以外はすべて静的。
+Vanilla HTML/CSS/JS single page. Only `app.js` handles tab switching; everything else is static.
 
-- `index.html` — 構造（タブナビ + セクション）
-- `style.css` — ダークヘッダー（`#1a1a2e`）＋アクセントカラー（`#e94560`）のテーマ
-- `app.js` — `.tab-btn[data-tab]` と `#<tab-id>` を対応させてクラス切り替え
+| File | Role |
+|------|------|
+| `index.html` | Structure — tab nav + sections |
+| `style.css` | Theme — dark header (`#1a1a2e`) + accent color (`#e94560`) |
+| `app.js` | Maps `.tab-btn[data-tab]` buttons to `#<tab-id>` sections via class toggling |
 
-タブを追加するときは `index.html` に `<button data-tab="xxx">` と `<section id="xxx">` をセットで追加するだけ。`app.js` の変更は不要。
+## Adding a tab
 
-## Directory note
-
-`my_home_page/` は同じ内容のコピーが存在する（用途未定）。メインの編集対象はルートの3ファイル。
+Add a `<button data-tab="xxx">` in the nav and a `<section id="xxx">` in the body — no changes to `app.js` needed.

@@ -9,7 +9,31 @@
 <body>
   <header>
     <h1>My Page</h1>
+    <form class="search-form" action="https://www.google.com/search" target="_blank" autocomplete="off">
+      <div class="search-wrapper">
+        <input class="search-input" type="text" name="q" placeholder="Search..." />
+        <ul class="search-suggestions"></ul>
+      </div>
+      <button class="search-btn" type="submit">&#9654;</button>
+    </form>
   </header>
+
+  <section class="shortcuts">
+    <div class="shortcuts-grid" id="shortcuts-grid"></div>
+    <button class="shortcut-add-btn" id="shortcut-add-btn" title="Add shortcut">+</button>
+  </section>
+
+  <div class="shortcut-modal hidden" id="shortcut-modal">
+    <div class="shortcut-modal-box">
+      <h3>Add shortcut</h3>
+      <input type="text" id="shortcut-name" placeholder="Name" />
+      <input type="url" id="shortcut-url" placeholder="URL (https://...)" />
+      <div class="shortcut-modal-actions">
+        <button id="shortcut-cancel">Cancel</button>
+        <button id="shortcut-save">Add</button>
+      </div>
+    </div>
+  </div>
 
   <nav class="tab-nav">
     <button class="tab-btn active" data-tab="tasks">Tasks</button>

@@ -7,34 +7,50 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>My Page</h1>
-    <form class="search-form" action="https://www.google.com/search" target="_blank" autocomplete="off">
-      <div class="search-wrapper">
-        <input class="search-input" type="text" name="q" placeholder="Search..." />
-        <ul class="search-suggestions"></ul>
-      </div>
-      <button class="search-btn" type="submit">&#9654;</button>
-    </form>
-  </header>
 
-  <section class="shortcuts">
-    <div class="shortcuts-grid" id="shortcuts-grid"></div>
-    <button class="shortcut-add-btn" id="shortcut-add-btn" title="Add shortcut">+</button>
+  <!-- Thin search bar -->
+  <div class="top-bar">
+    <form class="search-form" action="https://www.google.com/search" target="_blank" autocomplete="off">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input class="search-input" type="text" name="q" placeholder="Search Google or type a URL" />
+      <ul class="search-suggestions"></ul>
+    </form>
+  </div>
+
+  <!-- Tab groups -->
+  <section class="groups-section">
+    <div class="group-pills" id="group-pills"></div>
+    <div class="shortcuts-panel" id="shortcuts-panel"></div>
   </section>
 
-  <div class="shortcut-modal hidden" id="shortcut-modal">
-    <div class="shortcut-modal-box">
+  <!-- Shortcut modal -->
+  <div class="modal hidden" id="shortcut-modal">
+    <div class="modal-box">
       <h3>Add shortcut</h3>
       <input type="text" id="shortcut-name" placeholder="Name" />
       <input type="url" id="shortcut-url" placeholder="URL (https://...)" />
-      <div class="shortcut-modal-actions">
-        <button id="shortcut-cancel">Cancel</button>
-        <button id="shortcut-save">Add</button>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="shortcut-cancel">Cancel</button>
+        <button class="btn-save" id="shortcut-save">Add</button>
       </div>
     </div>
   </div>
 
+  <!-- Group modal -->
+  <div class="modal hidden" id="group-modal">
+    <div class="modal-box">
+      <h3>New group</h3>
+      <input type="text" id="group-name" placeholder="Group name" />
+      <div class="modal-actions">
+        <button class="btn-cancel" id="group-cancel">Cancel</button>
+        <button class="btn-save" id="group-save">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab section -->
   <nav class="tab-nav">
     <button class="tab-btn active" data-tab="tasks">Tasks</button>
     <button class="tab-btn" data-tab="news">News</button>
@@ -46,12 +62,10 @@
       <h2>Tasks</h2>
       <p>Task list goes here.</p>
     </section>
-
     <section id="news" class="tab-content">
       <h2>News</h2>
       <p>News content goes here.</p>
     </section>
-
     <section id="sports" class="tab-content">
       <h2>Sports</h2>
       <p>Sports videos go here.</p>

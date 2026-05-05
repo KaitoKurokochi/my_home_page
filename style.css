@@ -5,78 +5,69 @@
 }
 
 body {
-  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
-  background: #f5f5f5;
-  color: #333;
+  font-family: Roboto, 'Segoe UI', system-ui, sans-serif;
+  background: #fff;
+  color: #202124;
+  min-height: 100vh;
 }
 
-header {
-  background: #1a1a2e;
-  color: white;
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+/* ── Top search bar ───────────────────────────────────────────────────────────*/
 
-header h1 {
-  font-size: 1.4rem;
-  font-weight: 600;
+.top-bar {
+  background: #f1f3f4;
+  padding: 8px 16px;
+  border-bottom: 1px solid #e8eaed;
 }
 
 .search-form {
+  position: relative;
+  max-width: 680px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
-  gap: 4px;
-  position: relative;
+  background: #fff;
+  border: 1px solid #dfe1e5;
+  border-radius: 20px;
+  padding: 6px 16px;
+  box-shadow: 0 1px 3px rgba(32, 33, 36, 0.08);
+  transition: box-shadow 0.2s, border-color 0.2s;
 }
 
-.search-wrapper {
-  position: relative;
+.search-form:focus-within {
+  box-shadow: 0 2px 8px rgba(32, 33, 36, 0.18);
+  border-color: transparent;
+}
+
+.search-icon {
+  width: 16px;
+  height: 16px;
+  color: #9aa0a6;
+  flex-shrink: 0;
+  margin-right: 10px;
 }
 
 .search-input {
-  padding: 6px 12px;
+  flex: 1;
   border: none;
-  border-radius: 16px;
-  font-size: 0.85rem;
-  width: 200px;
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
   outline: none;
+  font-size: 0.9rem;
+  color: #202124;
+  background: transparent;
 }
 
 .search-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.search-input:focus {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.search-btn {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  font-size: 0.75rem;
-  padding: 4px;
-}
-
-.search-btn:hover {
-  color: white;
+  color: #9aa0a6;
 }
 
 .search-suggestions {
   display: none;
   position: absolute;
   top: calc(100% + 4px);
+  left: 0;
   right: 0;
-  width: 100%;
-  min-width: 240px;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   list-style: none;
   overflow: hidden;
   z-index: 100;
@@ -87,58 +78,168 @@ header h1 {
 }
 
 .search-suggestions li {
-  padding: 8px 14px;
-  font-size: 0.85rem;
-  color: #333;
+  padding: 9px 16px;
+  font-size: 0.875rem;
+  color: #202124;
   cursor: pointer;
 }
 
 .search-suggestions li:hover,
 .search-suggestions li.active {
-  background: #f0f0f0;
+  background: #f8f9fa;
 }
 
-/* Shortcuts */
-.shortcuts {
-  background: #f5f5f5;
-  padding: 20px 24px 8px;
+/* ── Groups section ──────────────────────────────────────────────────────────*/
+
+.groups-section {
+  background: #fff;
+  border-bottom: 1px solid #e8eaed;
+}
+
+/* Pills row */
+.group-pills {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
+  padding: 10px 16px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.group-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.group-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 16px 16px 0 0;
+  border: none;
+  background: transparent;
+  color: #5f6368;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+  position: relative;
+}
+
+.group-pill::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color, #9aa0a6);
+  flex-shrink: 0;
+}
+
+.group-pill:hover {
+  background: #f1f3f4;
+  color: #202124;
+}
+
+.group-pill.active {
+  background: #f1f3f4;
+  color: #202124;
+}
+
+.group-pill.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color, #9aa0a6);
+  border-radius: 2px 2px 0 0;
+}
+
+.pill-remove {
+  display: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.15);
+  color: #5f6368;
+  font-size: 9px;
+  line-height: 14px;
+  text-align: center;
+  margin-left: 2px;
+}
+
+.group-pill:hover .pill-remove {
+  display: block;
+}
+
+.add-group-pill {
+  padding: 5px 12px;
+  border-radius: 16px 16px 0 0;
+  border: none;
+  background: transparent;
+  color: #5f6368;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.add-group-pill:hover {
+  background: #f1f3f4;
+  color: #202124;
+}
+
+/* Shortcuts panel */
+.shortcuts-panel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  min-height: 88px;
   flex-wrap: wrap;
 }
 
-.shortcuts-grid {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+.shortcuts-panel.empty {
+  color: #9aa0a6;
+  font-size: 0.85rem;
 }
 
 .shortcut-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   width: 72px;
-  cursor: pointer;
   text-decoration: none;
-  color: #333;
-  padding: 8px 4px;
+  color: #202124;
+  padding: 6px 4px;
   border-radius: 8px;
-  transition: background 0.15s;
+  transition: background 0.15s, opacity 0.15s;
   position: relative;
+  cursor: grab;
 }
 
 .shortcut-item:hover {
-  background: rgba(0, 0, 0, 0.07);
+  background: #f1f3f4;
+}
+
+.shortcut-item.dragging {
+  opacity: 0.4;
+  cursor: grabbing;
+}
+
+.shortcut-item.drag-over {
+  background: #e8f0fe;
 }
 
 .shortcut-icon {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background: white;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  border-radius: 10px;
+  background: #f1f3f4;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -151,12 +252,13 @@ header h1 {
 }
 
 .shortcut-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 72px;
+  color: #3c4043;
 }
 
 .shortcut-remove {
@@ -164,13 +266,13 @@ header h1 {
   position: absolute;
   top: 2px;
   right: 2px;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  background: #888;
+  background: #80868b;
   color: white;
-  font-size: 10px;
-  line-height: 16px;
+  font-size: 8px;
+  line-height: 14px;
   text-align: center;
   cursor: pointer;
 }
@@ -179,122 +281,165 @@ header h1 {
   display: block;
 }
 
-.shortcut-add-btn {
+.add-shortcut-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 72px;
+  padding: 6px 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 8px;
+  color: #5f6368;
+  transition: background 0.15s;
+}
+
+.add-shortcut-btn:hover {
+  background: #f1f3f4;
+}
+
+.add-shortcut-icon {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  border: 2px dashed #bbb;
-  background: none;
-  font-size: 1.4rem;
-  color: #aaa;
-  cursor: pointer;
+  border-radius: 10px;
+  border: 1.5px dashed #dadce0;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  transition: border-color 0.15s, color 0.15s;
+  font-size: 1.2rem;
+  color: #9aa0a6;
 }
 
-.shortcut-add-btn:hover {
-  border-color: #888;
-  color: #555;
+.add-shortcut-btn:hover .add-shortcut-icon {
+  border-color: #bdc1c6;
+  color: #5f6368;
 }
 
-/* Modal */
-.shortcut-modal {
+.add-shortcut-label {
+  font-size: 0.7rem;
+  color: #5f6368;
+}
+
+/* ── Modals ──────────────────────────────────────────────────────────────────*/
+
+.modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 200;
 }
 
-.shortcut-modal.hidden {
+.modal.hidden {
   display: none;
 }
 
-.shortcut-modal-box {
+.modal-box {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 24px;
   width: 320px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
 }
 
-.shortcut-modal-box h3 {
+.modal-box h3 {
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
+  color: #202124;
 }
 
-.shortcut-modal-box input {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
+.modal-box input {
+  padding: 9px 12px;
+  border: 1px solid #dadce0;
   border-radius: 6px;
   font-size: 0.9rem;
   outline: none;
+  color: #202124;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.shortcut-modal-box input:focus {
-  border-color: #888;
+.modal-box input:focus {
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.15);
 }
 
-.shortcut-modal-actions {
+.modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
 }
 
-.shortcut-modal-actions button {
-  padding: 7px 16px;
-  border-radius: 6px;
+.modal-actions button {
+  padding: 8px 18px;
+  border-radius: 20px;
   border: none;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.15s;
 }
 
-#shortcut-cancel {
-  background: #f0f0f0;
-  color: #555;
+.btn-cancel {
+  background: none;
+  color: #1a73e8;
 }
 
-#shortcut-save {
-  background: #1a1a2e;
+.btn-cancel:hover {
+  background: #e8f0fe;
+}
+
+.btn-save {
+  background: #1a73e8;
   color: white;
 }
 
+.btn-save:hover {
+  background: #1557b0;
+}
+
+/* ── Tab section ─────────────────────────────────────────────────────────────*/
+
 .tab-nav {
   display: flex;
-  background: #16213e;
-  padding: 0 24px;
-  gap: 4px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e8eaed;
+  padding: 0 16px;
+  gap: 2px;
 }
 
 .tab-btn {
-  padding: 12px 24px;
+  padding: 11px 20px;
   border: none;
   background: transparent;
-  color: #aaa;
-  font-size: 0.95rem;
+  color: #5f6368;
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
   border-bottom: 3px solid transparent;
-  transition: color 0.2s, border-color 0.2s;
+  border-radius: 6px 6px 0 0;
+  transition: color 0.15s, background 0.15s;
 }
 
 .tab-btn:hover {
-  color: #fff;
+  color: #202124;
+  background: #e8eaed;
 }
 
 .tab-btn.active {
-  color: #fff;
-  border-bottom-color: #e94560;
+  color: #1a73e8;
+  background: #e8f0fe;
+  border-bottom-color: #1a73e8;
 }
 
 main {
-  padding: 24px;
+  padding: 24px 16px;
   max-width: 960px;
   margin: 0 auto;
 }
@@ -308,7 +453,8 @@ main {
 }
 
 .tab-content h2 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 500;
   margin-bottom: 16px;
-  color: #1a1a2e;
+  color: #202124;
 }

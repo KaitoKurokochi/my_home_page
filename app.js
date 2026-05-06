@@ -125,8 +125,7 @@ function renderShortcutsPanel() {
     const a = document.createElement('a');
     a.className = 'shortcut-item';
     a.href = s.url;
-    a.target = '_blank';
-    a.rel = 'noopener';
+    a.target = '_self';
     a.draggable = true;
     a.dataset.si = si;
     a.innerHTML = `
@@ -438,13 +437,115 @@ searchInput.addEventListener('keydown', (e) => {
 
 searchInput.addEventListener('blur', () => setTimeout(closeSuggestions, 150));
 
-// ── Tab switching ─────────────────────────────────────────────────────────────
+// ── Tab switching & drag-to-reorder ──────────────────────────────────────────
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(btn.dataset.tab).classList.add('active');
+const TAB_ORDER_KEY = 'mypage_tab_order';
+
+function saveTabOrder() {
+  const order = Array.from(document.querySelectorAll('.tab-btn')).map(b => b.dataset.tab);
+  localStorage.setItem(TAB_ORDER_KEY, JSON.stringify(order));
+}
+
+(function applyTabOrder() {
+  const saved = JSON.parse(localStorage.getItem(TAB_ORDER_KEY) || 'null');
+  if (!saved) return;
+  const nav = document.querySelector('.tab-nav');
+  saved.forEach(tabId => {
+    const btn = nav.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+    if (btn) nav.appendChild(btn);
   });
+})();
+
+const tabNav = document.querySelector('.tab-nav');
+
+// Click to switch tab
+tabNav.addEventListener('click', (e) => {
+  if (tabDidDrag) return;
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  tabNav.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(btn.dataset.tab).classList.add('active');
+  if (btn.dataset.tab === 'news') initNews();
+});
+
+// Drag-to-reorder via mouse events
+let tabDragBtn = null;
+let tabGhost = null;
+let tabDidDrag = false;
+let tabDragStartX = 0;
+
+function getTabBtnAt(clientX) {
+  for (const btn of tabNav.querySelectorAll('.tab-btn')) {
+    const r = btn.getBoundingClientRect();
+    if (clientX >= r.left && clientX <= r.right) return btn;
+  }
+  return null;
+}
+
+tabNav.addEventListener('mousedown', (e) => {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  tabDragBtn = btn;
+  tabDragStartX = e.clientX;
+  tabDidDrag = false;
+});
+
+document.addEventListener('mousemove', (e) => {
+  if (!tabDragBtn) return;
+  if (!tabDidDrag && Math.abs(e.clientX - tabDragStartX) < 6) return;
+  tabDidDrag = true;
+
+  if (!tabGhost) {
+    const r = tabDragBtn.getBoundingClientRect();
+    tabGhost = tabDragBtn.cloneNode(true);
+    Object.assign(tabGhost.style, {
+      position: 'fixed',
+      pointerEvents: 'none',
+      zIndex: 1000,
+      width: r.width + 'px',
+      height: r.height + 'px',
+      top: r.top + 'px',
+      background: '#e8f0fe',
+      color: '#1a73e8',
+      borderRadius: '6px 6px 0 0',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+      opacity: '0.9',
+      cursor: 'grabbing',
+    });
+    document.body.appendChild(tabGhost);
+    tabDragBtn.classList.add('dragging');
+  }
+
+  const r = tabDragBtn.getBoundingClientRect();
+  tabGhost.style.left = (e.clientX - r.width / 2) + 'px';
+
+  const target = getTabBtnAt(e.clientX);
+  tabNav.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('drag-over'));
+  if (target && target !== tabDragBtn) target.classList.add('drag-over');
+});
+
+document.addEventListener('mouseup', (e) => {
+  if (!tabDragBtn) return;
+
+  if (tabDidDrag) {
+    const target = getTabBtnAt(e.clientX);
+    if (target && target !== tabDragBtn) {
+      const buttons = Array.from(tabNav.querySelectorAll('.tab-btn'));
+      const srcIdx = buttons.indexOf(tabDragBtn);
+      const tgtIdx = buttons.indexOf(target);
+      tabNav.insertBefore(tabDragBtn, srcIdx < tgtIdx ? target.nextSibling : target);
+      saveTabOrder();
+    }
+    // Suppress the subsequent click event
+    setTimeout(() => { tabDidDrag = false; }, 0);
+  } else {
+    tabDidDrag = false;
+  }
+
+  if (tabGhost) { tabGhost.remove(); tabGhost = null; }
+  tabDragBtn.classList.remove('dragging');
+  tabNav.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('drag-over'));
+  tabDragBtn = null;
 });

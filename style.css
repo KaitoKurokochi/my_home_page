@@ -499,10 +499,11 @@ body {
   color: #5f6368;
   font-size: 0.875rem;
   font-weight: 500;
-  cursor: pointer;
+  cursor: grab;
   border-bottom: 3px solid transparent;
   border-radius: 6px 6px 0 0;
   transition: color 0.15s, background 0.15s;
+  user-select: none;
 }
 
 .tab-btn:hover {
@@ -514,6 +515,15 @@ body {
   color: #1a73e8;
   background: #e8f0fe;
   border-bottom-color: #1a73e8;
+}
+
+.tab-btn.dragging {
+  opacity: 0.3;
+}
+
+.tab-btn.drag-over {
+  background: #e8eaed;
+  color: #202124;
 }
 
 main {
@@ -536,3 +546,88 @@ main {
   margin-bottom: 16px;
   color: #202124;
 }
+
+/* ── News ────────────────────────────────────────────────────────────────────*/
+
+.news-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 640px) {
+  .news-grid { grid-template-columns: 1fr; }
+}
+
+.news-col-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #5f6368;
+  margin-bottom: 10px;
+}
+
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.news-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #202124;
+  transition: background 0.12s;
+}
+
+.news-card:hover {
+  background: #f1f3f4;
+}
+
+.news-source {
+  font-size: 0.7rem;
+  color: #1a73e8;
+  font-weight: 500;
+  white-space: nowrap;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.news-title {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #202124;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.news-time {
+  font-size: 0.7rem;
+  color: #9aa0a6;
+  white-space: nowrap;
+}
+
+.news-updated {
+  margin-top: 16px;
+  font-size: 0.72rem;
+  color: #9aa0a6;
+  text-align: right;
+}
+
+.news-loading,
+.news-error {
+  font-size: 0.85rem;
+  color: #9aa0a6;
+  padding: 12px 10px;
+}
+
+.news-error { color: #c5221f; }

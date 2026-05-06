@@ -67,8 +67,17 @@
       <p>Task list goes here.</p>
     </section>
     <section id="news" class="tab-content">
-      <h2>News</h2>
-      <p>News content goes here.</p>
+      <div class="news-grid">
+        <div class="news-col">
+          <h3 class="news-col-title">Technology</h3>
+          <div id="news-tech" class="news-list"></div>
+        </div>
+        <div class="news-col">
+          <h3 class="news-col-title">Government (Japan)</h3>
+          <div id="news-gov" class="news-list"></div>
+        </div>
+      </div>
+      <p class="news-updated" id="news-updated"></p>
     </section>
     <section id="sports" class="tab-content">
       <h2>Sports</h2>
@@ -76,6 +85,7 @@
     </section>
   </main>
 
+  <script src="news.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

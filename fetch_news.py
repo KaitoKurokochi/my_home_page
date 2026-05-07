@@ -29,7 +29,7 @@ NIKKEI_RSS_FEEDS = [
 
 MAX_ARTICLES_PER_FEED = 15   # articles sent to Gemini per feed
 MAX_SELECTED           = 10  # articles Gemini selects in total
-GEMINI_MODEL           = "gemini-2.0-flash"
+GEMINI_MODEL           = "gemini-1.5-flash-latest"
 
 # ── RSS fetch ──────────────────────────────────────────────────────────────────
 
@@ -99,13 +99,8 @@ def call_gemini(articles: list[dict]) -> list[dict]:
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            result = json.load(resp)
-    except urllib.error.HTTPError as e:
-        error_body = e.read().decode("utf-8", errors="replace")
-        print(f"Gemini API error {e.code}: {error_body}")
-        raise
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        result = json.load(resp)
 
     raw = result["candidates"][0]["content"]["parts"][0]["text"].strip()
     # Strip markdown code fences if present

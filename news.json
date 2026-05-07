@@ -1,72 +1,162 @@
 {
-  "articles": [
+  "columns": [
     {
-      "title": "スペースX、AI半導体巨大工場「テラファブ」の計画判明 投資8兆円 - 日本経済新聞",
-      "summary": "スペースX、AI半導体工場に8兆円投資",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5pTjZjVGxWNEhOc1lxUTczRDlteDFmUlRwYU1wTDZzSXlGSGp3WS1RdHZjd0kwWW5JdWdoTEgzMy1PeF9sMDdwQkJha3NyanNmN2o5QUFKREN4dzRUTWk2RmxSaUZCbXJ6a0pzUg?oc=5",
-      "pub": "Wed, 06 May 2026 18:30:33 GMT"
+      "id": "morning",
+      "title": "Today's Top",
+      "articles": [
+        {
+          "title": "日米関税協議、来週も継続へ　双方が歩み寄りの姿勢示す - 朝日新聞",
+          "summary": "日米関税協議が継続、歩み寄りの動き",
+          "url": "https://example.com/article1",
+          "pub": "Thu, 08 May 2026 01:00:00 GMT",
+          "image": "https://picsum.photos/seed/news1/400/225"
+        },
+        {
+          "title": "日経平均、続伸で6万3000円台　米景気回復期待が下支え - 日本経済新聞",
+          "summary": "日経平均6万3000円台、米景気期待で続伸",
+          "url": "https://example.com/article2",
+          "pub": "Thu, 08 May 2026 02:30:00 GMT",
+          "image": "https://picsum.photos/seed/news2/400/225"
+        },
+        {
+          "title": "円相場、1ドル＝143円台に上昇　日銀追加利上げ観測が強まる - 読売新聞",
+          "summary": "円143円台、日銀利上げ観測で上昇",
+          "url": "https://example.com/article3",
+          "pub": "Thu, 08 May 2026 03:00:00 GMT",
+          "image": null
+        },
+        {
+          "title": "能登半島の復興計画、政府が新たな支援策を閣議決定 - NHK",
+          "summary": "能登復興で新支援策を閣議決定",
+          "url": "https://example.com/article4",
+          "pub": "Wed, 07 May 2026 22:00:00 GMT",
+          "image": "https://picsum.photos/seed/news4/400/225"
+        },
+        {
+          "title": "訪日外国人、4月は過去最多の380万人　円安効果続く - 観光庁",
+          "summary": "訪日客4月380万人、過去最多を更新",
+          "url": "https://example.com/article5",
+          "pub": "Wed, 07 May 2026 20:00:00 GMT",
+          "image": null
+        }
+      ]
     },
     {
-      "title": "孫正義氏、AIに託すがん予防 80兆円投資と共に語った亡父への思い - 日本経済新聞",
-      "summary": "孫正義氏、AIに80兆円投資",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFB3TFhmM2VQdlgyZWZ2RDlTdEhFUThOTWk1UHE0RDJzaG1ZQ0lvWW95MFhWRFFnd19scTNxYW9iRzhzS2dLMDZBVGw3YmxhOENpY0Q3Vkd5RXJaR3ZjV1FnMEJVNGYtS1FzVWJvOQ?oc=5",
-      "pub": "Wed, 06 May 2026 20:00:00 GMT"
+      "id": "tech",
+      "title": "テクノロジー",
+      "articles": [
+        {
+          "title": "スペースX、AI半導体巨大工場「テラファブ」計画を発表　投資額8兆円 - Reuters",
+          "summary": "スペースXが8兆円のAI半導体工場計画",
+          "url": "https://example.com/tech1",
+          "pub": "Thu, 08 May 2026 00:30:00 GMT",
+          "image": "https://picsum.photos/seed/tech1/400/225"
+        },
+        {
+          "title": "Anthropic、Claude 4.5を発表　コーディング精度が前モデル比40%向上 - TechCrunch",
+          "summary": "Anthropic、Claude 4.5でコーディング精度40%向上",
+          "url": "https://example.com/tech2",
+          "pub": "Wed, 07 May 2026 18:00:00 GMT",
+          "image": "https://picsum.photos/seed/tech2/400/225"
+        },
+        {
+          "title": "東京大学とトヨタ、自動運転向けAI共同研究を開始　2028年実用化目指す - 毎日新聞",
+          "summary": "東大・トヨタが自動運転AI共同研究",
+          "url": "https://example.com/tech3",
+          "pub": "Wed, 07 May 2026 15:00:00 GMT",
+          "image": null
+        },
+        {
+          "title": "ソニー、次世代OLED「QD-OLED Pro」を発表　輝度2倍で2026年秋発売予定 - Engadget Japan",
+          "summary": "ソニーが輝度2倍の次世代OLEDを発表",
+          "url": "https://example.com/tech4",
+          "pub": "Wed, 07 May 2026 12:00:00 GMT",
+          "image": "https://picsum.photos/seed/tech4/400/225"
+        },
+        {
+          "title": "国内スタートアップへのVC投資、今年度上半期は前年比30%増　AI分野が牽引 - Forbes Japan",
+          "summary": "国内VC投資30%増、AI分野が牽引",
+          "url": "https://example.com/tech5",
+          "pub": "Tue, 06 May 2026 10:00:00 GMT",
+          "image": null
+        }
+      ]
     },
     {
-      "title": "アンソロピック、新技術でOpenAI超えへ 企業価値1兆ドル迫る - 日本経済新聞",
-      "summary": "アンソロピック、新技術でOpenAI超え",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5nam9sSmtEWU1lcEtnVDYzQllQUUtvNXhpOXM4ZlJSQnRraXcxcUpnV09adjA0clB3YVNBcVRCWjlEcjlxREphWjVZOXgzN1ozWUJoVlUyVEhYbkctMUl1N3NIYk1HZzBGdWpXSg?oc=5",
-      "pub": "Thu, 07 May 2026 02:38:12 GMT"
+      "id": "gov",
+      "title": "日本政府の動き",
+      "articles": [
+        {
+          "title": "首相、少子化対策の追加予算1兆円を表明　来年度から段階実施 - 共同通信",
+          "summary": "首相、少子化対策で追加1兆円を表明",
+          "url": "https://example.com/gov1",
+          "pub": "Thu, 08 May 2026 04:00:00 GMT",
+          "image": "https://picsum.photos/seed/gov1/400/225"
+        },
+        {
+          "title": "経済安保推進法の改正案、衆院委員会で可決　サプライチェーン強靭化を強化 - NHK",
+          "summary": "経済安保法改正案が衆院委で可決",
+          "url": "https://example.com/gov2",
+          "pub": "Wed, 07 May 2026 16:00:00 GMT",
+          "image": null
+        },
+        {
+          "title": "デジタル庁、マイナンバーと医療情報の完全連携を2027年に前倒し - 日本経済新聞",
+          "summary": "マイナと医療情報の連携を2027年に前倒し",
+          "url": "https://example.com/gov3",
+          "pub": "Wed, 07 May 2026 14:00:00 GMT",
+          "image": "https://picsum.photos/seed/gov3/400/225"
+        },
+        {
+          "title": "防衛費、2026年度は過去最大の9兆円規模　GDP比2%達成へ - 産経新聞",
+          "summary": "防衛費2026年度は過去最大の9兆円",
+          "url": "https://example.com/gov4",
+          "pub": "Tue, 06 May 2026 11:00:00 GMT",
+          "image": null
+        }
+      ]
     },
     {
-      "title": "東ソー、慶大開発の光ケーブル量産へ 速度2倍でデータセンター向け - 日本経済新聞",
-      "summary": "東ソー、高速光ケーブル量産へ",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9wNkpVZ2JhWUV1LUJQb0FiWnpYZHo4MFhySFRpbks4blNMSTFFSTFvNTdiVDJjeWlPd3VydEZZbW1IYmd0U0c0VHFyeF8wRHFGSUpPQUdkcU1xQzJPVld1U1dHQnM1aVVaaDFwWg?oc=5",
-      "pub": "Wed, 06 May 2026 17:00:00 GMT"
-    },
-    {
-      "title": "ナノインプリントまとめ読み 開発20年、EUVは次世代へ - 日経テックフォーサイト - 日本経済新聞",
-      "summary": "半導体製造技術ナノインプリント",
-      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxOSTJzTGIzRkJPNmltOXFQOWhwaWVfeUI5UDNYcHlRWlJ6dGl1XzhTbGhVUlFLRjZUUzc5OFdPSW9pc09zVks5dXJMN2pRblZxNkxKbXpnR1BuY2QwSWxyR2l5WGl5Qmw1UDlxc0hFTjMxMWUwUFhVYzZDbDdwc1FXUFVQcWlVV0k?oc=5",
-      "pub": "Tue, 05 May 2026 20:00:00 GMT"
-    },
-    {
-      "title": "LINEヤフー川辺健太郎氏、AI従業員と新たな起業 「人間中心は非効率」 - 日本経済新聞",
-      "summary": "LINEヤフー川辺氏、AI従業員で起業",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1sOTV6aHBybkNpVkJQc3prMl9OZTVXbjVTcGFadl9nOWYwUUcyZzNKV213bEtfSEhwTlJpeERvNnUycHVEMVEwMWtXN05ZT2stT3NFNDhkYXBUYk01Q2NUSmJSci1lRE80RWpiOQ?oc=5",
-      "pub": "Tue, 05 May 2026 20:00:00 GMT"
-    },
-    {
-      "title": "日本、UAEから原油2000万バレル追加調達へ ホルムズ通らない経路模索 - 日本経済新聞",
-      "summary": "日本、UAEから原油追加調達へ",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9aYXpyVVlYbERPdDUwRU9mYXg3OW9TYTFfZDBpS2JnTXhFYjZkMmtlV2F2UHE5d1R1REg1TzlmT3dlb0p1bUZYZ2YzVWcwWDhKUkFkZV90Q1g1WnFpLTYtTlp5UXZJekZjUDdMYw?oc=5",
-      "pub": "Wed, 06 May 2026 11:00:00 GMT"
-    },
-    {
-      "title": "太陽熱を貯蔵し再利用、米大などが新たな分子技術 蓄電池上回る効率 - 日本経済新聞",
-      "summary": "太陽熱貯蔵の新技術、蓄電池超える",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE8tbExQLWhpZ3VHX0xKSm4xWXJyWEY4ajNjUzFZUkFUT1VRc01McS1vT3pOQzZxampUamhnVHJfZjU1dVJxNVVHSkhILW1seVdUMGdueC1McUxKcGlOSktIV3RIbUZsQWV5c2I2bg?oc=5",
-      "pub": "Mon, 04 May 2026 20:00:00 GMT"
-    },
-    {
-      "title": "米財務長官が首相・財務相・日銀総裁と会談へ 11日訪日、円安議論 - 日本経済新聞",
-      "summary": "米財務長官、円安議論で訪日へ",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1BcVhVRDdkeTczbFhWbXZ0ZEVSdENaWWlRSFdYQmpmSDVfUUY2akJVcm1VVmZLVVd3akF4ejhoVmc4UDlpeG9kSEVrWnJtLTNBdDJDQkxlNi1USi1Lc290WHZ2NXhuZWJkMHpnWA?oc=5",
-      "pub": "Wed, 06 May 2026 20:00:00 GMT"
-    },
-    {
-      "title": "円相場、一時157円台後半に下落 円買い介入後で最安値 - 日本経済新聞",
-      "summary": "円相場、介入後最安値157円台",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE05MnlCVEhrMElQb09iQXRFRDhDUDBDcHlRdE1fVk5xMzZzY3BveXJzV2wtdXRaT2pvcjBROE5jVXZBamE5eG93aUVQSEV2WkkzVlIxNW1nT2c2VlpXQ1dzb2NTYWE5dzFMczc3eQ?oc=5",
-      "pub": "Tue, 05 May 2026 21:09:18 GMT"
+      "id": "sports",
+      "title": "スポーツ・ビジネス",
+      "articles": [
+        {
+          "title": "大谷翔平、今季15号本塁打　打率.345でリーグ首位打者争いトップ - スポニチ",
+          "summary": "大谷が15号、打率.345でリーグトップ",
+          "url": "https://example.com/sports1",
+          "pub": "Thu, 08 May 2026 05:00:00 GMT",
+          "image": "https://picsum.photos/seed/sports1/400/225"
+        },
+        {
+          "title": "Jリーグ、サウジアラビア系ファンドによるFC東京買収が正式決定 - 日本経済新聞",
+          "summary": "FC東京、サウジ系ファンドが買収正式決定",
+          "url": "https://example.com/sports2",
+          "pub": "Wed, 07 May 2026 17:00:00 GMT",
+          "image": "https://picsum.photos/seed/sports2/400/225"
+        },
+        {
+          "title": "2030年冬季五輪の日本招致、IOC評価委が現地視察　札幌と長野が候補地 - 毎日新聞",
+          "summary": "2030冬季五輪招致でIOCが日本視察",
+          "url": "https://example.com/sports3",
+          "pub": "Wed, 07 May 2026 13:00:00 GMT",
+          "image": null
+        },
+        {
+          "title": "プロ野球グッズのEC市場、今年2000億円超え見込み　NFT活用が拡大 - Forbes Japan",
+          "summary": "プロ野球EC市場が2000億円超えへ",
+          "url": "https://example.com/sports4",
+          "pub": "Tue, 06 May 2026 09:00:00 GMT",
+          "image": "https://picsum.photos/seed/sports4/400/225"
+        },
+        {
+          "title": "バスケBリーグ、来季から外資系スポンサー解禁　収益拡大を狙う - 朝日新聞",
+          "summary": "Bリーグ来季から外資スポンサー解禁",
+          "url": "https://example.com/sports5",
+          "pub": "Mon, 05 May 2026 08:00:00 GMT",
+          "image": null
+        }
+      ]
     }
   ],
-  "industries": [
-    "AI / 人工知能",
-    "半導体・電子部品",
-    "スタートアップ・ベンチャー",
-    "エネルギー・脱炭素",
-    "マクロ経済・金融政策"
-  ],
-  "fetchedAt": "2026-05-07T03:07:12.661993+00:00"
+  "fetchedAt": "2026-05-08T05:00:00.000000+00:00"
 }

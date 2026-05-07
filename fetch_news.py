@@ -99,8 +99,13 @@ def call_gemini(articles: list[dict]) -> list[dict]:
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        result = json.load(resp)
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            result = json.load(resp)
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode("utf-8", errors="replace")
+        print(f"Gemini API error {e.code}: {error_body}")
+        raise
 
     raw = result["candidates"][0]["content"]["parts"][0]["text"].strip()
     # Strip markdown code fences if present

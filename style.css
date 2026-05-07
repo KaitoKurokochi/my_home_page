@@ -577,9 +577,10 @@ main {
 .news-card {
   display: grid;
   grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto auto;
   align-items: baseline;
-  gap: 8px;
-  padding: 8px 10px;
+  gap: 4px 8px;
+  padding: 10px 10px;
   border-radius: 8px;
   text-decoration: none;
   color: #202124;
@@ -614,6 +615,26 @@ main {
   font-size: 0.7rem;
   color: #9aa0a6;
   white-space: nowrap;
+}
+
+.news-detail {
+  grid-column: 2 / 3;
+  font-size: 0.72rem;
+  color: #9aa0a6;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.news-meta {
+  margin-top: 16px;
+  font-size: 0.72rem;
+  color: #9aa0a6;
+  text-align: right;
+}
+
+.news-industries {
+  color: #1a73e8;
 }
 
 .news-updated {

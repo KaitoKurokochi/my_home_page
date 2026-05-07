@@ -40,11 +40,6 @@ function renderNews(data) {
 
 let newsLoaded = false;
 
-// Call on page load if News tab is already active
-document.addEventListener('DOMContentLoaded', () => {
-  if (document.getElementById('news')?.classList.contains('active')) initNews();
-});
-
 async function initNews() {
   if (newsLoaded) return;
 
@@ -62,3 +57,6 @@ async function initNews() {
       `<p class="news-error">Could not load news.json — run the GitHub Action first.<br><small>${e}</small></p>`;
   }
 }
+
+// Load immediately on page open (script runs after DOM is parsed)
+initNews();

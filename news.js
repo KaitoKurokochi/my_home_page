@@ -40,6 +40,11 @@ function renderNews(data) {
 
 let newsLoaded = false;
 
+// Call on page load if News tab is already active
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('news')?.classList.contains('active')) initNews();
+});
+
 async function initNews() {
   if (newsLoaded) return;
 

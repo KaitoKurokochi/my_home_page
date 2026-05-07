@@ -12,10 +12,9 @@ function timeAgo(isoString) {
 }
 
 // ── Morning paper link ────────────────────────────────────────────────────────
-// editionID = YYYYMMDDm101 (朝刊は4時以降が当日、それ以前は前日)
 
 function morningPaperUrl() {
-  const jst = new Date(Date.now() + 9 * 60 * 60 * 1000); // UTC → JST
+  const jst = new Date(Date.now() + 9 * 60 * 60 * 1000);
   if (jst.getUTCHours() < 4) jst.setUTCDate(jst.getUTCDate() - 1);
   const y = jst.getUTCFullYear();
   const m = String(jst.getUTCMonth() + 1).padStart(2, '0');
@@ -27,30 +26,46 @@ function renderMorningPaperLink() {
   document.getElementById('nikkei-paper-link').href = morningPaperUrl();
 }
 
-// ── Article list ──────────────────────────────────────────────────────────────
+// ── Render ────────────────────────────────────────────────────────────────────
+
+function renderNewsCard(a) {
+  const img = a.image
+    ? `<img class="news-card-img" src="${a.image}" alt="" loading="lazy" onerror="this.parentElement.remove()">`
+    : '';
+  return `
+    <a class="news-card" href="${a.url}" target="_blank" rel="noopener noreferrer">
+      ${img ? `<div class="news-card-thumb">${img}</div>` : ''}
+      <div class="news-card-body">
+        <span class="news-title">${a.summary}</span>
+        <span class="news-detail">${a.title}</span>
+        <span class="news-time">${a.pub ? timeAgo(a.pub) : ''}</span>
+      </div>
+    </a>
+  `;
+}
 
 function renderNews(data) {
-  const list = document.getElementById('news-nikkei');
-  const meta = document.getElementById('news-meta');
+  const grid = document.getElementById('news-grid');
 
-  if (!data.articles || !data.articles.length) {
-    list.innerHTML = '<p class="news-error">No articles.</p>';
+  if (!data.columns || !data.columns.length) {
+    grid.innerHTML = '<p class="news-error">No articles.</p>';
     return;
   }
 
-  list.innerHTML = data.articles.map(a => `
-    <a class="news-card" href="${a.url}" target="_blank" rel="noopener noreferrer">
-      <span class="news-source">Nikkei</span>
-      <span class="news-title">${a.summary}</span>
-      <span class="news-detail">${a.title}</span>
-      <span class="news-time">${a.pub ? timeAgo(a.pub) : ''}</span>
-    </a>
+  grid.innerHTML = data.columns.map(col => `
+    <div class="news-col">
+      <h3 class="news-col-title">${col.title}</h3>
+      <div class="news-list">
+        ${col.articles.length
+          ? col.articles.map(renderNewsCard).join('')
+          : '<p class="news-error">No articles.</p>'}
+      </div>
+    </div>
   `).join('');
 
-  if (data.industries) {
-    meta.innerHTML =
-      `<span class="news-industries">Topics: ${data.industries.join(' · ')}</span>` +
-      (data.fetchedAt ? ` · Updated ${timeAgo(data.fetchedAt)}` : '');
+  if (data.fetchedAt) {
+    document.getElementById('news-meta').textContent =
+      `Updated ${timeAgo(data.fetchedAt)}`;
   }
 }
 
@@ -62,8 +77,7 @@ async function initNews() {
   if (newsLoaded) return;
 
   renderMorningPaperLink();
-
-  document.getElementById('news-nikkei').innerHTML =
+  document.getElementById('news-grid').innerHTML =
     '<p class="news-loading">Loading...</p>';
 
   try {
@@ -73,10 +87,10 @@ async function initNews() {
     renderNews(data);
     newsLoaded = true;
   } catch (e) {
-    document.getElementById('news-nikkei').innerHTML =
-      `<p class="news-error">Could not load news.json — run the GitHub Action first.<br><small>${e}</small></p>`;
+    document.getElementById('news-grid').innerHTML =
+      `<p class="news-error">Could not load news.json.<br><small>${e}</small></p>`;
   }
 }
 
-// Load immediately on page open (script runs after DOM is parsed)
+// Load immediately on page open
 initNews();

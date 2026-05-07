@@ -1,91 +1,115 @@
 """
-Fetch Nikkei RSS, select interesting articles via Gemini, save news.json.
+Fetch Nikkei articles via Google News RSS, categorize with Gemini, save news.json.
 
-Industries to watch are defined in INDUSTRIES (editable without touching the logic).
+Column definitions and industries are editable without touching the logic.
 """
 
 import json
 import os
 import urllib.request
+import urllib.parse
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 
 # ── Configuration ──────────────────────────────────────────────────────────────
 
-INDUSTRIES = [
-    "AI / 人工知能",
-    "半導体・電子部品",
-    "スタートアップ・ベンチャー",
-    "エネルギー・脱炭素",
-    "マクロ経済・金融政策",
+COLUMNS = [
+    {
+        "id":    "morning",
+        "title": "Today's Top",
+        "query": "日本 主要ニュース",
+        "max":   6,
+    },
+    {
+        "id":    "tech",
+        "title": "テクノロジー",
+        "query": "テクノロジー OR AI OR 半導体 OR スタートアップ",
+        "max":   6,
+    },
+    {
+        "id":    "gov",
+        "title": "日本政府の動き",
+        "query": "日本 政府 OR 首相 OR 政策 OR 国会",
+        "max":   6,
+    },
+    {
+        "id":    "sports",
+        "title": "スポーツ・ビジネス",
+        "query": "スポーツビジネス OR スポーツ経済 OR アスリート ビジネス",
+        "max":   6,
+    },
 ]
 
-# Google News RSS filtered to nikkei.com articles (日経本紙はRSS廃止のため)
-NIKKEI_RSS_FEEDS = [
-    ("Nikkei-Top",   "https://news.google.com/rss/search?q=site:nikkei.com&hl=ja&gl=JP&ceid=JP:ja"),
-    ("Nikkei-Tech",  "https://news.google.com/rss/search?q=site:nikkei.com+%E6%8A%80%E8%A1%93&hl=ja&gl=JP&ceid=JP:ja"),
-    ("Nikkei-Money", "https://news.google.com/rss/search?q=site:nikkei.com+%E7%B5%8C%E6%B8%88&hl=ja&gl=JP&ceid=JP:ja"),
-]
-
-MAX_ARTICLES_PER_FEED = 15   # articles sent to Gemini per feed
-MAX_SELECTED           = 10  # articles Gemini selects in total
-GEMINI_MODEL           = "gemini-2.5-flash"
+MAX_FETCH_PER_COL = 20
+GEMINI_MODEL      = "gemini-2.5-flash"
+MEDIA_NS          = "http://search.yahoo.com/mrss/"
 
 # ── RSS fetch ──────────────────────────────────────────────────────────────────
 
-def extract_real_url(google_url: str) -> str:
-    """Google NewsのリダイレクトURLから元のURLを取り出す。"""
-    import urllib.parse
-    parsed = urllib.parse.urlparse(google_url)
-    qs = urllib.parse.parse_qs(parsed.query)
-    # ?url= パラメータがある場合
-    if "url" in qs:
-        return qs["url"][0]
-    return google_url
+def google_news_url(query: str) -> str:
+    return (
+        "https://news.google.com/rss/search?"
+        + urllib.parse.urlencode({"q": query, "hl": "ja", "gl": "JP", "ceid": "JP:ja"})
+    )
 
-def fetch_rss(url: str) -> list[dict]:
+def fetch_rss(query: str) -> list[dict]:
+    url = google_news_url(query)
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=15) as resp:
         tree = ET.parse(resp)
-    ns = {"dc": "http://purl.org/dc/elements/1.1/"}
+
+    ns = {
+        "dc":    "http://purl.org/dc/elements/1.1/",
+        "media": MEDIA_NS,
+    }
     items = []
     for item in tree.findall(".//item"):
         title = (item.findtext("title") or "").strip()
         link  = (item.findtext("link")  or "").strip()
         desc  = (item.findtext("description") or "").strip()
         pub   = item.findtext("pubDate") or item.findtext("dc:date", namespaces=ns) or ""
+
+        # Try to get thumbnail image from media namespace
+        image = None
+        for tag in ("media:content", "media:thumbnail"):
+            el = item.find(tag, namespaces=ns)
+            if el is not None and el.get("url"):
+                image = el.get("url")
+                break
+
         if title and link:
-            real_url = extract_real_url(link)
-            items.append({"title": title, "url": real_url, "desc": desc, "pub": pub})
-    return items[:MAX_ARTICLES_PER_FEED]
+            items.append({
+                "title": title,
+                "url":   link,
+                "desc":  desc[:150],
+                "pub":   pub,
+                "image": image,
+            })
+    return items[:MAX_FETCH_PER_COL]
 
-# ── Gemini selection ───────────────────────────────────────────────────────────
+# ── Gemini categorization ──────────────────────────────────────────────────────
 
-def call_gemini(articles: list[dict]) -> list[dict]:
+def call_gemini(col: dict, articles: list[dict]) -> list[dict]:
     api_key = os.environ["GEMINI_API_KEY"]
     url = (
         f"https://generativelanguage.googleapis.com/v1beta/models/"
         f"{GEMINI_MODEL}:generateContent?key={api_key}"
     )
 
-    industry_list = "\n".join(f"- {i}" for i in INDUSTRIES)
-    article_text  = "\n".join(
-        f"[{i+1}] {a['title']} | {a['desc'][:120]}"
+    article_text = "\n".join(
+        f"[{i+1}] {a['title']} | {a['desc']}"
         for i, a in enumerate(articles)
     )
 
-    prompt = f"""あなたは日経新聞の記事キュレーターです。
-以下の業界に関心のある読者向けに、記事一覧から最大{MAX_SELECTED}件を選んでください。
-
-【関心業界】
-{industry_list}
+    prompt = f"""あなたは日経新聞のキュレーターです。
+カテゴリ「{col['title']}」に最も関連する記事を最大{col['max']}件選び、各記事を30字以内で日本語要約してください。
 
 【記事一覧】
 {article_text}
 
-【出力形式】選んだ記事を以下のJSONリストのみ返してください（説明不要）。
+【出力形式】JSONリストのみ返してください（説明不要）。
 [
-  {{"index": 1, "summary": "一言日本語要約（30字以内）"}},
+  {{"index": 1, "summary": "一言要約（30字以内）"}},
   ...
 ]"""
 
@@ -103,7 +127,6 @@ def call_gemini(articles: list[dict]) -> list[dict]:
         result = json.load(resp)
 
     raw = result["candidates"][0]["content"]["parts"][0]["text"].strip()
-    # Strip markdown code fences if present
     if raw.startswith("```"):
         raw = raw.split("```")[1]
         if raw.startswith("json"):
@@ -120,45 +143,45 @@ def call_gemini(articles: list[dict]) -> list[dict]:
                 "summary": s["summary"],
                 "url":     a["url"],
                 "pub":     a["pub"],
+                "image":   a["image"],
             })
     return selected
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
-    all_articles: list[dict] = []
-    for label, feed_url in NIKKEI_RSS_FEEDS:
+    columns_out = []
+    for col in COLUMNS:
+        print(f"\n[{col['title']}]")
         try:
-            items = fetch_rss(feed_url)
-            print(f"  {label}: {len(items)} articles")
-            all_articles.extend(items)
+            articles = fetch_rss(col["query"])
+            print(f"  fetched: {len(articles)} articles")
         except Exception as e:
-            print(f"  {label}: failed — {e}")
+            print(f"  RSS failed: {e}")
+            columns_out.append({"id": col["id"], "title": col["title"], "articles": []})
+            continue
 
-    # Deduplicate by URL
-    seen, unique = set(), []
-    for a in all_articles:
-        if a["url"] not in seen:
-            seen.add(a["url"])
-            unique.append(a)
+        try:
+            selected = call_gemini(col, articles)
+            print(f"  selected: {len(selected)} articles")
+        except Exception as e:
+            print(f"  Gemini failed: {e}")
+            selected = []
 
-    print(f"Total unique articles: {len(unique)}")
-
-    if not unique:
-        raise RuntimeError("No articles fetched from any feed.")
-
-    selected = call_gemini(unique)
-    print(f"Gemini selected: {len(selected)} articles")
+        columns_out.append({
+            "id":       col["id"],
+            "title":    col["title"],
+            "articles": selected,
+        })
 
     output = {
-        "articles":  selected,
-        "industries": INDUSTRIES,
+        "columns":   columns_out,
         "fetchedAt": datetime.now(timezone.utc).isoformat(),
     }
 
     with open("news.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Saved news.json")
+    print("\nSaved news.json")
 
 if __name__ == "__main__":
     main()

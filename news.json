@@ -5,32 +5,46 @@
       "title": "Today's Top",
       "articles": [
         {
-          "title": "日米関税協議、来週も継続へ　双方が歩み寄りの姿勢示す - 日本経済新聞",
-          "headline": "日米関税協議、来週も継続へ",
-          "description": "双方が歩み寄りの姿勢を示し、協議継続で合意。早期妥結に向けた動きが加速している。",
-          "url": "https://example.com/article1",
-          "pub": "Thu, 08 May 2026 01:00:00 GMT"
+          "title": "米イランが戦闘終結で覚書を準備、合意間近か 米報道 - 日本経済新聞",
+          "headline": "米イラン、戦闘終結へ",
+          "description": "米報道によると、両国が覚書を準備中。中東情勢の緩和に期待が高まる。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1kUk9UN280V2s5Zmo2WDU1VnBJNHFyNnBMdE5RM1VjdWN6TkRPbTQ1bU1FM3FxelJiakpZbVVzOXNmZ0lfd25fekdaLXlFSEZrSlNJVnJKV1dqOUpMSGZLUUJxekc5ZE9KeFcwVw?oc=5",
+          "pub": "Wed, 06 May 2026 10:41:56 GMT"
         },
         {
-          "title": "日経平均、続伸で6万3000円台　米景気回復期待が下支え - 日本経済新聞",
-          "headline": "日経平均6万3000円台に続伸",
-          "description": "米景気回復への期待感が投資家心理を改善。幅広い銘柄に買いが広がった。",
-          "url": "https://example.com/article2",
-          "pub": "Thu, 08 May 2026 02:30:00 GMT"
+          "title": "日経平均株価一時3000円高 6万2000円を上回る 中東衝突の収束期待 - 日本経済新聞",
+          "headline": "日経平均6万2千円超え",
+          "description": "中東衝突の収束期待で一時3000円高。米ハイテク株高も波及し市場が急騰。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE01NkVReXU4TDcwbFNkeTFEWklLMGZOZHNtOW1FbWNHbzhKd281WDBxd3ZObnpPbkM3NHNsd3hJSmpKZzVFeENVZ2lFNVJNRGhVTzdpbGp5SGhuVVFucjQ0NE5DRl9SejlzTzM0NA?oc=5",
+          "pub": "Thu, 07 May 2026 00:11:54 GMT"
         },
         {
-          "title": "円相場、1ドル＝143円台に上昇　日銀追加利上げ観測が強まる - 日本経済新聞",
-          "headline": "円143円台、日銀利上げ観測で上昇",
-          "description": "日銀が次回会合で追加利上げを検討との報道を受け、円買いが加速した。",
-          "url": "https://example.com/article3",
-          "pub": "Thu, 08 May 2026 03:00:00 GMT"
+          "title": "原油価格が下落、一時12%安 米・イラン戦闘終結期待で - 日本経済新聞",
+          "headline": "原油価格12%安に",
+          "description": "米・イラン戦闘終結期待で原油価格が急落。世界経済への影響に注目が集まる。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFB5anNDSFRYeXJWVGFJdDVSQ25pQ010TWZfT2FXUlZOZ2xmX1ZFR2hxdnNIXy1FQTZER1hhS3phcElWSENFeEtBd0ViWF93WHRNcnBrWGJrOHVBbUttOUtkVm5GeTEtQUpTck9raQ?oc=5",
+          "pub": "Wed, 06 May 2026 10:42:07 GMT"
         },
         {
-          "title": "訪日外国人、4月は過去最多の380万人　円安効果続く - 日本経済新聞",
-          "headline": "訪日客4月380万人で過去最多",
-          "description": "円安を背景に訪日需要が高水準を維持。アジア圏からの旅行者が全体の6割を占めた。",
-          "url": "https://example.com/article5",
-          "pub": "Wed, 07 May 2026 20:00:00 GMT"
+          "title": "米財務長官が首相・財務相・日銀総裁と会談へ 11日訪日、円安議論 - 日本経済新聞",
+          "headline": "米財務長官が訪日へ",
+          "description": "首相・財務相・日銀総裁と会談し、円安問題について議論する見通し。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1BcVhVRDdkeTczbFhWbXZ0ZEVSdENaWWlRSFdYQmpmSDVfUUY2akJVcm1VVmZLVVd3akF4ejhoVmc4UDlpeG9kSEVrWnJtLTNBdDJDQkxlNi1USi1Lc290WHZ2NXhuZWJkMHpnWA?oc=5",
+          "pub": "Wed, 06 May 2026 20:00:00 GMT"
+        },
+        {
+          "title": "スペースX、AI半導体巨大工場「テラファブ」の計画判明 投資8兆円 - 日本経済新聞",
+          "headline": "スペースX、AI工場に8兆円",
+          "description": "AI半導体巨大工場「テラファブ」計画が判明。先端技術への巨額投資。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5pTjZjVGxWNEhOc1lxUTczRDlteDFmUlRwYU1wTDZzSXlGSGp3WS1RdHZjd0kwWW5JdWdoTEgzMy1PeF9sMDdwQkJha3NyanNmN2o5QUFKREN4dzRUTWk2RmxSaUZCbXJ6a0pzUg?oc=5",
+          "pub": "Wed, 06 May 2026 18:30:33 GMT"
+        },
+        {
+          "title": "タイで新型コロナ類似ウイルス発見、人への感染能力ありか 東大など - 日本経済新聞",
+          "headline": "新型コロナ類似ウイルス発見",
+          "description": "タイで東大などが人への感染能力を持つ可能性のあるウイルスを発見。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9MdzJJWHNqV0tvRXJ0T2ZDQ08tX1dURXJrSWNtMEJZVGt2Ti1fME5yZUdPV3R3YndlWDV4SG4xUkhFY2FOeXhWbUlWV3F5a2ZmbHBfSDM2Q3lKTG9wRDdCb2JHQkZ3Q2xPYmRkUQ?oc=5",
+          "pub": "Wed, 06 May 2026 15:00:00 GMT"
         }
       ]
     },
@@ -39,32 +53,46 @@
       "title": "テクノロジー",
       "articles": [
         {
-          "title": "スペースX、AI半導体巨大工場「テラファブ」計画を発表　投資額8兆円 - 日本経済新聞",
-          "headline": "スペースXが8兆円のAI工場計画",
-          "description": "テキサス州に建設予定の「テラファブ」はNVIDIA製GPUを年間100万枚生産する見込み。",
-          "url": "https://example.com/tech1",
-          "pub": "Thu, 08 May 2026 00:30:00 GMT"
+          "title": "金融庁がAI開発、地銀に無償提供へ 独自サービス促す - 日本経済新聞",
+          "headline": "金融庁、地銀向けAI開発",
+          "description": "独自サービス創出へ、金融庁がAIモデルを開発し地銀に無償提供。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1mazZBeDNVSG1CdVhDanJfSXozcDZRMEVsZk85S2lsTEljZFhMSnMzX0VDNkRaUDRWc2haMUxMclhIVW1EckwtR0UxdmpwMERmWmJQaUJYcXVYdjJpRkNjSy1SOHJYWXhhMW5qQg?oc=5",
+          "pub": "Wed, 06 May 2026 17:00:00 GMT"
         },
         {
-          "title": "アンソロピック、スペースXと提携　AIデータセンター向けロケット輸送を活用 - 日本経済新聞",
-          "headline": "アンソロピックとスペースXが提携",
-          "description": "AIデータセンターの電力・冷却インフラにスペースXの技術を活用する契約を締結した。",
-          "url": "https://example.com/tech2",
-          "pub": "Wed, 07 May 2026 18:00:00 GMT"
+          "title": "スペースX、AI半導体巨大工場「テラファブ」の計画判明 投資8兆円 - 日本経済新聞",
+          "headline": "スペースX、AI半導体工場",
+          "description": "8兆円投じ「テラファブ」計画。AI開発の基盤となる半導体を自社生産へ。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5pTjZjVGxWNEhOc1lxUTczRDlteDFmUlRwYU1wTDZzSXlGSGp3WS1RdHZjd0kwWW5JdWdoTEgzMy1PeF9sMDdwQkJha3NyanNmN2o5QUFKREN4dzRUTWk2RmxSaUZCbXJ6a0pzUg?oc=5",
+          "pub": "Wed, 06 May 2026 18:30:33 GMT"
         },
         {
-          "title": "東ソー、慶大開発の光ケーブル量産へ　速度2倍でデータセンター向け - 日本経済新聞",
-          "headline": "東ソーが高速光ケーブルを量産へ",
-          "description": "従来比2倍の伝送速度を実現。データセンター需要の急増に対応し2027年に量産開始予定。",
-          "url": "https://example.com/tech3",
-          "pub": "Wed, 07 May 2026 15:00:00 GMT"
+          "title": "アンソロピック、マスク氏のスペースXと提携 AIデータセンター利用 - 日本経済新聞",
+          "headline": "アンソロピック、スペースX提携",
+          "description": "AIデータセンター利用で提携。AI開発企業とインフラ企業が連携強化。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFB3SWZvblJERXN1R1cwSXRxRlpGWkRtUVplaDEweHpjVVhTNllaU0Y4a0JDZXdhbmZ3UFlHVnFzb0laSDc0Wkw0ZWE1SHI5QWt3QzYtZVIza0xaczF4SWxvVlpzOVFXWkNNdjdQXw?oc=5",
+          "pub": "Wed, 06 May 2026 16:26:41 GMT"
         },
         {
-          "title": "国内スタートアップへのVC投資、今年度上半期は前年比30%増　AI分野が牽引 - 日本経済新聞",
-          "headline": "国内VC投資30%増、AI分野が牽引",
-          "description": "生成AI関連スタートアップへの投資が急増。投資総額は上半期だけで過去最高を更新した。",
-          "url": "https://example.com/tech5",
-          "pub": "Tue, 06 May 2026 10:00:00 GMT"
+          "title": "M7決算の勝者はアルファベット 強まるAI需要、耐久性にリスクも - 日本経済新聞",
+          "headline": "AI需要でアルファベット好調",
+          "description": "AI需要がM7企業の決算を牽引。アルファベットが好調もリスクも指摘。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFAxWjNTNWF5a1NPdHAyRkhfX19UQzBaazQxekxZN3VwYmUyZVpmQklKbmZDbVpRNU92UmdacDAyZ2dNUHNfUGpNQjdteVVNaDhKYU52NFlhQ1JBY3BRdmw4YWhUNTd3R241Rl9yWQ?oc=5",
+          "pub": "Wed, 06 May 2026 22:49:10 GMT"
+        },
+        {
+          "title": "アンソロピック、Mythos例に「AIは指数関数的に成長」 開発者会議 - 日本経済新聞",
+          "headline": "AIは指数関数的に成長",
+          "description": "アンソロピックが開発者会議で「Mythos」を例にAIの進化を強調。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBjZ0pab01SVXJPc1JQeWNRZi1EeVhGU2Z4MXJaa3lqN0NkaUd1WG8wUmtCTlU4U28ydkFPc3Y4MFlhRkJCdkowMmd0dEZaOGpqeURxeEh0ZjQ0MmpPVERfRU9ybkhCcEp2Smhtbw?oc=5",
+          "pub": "Wed, 06 May 2026 10:00:00 GMT"
+        },
+        {
+          "title": "「NVIDIA競合」のAI半導体セレブラス、IPOで評価額4兆円を計画 - 日本経済新聞",
+          "headline": "AI半導体セレブラスIPOへ",
+          "description": "NVIDIA競合のセレブラスがIPO計画。評価額4兆円で市場競争激化。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9GWUR6alpsNE42alplWjVob0N0NnBCTHZja3lTOGNtODlnc0RQQjFHZkJIcEpSeEdGR2ZzVzVyM20zY1Y4aDFUME9xT2tGOGFOT0ZwRWlieHNURXFWQ0JKUkdwdVd5Qm5obW9zdw?oc=5",
+          "pub": "Mon, 04 May 2026 20:30:34 GMT"
         }
       ]
     },
@@ -73,25 +101,46 @@
       "title": "日本政府の動き",
       "articles": [
         {
-          "title": "首相、少子化対策の追加予算1兆円を表明　来年度から段階実施 - 日本経済新聞",
-          "headline": "首相、少子化対策1兆円を追加表明",
-          "description": "児童手当の拡充と保育士の処遇改善を柱とした追加予算を来年度から段階的に投じる方針。",
-          "url": "https://example.com/gov1",
-          "pub": "Thu, 08 May 2026 04:00:00 GMT"
+          "title": "政府・日銀、円買い介入を実施 対ドルで一時155円台に急騰 - 日本経済新聞",
+          "headline": "政府・日銀、円買い介入実施",
+          "description": "対ドルで一時155円台に急騰。連休前の薄商いを狙い、為替市場に介入した。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1SZDVkaVBzckhDdzF5SXhoOVpnVmY3Nzltd2Uza3l1NDJVdGVkSlJQSmJ2SEg4eXRCR3RSQXd6aEtQN2lTalZLYkc5UW8tMFdHUjBRVHFLVDVZQkl2blVlMzBqR25nQmFwZndUMA?oc=5",
+          "pub": "Thu, 30 Apr 2026 13:16:21 GMT"
         },
         {
-          "title": "デジタル庁、マイナンバーと医療情報の完全連携を2027年に前倒し - 日本経済新聞",
-          "headline": "マイナと医療情報の連携を前倒し",
-          "description": "当初2029年予定だった完全連携を2027年に前倒し。救急・遠隔医療の効率化を図る。",
-          "url": "https://example.com/gov3",
-          "pub": "Wed, 07 May 2026 14:00:00 GMT"
+          "title": "為替介入、原油高主導の円安問題視 連休前の薄商い狙った政府・日銀 - 日本経済新聞",
+          "headline": "政府・日銀、円安に為替介入",
+          "description": "原油高主導の円安を問題視。連休前の薄商いを狙い、円買い介入を実施した。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1OU3pNdkZMWERheXl5NWxmbUpheG9CNnVLWVl6R0J5MWZWZ3lCREEyU1dxbUhNV1l3Q1IwdmlyNEJlZEFyejZFS09NVEgxWTVqbWNsOFNuVVcwMGFDaThHX0ViZkZ1azItMGcydA?oc=5",
+          "pub": "Fri, 01 May 2026 10:28:25 GMT"
         },
         {
-          "title": "防衛費、2026年度は過去最大の9兆円規模　GDP比2%達成へ - 日本経済新聞",
-          "headline": "防衛費9兆円、GDP比2%を達成",
-          "description": "NATO基準のGDP比2%目標を前倒しで達成。スタンドオフ防衛能力の整備に重点配分する。",
-          "url": "https://example.com/gov4",
-          "pub": "Tue, 06 May 2026 11:00:00 GMT"
+          "title": "米財務長官が首相・財務相・日銀総裁と会談へ 11日訪日、円安議論 - 日本経済新聞",
+          "headline": "米財務長官、日本要人と会談へ",
+          "description": "11日訪日し、首相・財務相・日銀総裁と会談。円安問題について議論する。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1BcVhVRDdkeTczbFhWbXZ0ZEVSdENaWWlRSFdYQmpmSDVfUUY2akJVcm1VVmZLVVd3akF4ejhoVmc4UDlpeG9kSEVrWnJtLTNBdDJDQkxlNi1USi1Lc290WHZ2NXhuZWJkMHpnWA?oc=5",
+          "pub": "Wed, 06 May 2026 20:00:00 GMT"
+        },
+        {
+          "title": "米財務省、為替介入巡り「日本財務省と緊密に連絡」 - 日本経済新聞",
+          "headline": "米財務省、日本と為替で連携",
+          "description": "為替介入を巡り、米財務省が日本財務省と緊密に連絡を取っていると表明。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE56Z1puM0xjWnRhNnJ0dkp0RnhENnJMb3d5WnVaUEozUVRGelE5aVluTEFGUDRIbHpfQlFYVXU1Tm9BWEpzQm9xM3NFSld6d2kwa2FxdmlsU3pkS2JFTFJJUGYwQVQwd1NNS0xyaw?oc=5",
+          "pub": "Thu, 30 Apr 2026 19:05:43 GMT"
+        },
+        {
+          "title": "「災害時は在宅」、高層マンション住民に促す 政府、避難所混乱回避へ指針 - 日本経済新聞",
+          "headline": "政府、災害時在宅避難を促す",
+          "description": "高層マンション住民向けに指針を策定。避難所の混乱回避が狙い。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9jQ3dIVjA0TzFyXzFtTVhndnVTLU9zZHIyT3V0LWRHM0Z3Tk1fWmV4WmRhbDFMdkFET2YwVzRxeDQtck1KUDRPMUM1ci12TXRWMnZBUmdmbGRpNXpNRHlfSmpfNWJ3RjNVa3FPZg?oc=5",
+          "pub": "Wed, 06 May 2026 17:00:00 GMT"
+        },
+        {
+          "title": "ナフサ供給「年明け以降も確保」 高市首相表明、中東以外で代替調達 - 日本経済新聞",
+          "headline": "高市首相、ナフサ供給確保表明",
+          "description": "年明け以降もナフサ供給を確保すると表明。中東以外からの代替調達を進める。",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5pbnByMEFCOEZxcGplMG0teFFVRlNLVGkyazNCdEZYUW1lOEpRQlRtT3hwMXJLaldOM1hUd0Q4UmF0bklSVTF5MzA1b2s3ZGs2YTVMWUpmMWdGLVJwWGpseWlSZlZaQVNwRHFmNQ?oc=5",
+          "pub": "Thu, 30 Apr 2026 08:07:09 GMT"
         }
       ]
     },
@@ -100,28 +149,49 @@
       "title": "スポーツ・ビジネス",
       "articles": [
         {
-          "title": "大谷翔平、今季15号本塁打　打率.345でリーグ首位打者争いトップ - 日本経済新聞",
-          "headline": "大谷、15号本塁打で首位打者争い",
-          "description": "打率.345はリーグトップ。投手復帰の見通しも立ち、二刀流完全復活が現実味を帯びてきた。",
-          "url": "https://example.com/sports1",
-          "pub": "Thu, 08 May 2026 05:00:00 GMT"
+          "title": "デジタルハーツホールディングス[3676]：シニアをはじめとした多世代が参加できるeスポーツ「GeeSPORTS」を通じて超高齢社会の課題解決を目指す「株式会社DIGITAL HEARTS GeeSPORTS」設立のお知らせ 2026年5月7日(適時開示) ：日経会社情報DIGITAL - 日本経済新聞",
+          "headline": "eスポーツで社会課題解決へ",
+          "description": "デジタルハーツHDが新会社設立。多世代向けeスポーツで超高齢社会の課題解決を目指す。",
+          "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE9zY0l5SExsN1dJTWNHRzRaM1FpRlU4SVZZOE03cWtvUkRHNmZIQVMzUzM2TWJVUUFiUGVRNnhSYWQxYVpVdHNENEZ1RWhXOEVtdDByaFJwMk9EZU9CaGFMUkpiRzcxTkx0Q2c?oc=5",
+          "pub": "Thu, 07 May 2026 04:00:00 GMT"
         },
         {
-          "title": "Jリーグ、サウジアラビア系ファンドによるFC東京買収が正式決定 - 日本経済新聞",
-          "headline": "FC東京、サウジ系ファンドが買収",
-          "description": "買収総額は約500億円。欧州や中東のスター選手獲得に向け、強化費を大幅に引き上げる計画。",
-          "url": "https://example.com/sports2",
-          "pub": "Wed, 07 May 2026 17:00:00 GMT"
+          "title": "プロeスポーツチーム「FENNEL」、医療団体 Dr.GAMES と協業を締結［FENNEL］ - 日本経済新聞",
+          "headline": "eスポーツと医療が協業",
+          "description": "プロeスポーツチームFENNELが医療団体と提携。選手支援や健康増進で連携。",
+          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1tNFVic2pqdXhqN2Rvd2g5VDNkdENpdVBtVHJzRmI3ZE8zMUJCLVZ4akRRQUR3blNrUnZDeWdtWEQ2NHJ4ZWxLdVJZczVpTG5na0lfcjV3bm44UEVKd3RyZVZsRXFNMExCWl9kdFU1OURXWkFYTWRvUnVEcDI?oc=5",
+          "pub": "Sat, 02 May 2026 02:26:07 GMT"
         },
         {
-          "title": "プロ野球グッズのEC市場、今年2000億円超え見込み　NFT活用が拡大 - 日本経済新聞",
-          "headline": "プロ野球EC市場が2000億円超えへ",
-          "description": "球団公式NFTや限定グッズのオンライン販売が急拡大。ファン層の若年化が需要を押し上げた。",
-          "url": "https://example.com/sports4",
-          "pub": "Tue, 06 May 2026 09:00:00 GMT"
+          "title": "宇野昌磨・ときどがプロeスポーツチーム『VARREL』に加入！チームリブランディングで新たなスタート［CELLORB］ - 日本経済新聞",
+          "headline": "宇野昌磨らeスポーツ参入",
+          "description": "フィギュア宇野昌磨選手らがプロeスポーツチームVARRELに加入。チームはリブランディングで新展開。",
+          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE8yV3l6TjI0eG9hUmRkVFFtLWpLWjRpanQ2Yl9jLUVxbVBQQm9zY3RORWpHcE1mOTlzVVpHLUw4b3hDVmlpVDV0cFNFYzRPWTFKLVpTWUJRY0N6WkhTdzB4ejNDMno3VUVCbTVIdEd3cnp4ZmJjV2RHbHYwcDM?oc=5",
+          "pub": "Fri, 01 May 2026 05:00:37 GMT"
+        },
+        {
+          "title": "ＪリーグとKONAMIが共同開催するeスポーツ大会「eＪリーグ eFootball(TM) 2026シーズン」アビスパ福岡が初優勝を飾る［コナミデジタルエンタテインメント］ - 日本経済新聞",
+          "headline": "Jリーグeスポーツ大会開催",
+          "description": "JリーグとKONAMIが共同開催するeスポーツ大会でアビスパ福岡が初優勝。",
+          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBINGpmVDkzaDgxdVhSSmZ0cjNTYWt1UzFrTC1CaUJfVkM5V1BLd0ZwMHBXZjdZUnk2NTRfbUpERVowSld4N1pOajlzRk5HMjRMX1RJSEYtdkFsdlJqMnVKM3BFNzFpYzI3eFc2TXRsNG9zamNCUzh4d0Fxek8?oc=5",
+          "pub": "Tue, 05 May 2026 01:59:11 GMT"
+        },
+        {
+          "title": "株式会社アナログ、eスポーツ・ゲームメインの活動者支援プロジェクト「e-VALT」に新メンバー加入を発表！［アナログ］ - 日本経済新聞",
+          "headline": "eスポーツ活動者支援を強化",
+          "description": "アナログ社がeスポーツ・ゲーム活動者支援プロジェクト「e-VALT」に新メンバーを迎え、育成を加速。",
+          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE5Vd0RFOG5tOTV2SjFOcm5MQlFac2FSekRUaTI4VlNSZEFDbTRpUDVnaDA5SE91cGQ5dERzVVBEbExGMzlVWC1nTUJSRXNqc2FHeEJaSU16ZlV2MTBCa0VMX3ZiM0lwQUk1R1ZuNDRUMDBaV3VkT25RcEpqdEs?oc=5",
+          "pub": "Fri, 01 May 2026 02:12:27 GMT"
+        },
+        {
+          "title": "【スポーツメディア】26年4月4週の注目記事5選 - 日本経済新聞",
+          "headline": "スポーツメディアの注目記事",
+          "description": "26年4月4週のスポーツメディア関連の注目記事を5選紹介。業界動向を把握。",
+          "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE53Z2x3aGRDa1FtWTktd2htOUotNWJlUjdfX0dEZ2hCNWdYR3dUR19oaXZDS0Z2OXA2cDJQVUZFM3JGdlFub2lLeThIdEpfQ09pLUd4Q3BrYjROak15UVc1Mkw1WUdyVm9DM3c?oc=5",
+          "pub": "Sun, 03 May 2026 21:57:56 GMT"
         }
       ]
     }
   ],
-  "fetchedAt": "2026-05-08T05:00:00.000000+00:00"
+  "fetchedAt": "2026-05-07T05:17:19.299545+00:00"
 }

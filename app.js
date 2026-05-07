@@ -50,7 +50,7 @@ function setActiveGroup(i) {
 
 function render() {
   renderPills();
-  renderShortcutsPanel();
+  document.getElementById('shortcuts-panel').style.display = 'none';
 }
 
 function renderPills() {
@@ -58,132 +58,84 @@ function renderPills() {
   const groups = loadGroups();
   container.innerHTML = '';
 
-  // Clamp active index
-  if (activeGroupIndex >= groups.length) {
-    setActiveGroup(Math.max(0, groups.length - 1));
-  }
-
   groups.forEach((group, gi) => {
-    const btn = document.createElement('button');
-    btn.className = 'group-pill' + (gi === activeGroupIndex ? ' active' : '');
-    btn.style.setProperty('--color', group.color);
-    btn.dataset.gi = gi;
-    btn.innerHTML = `${group.name}<span class="pill-remove" data-gi="${gi}" title="Delete group">✕</span>`;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'pill-wrapper';
 
-    btn.addEventListener('click', (e) => {
-      if (e.target.classList.contains('pill-remove')) return;
-      // Toggle: clicking the active group closes it
-      setActiveGroup(gi === activeGroupIndex ? -1 : gi);
-      render();
+    // Pill button with + instead of X
+    const btn = document.createElement('button');
+    btn.className = 'group-pill';
+    btn.style.setProperty('--color', group.color);
+    btn.innerHTML = `
+      <span class="group-pill-label">${group.name}</span>
+      <span class="pill-add" title="Add shortcut">+</span>
+    `;
+    btn.querySelector('.pill-add').addEventListener('click', (e) => {
+      e.stopPropagation();
+      setActiveGroup(gi);
+      openShortcutModal();
     });
 
-    btn.querySelector('.pill-remove').addEventListener('click', (e) => {
+    // Hover dropdown
+    const dropdown = document.createElement('div');
+    dropdown.className = 'pill-dropdown';
+
+    if (group.shortcuts.length) {
+      group.shortcuts.forEach((s, si) => {
+        const a = document.createElement('a');
+        a.className = 'shortcut-item';
+        a.href = s.url;
+        a.innerHTML = `
+          <div class="shortcut-icon"><img src="${faviconUrl(s.url)}" alt="" /></div>
+          <span class="shortcut-label">${s.name}</span>
+          <span class="shortcut-remove">✕</span>
+        `;
+        a.querySelector('.shortcut-remove').addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const gs = loadGroups();
+          gs[gi].shortcuts.splice(si, 1);
+          saveGroups(gs);
+          render();
+        });
+        dropdown.appendChild(a);
+      });
+    } else {
+      const empty = document.createElement('p');
+      empty.className = 'pill-dropdown-empty';
+      empty.textContent = 'No shortcuts yet. Click + to add.';
+      dropdown.appendChild(empty);
+    }
+
+    // Delete group link at bottom of dropdown
+    const footer = document.createElement('div');
+    footer.className = 'pill-dropdown-footer';
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'pill-dropdown-delete';
+    deleteBtn.textContent = 'Delete group';
+    deleteBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (!confirm(`Delete group "${group.name}"?`)) return;
       const gs = loadGroups();
-      if (!confirm(`Delete group "${gs[gi].name}"?`)) return;
       gs.splice(gi, 1);
       saveGroups(gs);
       if (activeGroupIndex >= gs.length) setActiveGroup(Math.max(0, gs.length - 1));
       render();
     });
+    footer.appendChild(deleteBtn);
+    dropdown.appendChild(footer);
 
-    container.appendChild(btn);
+    wrapper.appendChild(btn);
+    wrapper.appendChild(dropdown);
+    container.appendChild(wrapper);
   });
 
-  // Add group pill
+  // New group button
   const addBtn = document.createElement('button');
   addBtn.className = 'add-group-pill';
   addBtn.textContent = '+ New group';
   addBtn.addEventListener('click', openGroupModal);
   container.appendChild(addBtn);
-}
-
-function renderShortcutsPanel() {
-  const panel = document.getElementById('shortcuts-panel');
-  const groups = loadGroups();
-  panel.innerHTML = '';
-  panel.classList.remove('empty');
-
-  // Hide panel when no group is selected
-  if (activeGroupIndex === -1 || !groups.length) {
-    panel.style.display = 'none';
-    if (!groups.length) {
-      panel.style.display = '';
-      panel.classList.add('empty');
-      panel.textContent = 'Add a group to get started.';
-    }
-    return;
-  }
-  panel.style.display = '';
-
-  const group = groups[activeGroupIndex];
-  if (!group) return;
-
-  let dragSrcIndex = null;
-
-  group.shortcuts.forEach((s, si) => {
-    const a = document.createElement('a');
-    a.className = 'shortcut-item';
-    a.href = s.url;
-    a.target = '_self';
-    a.draggable = true;
-    a.dataset.si = si;
-    a.innerHTML = `
-      <div class="shortcut-icon"><img src="${faviconUrl(s.url)}" alt="" /></div>
-      <span class="shortcut-label">${s.name}</span>
-      <span class="shortcut-remove" data-si="${si}">✕</span>
-    `;
-
-    // Remove
-    a.querySelector('.shortcut-remove').addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const gs = loadGroups();
-      gs[activeGroupIndex].shortcuts.splice(si, 1);
-      saveGroups(gs);
-      render();
-    });
-
-    // Drag & drop
-    a.addEventListener('dragstart', (e) => {
-      dragSrcIndex = si;
-      a.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-    });
-    a.addEventListener('dragend', () => {
-      a.classList.remove('dragging');
-      panel.querySelectorAll('.shortcut-item').forEach(el => el.classList.remove('drag-over'));
-    });
-    a.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      panel.querySelectorAll('.shortcut-item').forEach(el => el.classList.remove('drag-over'));
-      a.classList.add('drag-over');
-    });
-    a.addEventListener('drop', (e) => {
-      e.preventDefault();
-      if (dragSrcIndex === null || dragSrcIndex === si) return;
-      const gs = loadGroups();
-      const shots = gs[activeGroupIndex].shortcuts;
-      const [moved] = shots.splice(dragSrcIndex, 1);
-      shots.splice(si, 0, moved);
-      saveGroups(gs);
-      dragSrcIndex = null;
-      render();
-    });
-
-    panel.appendChild(a);
-  });
-
-  // Add shortcut button
-  const addBtn = document.createElement('button');
-  addBtn.className = 'add-shortcut-btn';
-  addBtn.innerHTML = `
-    <div class="add-shortcut-icon">+</div>
-    <span class="add-shortcut-label">Add</span>
-  `;
-  addBtn.addEventListener('click', openShortcutModal);
-  panel.appendChild(addBtn);
 }
 
 // ── Shortcut modal ────────────────────────────────────────────────────────────

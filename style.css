@@ -188,11 +188,16 @@ body {
   display: none;
 }
 
+.pill-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
 .group-pill {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 14px;
+  padding: 5px 10px 5px 14px;
   border-radius: 16px 16px 0 0;
   border: none;
   background: transparent;
@@ -214,42 +219,80 @@ body {
   flex-shrink: 0;
 }
 
-.group-pill:hover {
+.group-pill:hover,
+.pill-wrapper:hover .group-pill {
   background: #f1f3f4;
   color: #202124;
 }
 
-.group-pill.active {
-  background: #f1f3f4;
-  color: #202124;
-}
-
-.group-pill.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--color, #9aa0a6);
-  border-radius: 2px 2px 0 0;
-}
-
-.pill-remove {
-  display: none;
-  width: 14px;
-  height: 14px;
+.pill-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.12);
   color: #5f6368;
-  font-size: 9px;
-  line-height: 14px;
-  text-align: center;
-  margin-left: 2px;
+  font-size: 13px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: background 0.15s;
 }
 
-.group-pill:hover .pill-remove {
-  display: block;
+.pill-add:hover {
+  background: var(--color, #9aa0a6);
+  color: white;
+}
+
+/* Hover dropdown */
+.pill-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 200;
+  background: white;
+  border-radius: 0 12px 12px 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  padding: 10px;
+  min-width: 200px;
+  max-width: 480px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pill-wrapper:hover .pill-dropdown {
+  display: flex;
+}
+
+.pill-dropdown-empty {
+  font-size: 0.78rem;
+  color: #9aa0a6;
+  padding: 6px 8px;
+  white-space: nowrap;
+}
+
+.pill-dropdown-footer {
+  width: 100%;
+  padding-top: 6px;
+  margin-top: 2px;
+  border-top: 1px solid #f1f3f4;
+}
+
+.pill-dropdown-delete {
+  font-size: 0.72rem;
+  color: #c5221f;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.pill-dropdown-delete:hover {
+  background: #fce8e6;
 }
 
 .add-group-pill {

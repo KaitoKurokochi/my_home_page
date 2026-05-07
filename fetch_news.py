@@ -27,7 +27,7 @@ NIKKEI_RSS_FEEDS = [
     ("Nikkei-Money", "https://news.google.com/rss/search?q=site:nikkei.com+%E7%B5%8C%E6%B8%88&hl=ja&gl=JP&ceid=JP:ja"),
 ]
 
-MAX_ARTICLES_PER_FEED = 30   # articles sent to Gemini per feed
+MAX_ARTICLES_PER_FEED = 15   # articles sent to Gemini per feed
 MAX_SELECTED           = 10  # articles Gemini selects in total
 GEMINI_MODEL           = "gemini-2.0-flash"
 
@@ -64,7 +64,7 @@ def fetch_rss(url: str) -> list[dict]:
 def call_gemini(articles: list[dict]) -> list[dict]:
     api_key = os.environ["GEMINI_API_KEY"]
     url = (
-        f"https://generativelanguage.googleapis.com/v1/models/"
+        f"https://generativelanguage.googleapis.com/v1beta/models/"
         f"{GEMINI_MODEL}:generateContent?key={api_key}"
     )
 

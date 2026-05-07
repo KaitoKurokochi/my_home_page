@@ -29,17 +29,11 @@ function renderMorningPaperLink() {
 // ── Render ────────────────────────────────────────────────────────────────────
 
 function renderNewsCard(a) {
-  const img = a.image
-    ? `<img class="news-card-img" src="${a.image}" alt="" loading="lazy" onerror="this.parentElement.remove()">`
-    : '';
   return `
     <a class="news-card" href="${a.url}" target="_blank" rel="noopener noreferrer">
-      ${img ? `<div class="news-card-thumb">${img}</div>` : ''}
-      <div class="news-card-body">
-        <span class="news-title">${a.summary}</span>
-        <span class="news-detail">${a.title}</span>
-        <span class="news-time">${a.pub ? timeAgo(a.pub) : ''}</span>
-      </div>
+      <span class="news-headline">${a.headline}</span>
+      <span class="news-description">${a.description}</span>
+      <span class="news-time">${a.pub ? timeAgo(a.pub) : ''}</span>
     </a>
   `;
 }

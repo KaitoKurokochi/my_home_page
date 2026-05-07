@@ -17,25 +17,25 @@ COLUMNS = [
     {
         "id":    "morning",
         "title": "Today's Top",
-        "query": "日本 主要ニュース",
+        "query": "site:nikkei.com",
         "max":   6,
     },
     {
         "id":    "tech",
         "title": "テクノロジー",
-        "query": "テクノロジー OR AI OR 半導体 OR スタートアップ",
+        "query": "site:nikkei.com テクノロジー OR AI OR 半導体 OR デジタル",
         "max":   6,
     },
     {
         "id":    "gov",
         "title": "日本政府の動き",
-        "query": "日本 政府 OR 首相 OR 政策 OR 国会",
+        "query": "site:nikkei.com 政府 OR 首相 OR 政策 OR 国会 OR 財務省",
         "max":   6,
     },
     {
         "id":    "sports",
         "title": "スポーツ・ビジネス",
-        "query": "スポーツビジネス OR スポーツ経済 OR アスリート ビジネス",
+        "query": "site:nikkei.com スポーツ OR sports",
         "max":   6,
     },
 ]
@@ -69,21 +69,12 @@ def fetch_rss(query: str) -> list[dict]:
         desc  = (item.findtext("description") or "").strip()
         pub   = item.findtext("pubDate") or item.findtext("dc:date", namespaces=ns) or ""
 
-        # Try to get thumbnail image from media namespace
-        image = None
-        for tag in ("media:content", "media:thumbnail"):
-            el = item.find(tag, namespaces=ns)
-            if el is not None and el.get("url"):
-                image = el.get("url")
-                break
-
         if title and link:
             items.append({
                 "title": title,
                 "url":   link,
                 "desc":  desc[:150],
                 "pub":   pub,
-                "image": image,
             })
     return items[:MAX_FETCH_PER_COL]
 
@@ -102,14 +93,17 @@ def call_gemini(col: dict, articles: list[dict]) -> list[dict]:
     )
 
     prompt = f"""あなたは日経新聞のキュレーターです。
-カテゴリ「{col['title']}」に最も関連する記事を最大{col['max']}件選び、各記事を30字以内で日本語要約してください。
+カテゴリ「{col['title']}」に最も関連する記事を最大{col['max']}件選んでください。
+各記事について以下を日本語で作成してください：
+- headline: 記事の要点を伝える見出し（25字以内）
+- description: 記事の内容を補足する説明文（60字以内）
 
 【記事一覧】
 {article_text}
 
 【出力形式】JSONリストのみ返してください（説明不要）。
 [
-  {{"index": 1, "summary": "一言要約（30字以内）"}},
+  {{"index": 1, "headline": "見出し", "description": "説明文"}},
   ...
 ]"""
 
@@ -139,11 +133,11 @@ def call_gemini(col: dict, articles: list[dict]) -> list[dict]:
         if 0 <= idx < len(articles):
             a = articles[idx]
             selected.append({
-                "title":   a["title"],
-                "summary": s["summary"],
-                "url":     a["url"],
-                "pub":     a["pub"],
-                "image":   a["image"],
+                "title":       a["title"],
+                "headline":    s.get("headline", ""),
+                "description": s.get("description", ""),
+                "url":         a["url"],
+                "pub":         a["pub"],
             })
     return selected
 

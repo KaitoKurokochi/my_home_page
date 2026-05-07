@@ -5,39 +5,32 @@
       "title": "Today's Top",
       "articles": [
         {
-          "title": "日米関税協議、来週も継続へ　双方が歩み寄りの姿勢示す - 朝日新聞",
-          "summary": "日米関税協議が継続、歩み寄りの動き",
+          "title": "日米関税協議、来週も継続へ　双方が歩み寄りの姿勢示す - 日本経済新聞",
+          "headline": "日米関税協議、来週も継続へ",
+          "description": "双方が歩み寄りの姿勢を示し、協議継続で合意。早期妥結に向けた動きが加速している。",
           "url": "https://example.com/article1",
-          "pub": "Thu, 08 May 2026 01:00:00 GMT",
-          "image": "https://picsum.photos/seed/news1/400/225"
+          "pub": "Thu, 08 May 2026 01:00:00 GMT"
         },
         {
           "title": "日経平均、続伸で6万3000円台　米景気回復期待が下支え - 日本経済新聞",
-          "summary": "日経平均6万3000円台、米景気期待で続伸",
+          "headline": "日経平均6万3000円台に続伸",
+          "description": "米景気回復への期待感が投資家心理を改善。幅広い銘柄に買いが広がった。",
           "url": "https://example.com/article2",
-          "pub": "Thu, 08 May 2026 02:30:00 GMT",
-          "image": "https://picsum.photos/seed/news2/400/225"
+          "pub": "Thu, 08 May 2026 02:30:00 GMT"
         },
         {
-          "title": "円相場、1ドル＝143円台に上昇　日銀追加利上げ観測が強まる - 読売新聞",
-          "summary": "円143円台、日銀利上げ観測で上昇",
+          "title": "円相場、1ドル＝143円台に上昇　日銀追加利上げ観測が強まる - 日本経済新聞",
+          "headline": "円143円台、日銀利上げ観測で上昇",
+          "description": "日銀が次回会合で追加利上げを検討との報道を受け、円買いが加速した。",
           "url": "https://example.com/article3",
-          "pub": "Thu, 08 May 2026 03:00:00 GMT",
-          "image": null
+          "pub": "Thu, 08 May 2026 03:00:00 GMT"
         },
         {
-          "title": "能登半島の復興計画、政府が新たな支援策を閣議決定 - NHK",
-          "summary": "能登復興で新支援策を閣議決定",
-          "url": "https://example.com/article4",
-          "pub": "Wed, 07 May 2026 22:00:00 GMT",
-          "image": "https://picsum.photos/seed/news4/400/225"
-        },
-        {
-          "title": "訪日外国人、4月は過去最多の380万人　円安効果続く - 観光庁",
-          "summary": "訪日客4月380万人、過去最多を更新",
+          "title": "訪日外国人、4月は過去最多の380万人　円安効果続く - 日本経済新聞",
+          "headline": "訪日客4月380万人で過去最多",
+          "description": "円安を背景に訪日需要が高水準を維持。アジア圏からの旅行者が全体の6割を占めた。",
           "url": "https://example.com/article5",
-          "pub": "Wed, 07 May 2026 20:00:00 GMT",
-          "image": null
+          "pub": "Wed, 07 May 2026 20:00:00 GMT"
         }
       ]
     },
@@ -46,39 +39,32 @@
       "title": "テクノロジー",
       "articles": [
         {
-          "title": "スペースX、AI半導体巨大工場「テラファブ」計画を発表　投資額8兆円 - Reuters",
-          "summary": "スペースXが8兆円のAI半導体工場計画",
+          "title": "スペースX、AI半導体巨大工場「テラファブ」計画を発表　投資額8兆円 - 日本経済新聞",
+          "headline": "スペースXが8兆円のAI工場計画",
+          "description": "テキサス州に建設予定の「テラファブ」はNVIDIA製GPUを年間100万枚生産する見込み。",
           "url": "https://example.com/tech1",
-          "pub": "Thu, 08 May 2026 00:30:00 GMT",
-          "image": "https://picsum.photos/seed/tech1/400/225"
+          "pub": "Thu, 08 May 2026 00:30:00 GMT"
         },
         {
-          "title": "Anthropic、Claude 4.5を発表　コーディング精度が前モデル比40%向上 - TechCrunch",
-          "summary": "Anthropic、Claude 4.5でコーディング精度40%向上",
+          "title": "アンソロピック、スペースXと提携　AIデータセンター向けロケット輸送を活用 - 日本経済新聞",
+          "headline": "アンソロピックとスペースXが提携",
+          "description": "AIデータセンターの電力・冷却インフラにスペースXの技術を活用する契約を締結した。",
           "url": "https://example.com/tech2",
-          "pub": "Wed, 07 May 2026 18:00:00 GMT",
-          "image": "https://picsum.photos/seed/tech2/400/225"
+          "pub": "Wed, 07 May 2026 18:00:00 GMT"
         },
         {
-          "title": "東京大学とトヨタ、自動運転向けAI共同研究を開始　2028年実用化目指す - 毎日新聞",
-          "summary": "東大・トヨタが自動運転AI共同研究",
+          "title": "東ソー、慶大開発の光ケーブル量産へ　速度2倍でデータセンター向け - 日本経済新聞",
+          "headline": "東ソーが高速光ケーブルを量産へ",
+          "description": "従来比2倍の伝送速度を実現。データセンター需要の急増に対応し2027年に量産開始予定。",
           "url": "https://example.com/tech3",
-          "pub": "Wed, 07 May 2026 15:00:00 GMT",
-          "image": null
+          "pub": "Wed, 07 May 2026 15:00:00 GMT"
         },
         {
-          "title": "ソニー、次世代OLED「QD-OLED Pro」を発表　輝度2倍で2026年秋発売予定 - Engadget Japan",
-          "summary": "ソニーが輝度2倍の次世代OLEDを発表",
-          "url": "https://example.com/tech4",
-          "pub": "Wed, 07 May 2026 12:00:00 GMT",
-          "image": "https://picsum.photos/seed/tech4/400/225"
-        },
-        {
-          "title": "国内スタートアップへのVC投資、今年度上半期は前年比30%増　AI分野が牽引 - Forbes Japan",
-          "summary": "国内VC投資30%増、AI分野が牽引",
+          "title": "国内スタートアップへのVC投資、今年度上半期は前年比30%増　AI分野が牽引 - 日本経済新聞",
+          "headline": "国内VC投資30%増、AI分野が牽引",
+          "description": "生成AI関連スタートアップへの投資が急増。投資総額は上半期だけで過去最高を更新した。",
           "url": "https://example.com/tech5",
-          "pub": "Tue, 06 May 2026 10:00:00 GMT",
-          "image": null
+          "pub": "Tue, 06 May 2026 10:00:00 GMT"
         }
       ]
     },
@@ -87,32 +73,25 @@
       "title": "日本政府の動き",
       "articles": [
         {
-          "title": "首相、少子化対策の追加予算1兆円を表明　来年度から段階実施 - 共同通信",
-          "summary": "首相、少子化対策で追加1兆円を表明",
+          "title": "首相、少子化対策の追加予算1兆円を表明　来年度から段階実施 - 日本経済新聞",
+          "headline": "首相、少子化対策1兆円を追加表明",
+          "description": "児童手当の拡充と保育士の処遇改善を柱とした追加予算を来年度から段階的に投じる方針。",
           "url": "https://example.com/gov1",
-          "pub": "Thu, 08 May 2026 04:00:00 GMT",
-          "image": "https://picsum.photos/seed/gov1/400/225"
-        },
-        {
-          "title": "経済安保推進法の改正案、衆院委員会で可決　サプライチェーン強靭化を強化 - NHK",
-          "summary": "経済安保法改正案が衆院委で可決",
-          "url": "https://example.com/gov2",
-          "pub": "Wed, 07 May 2026 16:00:00 GMT",
-          "image": null
+          "pub": "Thu, 08 May 2026 04:00:00 GMT"
         },
         {
           "title": "デジタル庁、マイナンバーと医療情報の完全連携を2027年に前倒し - 日本経済新聞",
-          "summary": "マイナと医療情報の連携を2027年に前倒し",
+          "headline": "マイナと医療情報の連携を前倒し",
+          "description": "当初2029年予定だった完全連携を2027年に前倒し。救急・遠隔医療の効率化を図る。",
           "url": "https://example.com/gov3",
-          "pub": "Wed, 07 May 2026 14:00:00 GMT",
-          "image": "https://picsum.photos/seed/gov3/400/225"
+          "pub": "Wed, 07 May 2026 14:00:00 GMT"
         },
         {
-          "title": "防衛費、2026年度は過去最大の9兆円規模　GDP比2%達成へ - 産経新聞",
-          "summary": "防衛費2026年度は過去最大の9兆円",
+          "title": "防衛費、2026年度は過去最大の9兆円規模　GDP比2%達成へ - 日本経済新聞",
+          "headline": "防衛費9兆円、GDP比2%を達成",
+          "description": "NATO基準のGDP比2%目標を前倒しで達成。スタンドオフ防衛能力の整備に重点配分する。",
           "url": "https://example.com/gov4",
-          "pub": "Tue, 06 May 2026 11:00:00 GMT",
-          "image": null
+          "pub": "Tue, 06 May 2026 11:00:00 GMT"
         }
       ]
     },
@@ -121,39 +100,25 @@
       "title": "スポーツ・ビジネス",
       "articles": [
         {
-          "title": "大谷翔平、今季15号本塁打　打率.345でリーグ首位打者争いトップ - スポニチ",
-          "summary": "大谷が15号、打率.345でリーグトップ",
+          "title": "大谷翔平、今季15号本塁打　打率.345でリーグ首位打者争いトップ - 日本経済新聞",
+          "headline": "大谷、15号本塁打で首位打者争い",
+          "description": "打率.345はリーグトップ。投手復帰の見通しも立ち、二刀流完全復活が現実味を帯びてきた。",
           "url": "https://example.com/sports1",
-          "pub": "Thu, 08 May 2026 05:00:00 GMT",
-          "image": "https://picsum.photos/seed/sports1/400/225"
+          "pub": "Thu, 08 May 2026 05:00:00 GMT"
         },
         {
           "title": "Jリーグ、サウジアラビア系ファンドによるFC東京買収が正式決定 - 日本経済新聞",
-          "summary": "FC東京、サウジ系ファンドが買収正式決定",
+          "headline": "FC東京、サウジ系ファンドが買収",
+          "description": "買収総額は約500億円。欧州や中東のスター選手獲得に向け、強化費を大幅に引き上げる計画。",
           "url": "https://example.com/sports2",
-          "pub": "Wed, 07 May 2026 17:00:00 GMT",
-          "image": "https://picsum.photos/seed/sports2/400/225"
+          "pub": "Wed, 07 May 2026 17:00:00 GMT"
         },
         {
-          "title": "2030年冬季五輪の日本招致、IOC評価委が現地視察　札幌と長野が候補地 - 毎日新聞",
-          "summary": "2030冬季五輪招致でIOCが日本視察",
-          "url": "https://example.com/sports3",
-          "pub": "Wed, 07 May 2026 13:00:00 GMT",
-          "image": null
-        },
-        {
-          "title": "プロ野球グッズのEC市場、今年2000億円超え見込み　NFT活用が拡大 - Forbes Japan",
-          "summary": "プロ野球EC市場が2000億円超えへ",
+          "title": "プロ野球グッズのEC市場、今年2000億円超え見込み　NFT活用が拡大 - 日本経済新聞",
+          "headline": "プロ野球EC市場が2000億円超えへ",
+          "description": "球団公式NFTや限定グッズのオンライン販売が急拡大。ファン層の若年化が需要を押し上げた。",
           "url": "https://example.com/sports4",
-          "pub": "Tue, 06 May 2026 09:00:00 GMT",
-          "image": "https://picsum.photos/seed/sports4/400/225"
-        },
-        {
-          "title": "バスケBリーグ、来季から外資系スポンサー解禁　収益拡大を狙う - 朝日新聞",
-          "summary": "Bリーグ来季から外資スポンサー解禁",
-          "url": "https://example.com/sports5",
-          "pub": "Mon, 05 May 2026 08:00:00 GMT",
-          "image": null
+          "pub": "Tue, 06 May 2026 09:00:00 GMT"
         }
       ]
     }

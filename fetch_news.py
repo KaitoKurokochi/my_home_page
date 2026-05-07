@@ -29,7 +29,7 @@ NIKKEI_RSS_FEEDS = [
 
 MAX_ARTICLES_PER_FEED = 15   # articles sent to Gemini per feed
 MAX_SELECTED           = 10  # articles Gemini selects in total
-GEMINI_MODEL           = "gemini-1.5-flash-latest"
+GEMINI_MODEL           = "gemini-2.5-flash"
 
 # ── RSS fetch ──────────────────────────────────────────────────────────────────
 

@@ -20,10 +20,11 @@ INDUSTRIES = [
     "マクロ経済・金融政策",
 ]
 
+# Google News RSS filtered to nikkei.com articles (日経本紙はRSS廃止のため)
 NIKKEI_RSS_FEEDS = [
-    ("Top",    "https://www.nikkei.com/rss/index.rss"),
-    ("Tech",   "https://www.nikkei.com/rss/technology.rss"),
-    ("Money",  "https://www.nikkei.com/rss/money.rss"),
+    ("Nikkei-Top",   "https://news.google.com/rss/search?q=site:nikkei.com&hl=ja&gl=JP&ceid=JP:ja"),
+    ("Nikkei-Tech",  "https://news.google.com/rss/search?q=site:nikkei.com+%E6%8A%80%E8%A1%93&hl=ja&gl=JP&ceid=JP:ja"),
+    ("Nikkei-Money", "https://news.google.com/rss/search?q=site:nikkei.com+%E7%B5%8C%E6%B8%88&hl=ja&gl=JP&ceid=JP:ja"),
 ]
 
 MAX_ARTICLES_PER_FEED = 30   # articles sent to Gemini per feed
@@ -31,6 +32,16 @@ MAX_SELECTED           = 10  # articles Gemini selects in total
 GEMINI_MODEL           = "gemini-1.5-flash"
 
 # ── RSS fetch ──────────────────────────────────────────────────────────────────
+
+def extract_real_url(google_url: str) -> str:
+    """Google NewsのリダイレクトURLから元のURLを取り出す。"""
+    import urllib.parse
+    parsed = urllib.parse.urlparse(google_url)
+    qs = urllib.parse.parse_qs(parsed.query)
+    # ?url= パラメータがある場合
+    if "url" in qs:
+        return qs["url"][0]
+    return google_url
 
 def fetch_rss(url: str) -> list[dict]:
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
@@ -44,7 +55,8 @@ def fetch_rss(url: str) -> list[dict]:
         desc  = (item.findtext("description") or "").strip()
         pub   = item.findtext("pubDate") or item.findtext("dc:date", namespaces=ns) or ""
         if title and link:
-            items.append({"title": title, "url": link, "desc": desc, "pub": pub})
+            real_url = extract_real_url(link)
+            items.append({"title": title, "url": real_url, "desc": desc, "pub": pub})
     return items[:MAX_ARTICLES_PER_FEED]
 
 # ── Gemini selection ───────────────────────────────────────────────────────────
@@ -131,6 +143,9 @@ def main():
             unique.append(a)
 
     print(f"Total unique articles: {len(unique)}")
+
+    if not unique:
+        raise RuntimeError("No articles fetched from any feed.")
 
     selected = call_gemini(unique)
     print(f"Gemini selected: {len(selected)} articles")

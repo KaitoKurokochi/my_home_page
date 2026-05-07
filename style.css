@@ -180,8 +180,7 @@ body {
   align-items: center;
   gap: 6px;
   padding: 10px 16px 0;
-  overflow-x: auto;
-  scrollbar-width: none;
+  overflow: visible;
 }
 
 .group-pills::-webkit-scrollbar {

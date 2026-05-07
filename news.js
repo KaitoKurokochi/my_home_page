@@ -11,6 +11,24 @@ function timeAgo(isoString) {
   return `${Math.floor(h / 24)}d ago`;
 }
 
+// ── Morning paper link ────────────────────────────────────────────────────────
+// editionID = YYYYMMDDm101 (朝刊は4時以降が当日、それ以前は前日)
+
+function morningPaperUrl() {
+  const jst = new Date(Date.now() + 9 * 60 * 60 * 1000); // UTC → JST
+  if (jst.getUTCHours() < 4) jst.setUTCDate(jst.getUTCDate() - 1);
+  const y = jst.getUTCFullYear();
+  const m = String(jst.getUTCMonth() + 1).padStart(2, '0');
+  const d = String(jst.getUTCDate()).padStart(2, '0');
+  return `https://www.nikkei.com/paper-viewer?TYPE=VIEWERBYPAGE&editionID=${y}${m}${d}M101`;
+}
+
+function renderMorningPaperLink() {
+  document.getElementById('nikkei-paper-link').href = morningPaperUrl();
+}
+
+// ── Article list ──────────────────────────────────────────────────────────────
+
 function renderNews(data) {
   const list = document.getElementById('news-nikkei');
   const meta = document.getElementById('news-meta');
@@ -48,6 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initNews() {
   if (newsLoaded) return;
 
+  renderMorningPaperLink();
+
   document.getElementById('news-nikkei').innerHTML =
     '<p class="news-loading">Loading...</p>';
 
@@ -62,3 +82,6 @@ async function initNews() {
       `<p class="news-error">Could not load news.json — run the GitHub Action first.<br><small>${e}</small></p>`;
   }
 }
+
+// Load immediately on page open (script runs after DOM is parsed)
+initNews();

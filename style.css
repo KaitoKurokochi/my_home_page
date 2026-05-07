@@ -254,12 +254,40 @@ body {
   background: white;
   border-radius: 6px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
-  padding: 10px;
-  min-width: 200px;
-  max-width: 480px;
+  padding: 6px;
+  min-width: 180px;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pill-dropdown .shortcut-item {
   flex-direction: row;
-  flex-wrap: wrap;
-  gap: 4px;
+  width: auto;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pill-dropdown .shortcut-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.pill-dropdown .shortcut-icon img {
+  width: 14px;
+  height: 14px;
+}
+
+.pill-dropdown .shortcut-label {
+  font-size: 0.85rem;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
 }
 
 .pill-wrapper:hover .pill-dropdown {

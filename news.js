@@ -52,6 +52,7 @@ function renderNews(data) {
     return;
   }
 
+  grid.dataset.cols = data.columns.length;
   grid.innerHTML = data.columns.map(col => `
     <div class="news-col">
       <h3 class="news-col-title">${col.title}</h3>

@@ -598,8 +598,6 @@ body {
 
 main {
   padding: 24px 24px;
-  max-width: 1400px;
-  margin: 0 auto;
 }
 
 .tab-content {
@@ -621,17 +619,15 @@ main {
 
 .news-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
   align-items: start;
+  overflow-x: auto;
 }
 
-@media (max-width: 900px) {
-  .news-grid { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 540px) {
-  .news-grid { grid-template-columns: 1fr; }
-}
+/* 列が増えた場合は横スクロール */
+.news-grid[data-cols="5"] { grid-template-columns: repeat(5, minmax(240px, 1fr)); }
+.news-grid[data-cols="6"] { grid-template-columns: repeat(6, minmax(240px, 1fr)); }
 
 .news-col {
   display: flex;

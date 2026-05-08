@@ -24,8 +24,8 @@ INTERESTS = [
     "半導体 テクノロジー",
 ]
 
-MAX_FETCH_PER_QUERY = 15   # articles fetched per interest query
-MAX_ARTICLES_TOTAL  = 30   # articles passed to Gemini
+MAX_FETCH_PER_QUERY = 25   # articles fetched per interest query
+MAX_ARTICLES_TOTAL  = 60   # articles passed to Gemini
 GEMINI_MODEL        = "gemini-2.5-flash"
 
 # ── RSS fetch ──────────────────────────────────────────────────────────────────
@@ -65,6 +65,10 @@ def fetch_rss(query: str, cutoff: datetime) -> list[dict]:
         if not title or not link:
             continue
 
+        # 日経記事のみ
+        if "nikkei.com" not in link:
+            continue
+
         pub_dt = parse_pub_date(pub)
         if pub_dt and pub_dt < cutoff:
             continue  # older than 24h
@@ -99,8 +103,8 @@ def call_gemini_graph(all_articles: list[dict]) -> dict:
 以下の記事を分析して、ナレッジグラフを作成してください。
 
 手順:
-1. ユーザーの興味に関連する記事を最大25件選ぶ
-2. 中心的なトピック/イベントを3〜6個特定する（例:「米中貿易摩擦」「AI規制議論」「日銀利上げ」）
+1. ユーザーの興味に関連する記事を最大40件選ぶ
+2. 中心的なトピック/イベントを5〜8個特定する（例:「米中貿易摩擦」「AI規制議論」「日銀利上げ」）
 3. 各記事を最も関連するトピックに接続する
 4. 内容が連鎖・因果関係にある記事同士も接続する（例: 「貿易摩擦 → 円高」「円高 → 輸出企業減益」）
 

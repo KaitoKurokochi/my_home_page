@@ -65,8 +65,8 @@ def fetch_rss(query: str, cutoff: datetime) -> list[dict]:
         if not title or not link:
             continue
 
-        # 日経記事のみ
-        if "nikkei.com" not in link:
+        # 日経記事のみ（Google NewsリンクはリダイレクトURLのためタイトルで判定）
+        if "日本経済新聞" not in title and "nikkei" not in title.lower():
             continue
 
         pub_dt = parse_pub_date(pub)

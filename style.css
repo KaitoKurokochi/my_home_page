@@ -19,8 +19,9 @@ body {
   border-bottom: 1px solid #e8eaed;
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
 }
 
 .search-form {
@@ -63,6 +64,46 @@ body {
   color: #9aa0a6;
 }
 
+.claude-form {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #f5d0a9;
+  border-radius: 20px;
+  padding: 6px 16px;
+  box-shadow: 0 1px 3px rgba(217, 119, 6, 0.1);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.claude-form:focus-within {
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.25);
+  border-color: #d97706;
+}
+
+.claude-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-right: 10px;
+  border-radius: 3px;
+}
+
+.claude-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  color: #202124;
+  background: transparent;
+}
+
+.claude-input::placeholder {
+  color: #c4a060;
+}
+
 .search-suggestions {
   display: none;
   position: absolute;
@@ -98,8 +139,7 @@ body {
 .weather-widget {
   position: absolute;
   right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 12px;
 }
 
 .weather-summary {

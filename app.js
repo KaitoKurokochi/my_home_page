@@ -501,3 +501,14 @@ document.addEventListener('mouseup', (e) => {
   tabNav.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('drag-over'));
   tabDragBtn = null;
 });
+
+// ── Claude bar ────────────────────────────────────────────────────────────────
+
+document.getElementById('claude-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const input = document.getElementById('claude-input');
+  const q = input.value.trim();
+  if (!q) return;
+  window.open(`https://claude.ai/new?q=${encodeURIComponent(q)}`, '_blank');
+  input.value = '';
+});

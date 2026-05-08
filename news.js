@@ -205,18 +205,29 @@ let newsLoaded = false;
 async function initNews() {
   if (newsLoaded) return;
 
-  document.getElementById('nikkei-paper-link').href = morningPaperUrl();
-  document.getElementById('news-graph').innerHTML =
-    '<p class="news-loading">Loading...</p>';
+  const graphEl  = document.getElementById('news-graph');
+  const paperEl  = document.getElementById('nikkei-paper-link');
+  if (!graphEl) return;
+
+  if (paperEl) paperEl.href = morningPaperUrl();
+  graphEl.innerHTML = '<p class="news-loading">Loading...</p>';
 
   try {
     const res = await fetch('news.json?_=' + Date.now());
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
+
+    // news.json がまだ旧フォーマット（columns）の場合はメッセージ表示
+    if (!data.nodes) {
+      graphEl.innerHTML = '<p class="news-error">news.json is outdated. Run GitHub Actions to regenerate.</p>';
+      return;
+    }
+
     renderGraph(data);
     newsLoaded = true;
   } catch (e) {
-    document.getElementById('news-graph').innerHTML =
+    const el = document.getElementById('news-graph');
+    if (el) el.innerHTML =
       `<p class="news-error">Could not load news.json.<br><small>${e}</small></p>`;
   }
 }

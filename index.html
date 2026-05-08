@@ -64,12 +64,15 @@
     <button class="tab-btn" data-tab="sports">Sports</button>
   </nav>
 
+  <!-- Graph tooltip (shared) -->
+  <div id="graph-tooltip" class="graph-tooltip"></div>
+
   <main>
     <section id="news" class="tab-content active">
       <a id="nikkei-paper-link" class="paper-link" href="#" target="_blank" rel="noopener noreferrer">
         日経新聞 朝刊を読む →
       </a>
-      <div id="news-grid" class="news-grid"></div>
+      <div id="news-graph" class="news-graph"></div>
       <p class="news-meta" id="news-meta"></p>
     </section>
     <section id="sports" class="tab-content">
@@ -78,6 +81,7 @@
     </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <script src="news.js"></script>
   <script src="app.js"></script>
 </body>

@@ -1,7 +1,8 @@
 """
-Fetch Nikkei articles via Google News RSS, categorize with Gemini, save news.json.
+Fetch news via Google News RSS, filter to last 24h,
+build a knowledge graph with Gemini based on user interests.
 
-Column definitions and industries are editable without touching the logic.
+Edit INTERESTS below to change what topics appear.
 """
 
 import json
@@ -9,40 +10,23 @@ import os
 import urllib.request
 import urllib.parse
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+from email.utils import parsedate_to_datetime
 
-# ── Configuration ──────────────────────────────────────────────────────────────
+# ── User interests (edit freely) ───────────────────────────────────────────────
 
-COLUMNS = [
-    {
-        "id":    "morning",
-        "title": "Today's Top",
-        "query": "site:nikkei.com",
-        "max":   6,
-    },
-    {
-        "id":    "tech",
-        "title": "テクノロジー",
-        "query": "site:nikkei.com テクノロジー OR AI OR 半導体 OR デジタル",
-        "max":   6,
-    },
-    {
-        "id":    "gov",
-        "title": "日本政府の動き",
-        "query": "site:nikkei.com 政府 OR 首相 OR 政策 OR 国会 OR 財務省",
-        "max":   6,
-    },
-    {
-        "id":    "sports",
-        "title": "スポーツ・ビジネス",
-        "query": "site:nikkei.com スポーツ OR sports",
-        "max":   6,
-    },
+INTERESTS = [
+    "AI 機械学習 LLM",
+    "宇宙開発 SpaceX NASA",
+    "日本経済 日銀 為替",
+    "プログラミング ソフトウェア開発",
+    "日本政治 政策",
+    "半導体 テクノロジー",
 ]
 
-MAX_FETCH_PER_COL = 20
-GEMINI_MODEL      = "gemini-2.5-flash"
-MEDIA_NS          = "http://search.yahoo.com/mrss/"
+MAX_FETCH_PER_QUERY = 15   # articles fetched per interest query
+MAX_ARTICLES_TOTAL  = 30   # articles passed to Gemini
+GEMINI_MODEL        = "gemini-2.5-flash"
 
 # ── RSS fetch ──────────────────────────────────────────────────────────────────
 
@@ -52,16 +36,25 @@ def google_news_url(query: str) -> str:
         + urllib.parse.urlencode({"q": query, "hl": "ja", "gl": "JP", "ceid": "JP:ja"})
     )
 
-def fetch_rss(query: str) -> list[dict]:
+def parse_pub_date(pub_str: str) -> datetime | None:
+    if not pub_str:
+        return None
+    try:
+        return parsedate_to_datetime(pub_str)
+    except Exception:
+        return None
+
+def fetch_rss(query: str, cutoff: datetime) -> list[dict]:
     url = google_news_url(query)
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=15) as resp:
-        tree = ET.parse(resp)
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            tree = ET.parse(resp)
+    except Exception as e:
+        print(f"  RSS error for '{query}': {e}")
+        return []
 
-    ns = {
-        "dc":    "http://purl.org/dc/elements/1.1/",
-        "media": MEDIA_NS,
-    }
+    ns = {"dc": "http://purl.org/dc/elements/1.1/"}
     items = []
     for item in tree.findall(".//item"):
         title = (item.findtext("title") or "").strip()
@@ -69,18 +62,25 @@ def fetch_rss(query: str) -> list[dict]:
         desc  = (item.findtext("description") or "").strip()
         pub   = item.findtext("pubDate") or item.findtext("dc:date", namespaces=ns) or ""
 
-        if title and link:
-            items.append({
-                "title": title,
-                "url":   link,
-                "desc":  desc[:150],
-                "pub":   pub,
-            })
-    return items[:MAX_FETCH_PER_COL]
+        if not title or not link:
+            continue
 
-# ── Gemini categorization ──────────────────────────────────────────────────────
+        pub_dt = parse_pub_date(pub)
+        if pub_dt and pub_dt < cutoff:
+            continue  # older than 24h
 
-def call_gemini(col: dict, articles: list[dict]) -> list[dict]:
+        items.append({
+            "title": title,
+            "url":   link,
+            "desc":  desc[:150],
+            "pub":   pub,
+        })
+
+    return items[:MAX_FETCH_PER_QUERY]
+
+# ── Gemini: build knowledge graph ─────────────────────────────────────────────
+
+def call_gemini_graph(all_articles: list[dict]) -> dict:
     api_key = os.environ["GEMINI_API_KEY"]
     url = (
         f"https://generativelanguage.googleapis.com/v1beta/models/"
@@ -89,27 +89,47 @@ def call_gemini(col: dict, articles: list[dict]) -> list[dict]:
 
     article_text = "\n".join(
         f"[{i+1}] {a['title']} | {a['desc']}"
-        for i, a in enumerate(articles)
+        for i, a in enumerate(all_articles)
     )
+    interests_text = "、".join(INTERESTS)
 
-    prompt = f"""あなたは日経新聞のキュレーターです。
-カテゴリ「{col['title']}」に最も関連する記事を最大{col['max']}件選んでください。
-各記事について以下を日本語で作成してください：
-- headline: 記事の要点を伝える見出し（25字以内）
-- description: 記事の内容を補足する説明文（60字以内）
+    prompt = f"""ニュースナレッジグラフを構築するキュレーターです。
+ユーザーの興味: {interests_text}
+
+以下の記事を分析して、ナレッジグラフを作成してください。
+
+手順:
+1. ユーザーの興味に関連する記事を最大25件選ぶ
+2. 中心的なトピック/イベントを3〜6個特定する（例:「米中貿易摩擦」「AI規制議論」「日銀利上げ」）
+3. 各記事を最も関連するトピックに接続する
+4. 内容が連鎖・因果関係にある記事同士も接続する（例: 「貿易摩擦 → 円高」「円高 → 輸出企業減益」）
+
+ノードの種類:
+- type "topic": 中心的なトピック（記事ではない概念ノード）
+- type "article": 個別の記事
+
+エッジについて:
+- topic→article: その記事がそのトピックに属する
+- article→article: 因果・関連関係がある記事同士
 
 【記事一覧】
 {article_text}
 
-【出力形式】JSONリストのみ返してください（説明不要）。
-[
-  {{"index": 1, "headline": "見出し", "description": "説明文"}},
-  ...
-]"""
+【出力形式】JSONのみ返してください（説明不要）:
+{{
+  "nodes": [
+    {{"id": "t1", "type": "topic", "title": "トピック名"}},
+    {{"id": "a1", "type": "article", "index": 1, "headline": "25字以内の見出し", "description": "60字以内の説明"}}
+  ],
+  "edges": [
+    {{"source": "t1", "target": "a1"}},
+    {{"source": "a1", "target": "a2", "label": "影響"}}
+  ]
+}}"""
 
     body = json.dumps({
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.2},
+        "generationConfig": {"temperature": 0.3},
     }).encode()
 
     req = urllib.request.Request(
@@ -117,7 +137,7 @@ def call_gemini(col: dict, articles: list[dict]) -> list[dict]:
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=30) as resp:
+    with urllib.request.urlopen(req, timeout=60) as resp:
         result = json.load(resp)
 
     raw = result["candidates"][0]["content"]["parts"][0]["text"].strip()
@@ -125,51 +145,78 @@ def call_gemini(col: dict, articles: list[dict]) -> list[dict]:
         raw = raw.split("```")[1]
         if raw.startswith("json"):
             raw = raw[4:]
-    selections = json.loads(raw.strip())
+    return json.loads(raw.strip())
 
-    selected = []
-    for s in selections:
-        idx = int(s["index"]) - 1
-        if 0 <= idx < len(articles):
-            a = articles[idx]
-            selected.append({
-                "title":       a["title"],
-                "headline":    s.get("headline", ""),
-                "description": s.get("description", ""),
-                "url":         a["url"],
-                "pub":         a["pub"],
+# ── Resolve article indices → full data ───────────────────────────────────────
+
+def resolve_graph(graph: dict, all_articles: list[dict]) -> dict:
+    nodes_out = []
+    for node in graph.get("nodes", []):
+        if node["type"] == "topic":
+            nodes_out.append({
+                "id":    node["id"],
+                "type":  "topic",
+                "title": node.get("title", ""),
             })
-    return selected
+        elif node["type"] == "article":
+            idx = int(node.get("index", 0)) - 1
+            if 0 <= idx < len(all_articles):
+                a = all_articles[idx]
+                nodes_out.append({
+                    "id":          node["id"],
+                    "type":        "article",
+                    "headline":    node.get("headline", ""),
+                    "description": node.get("description", ""),
+                    "url":         a["url"],
+                    "pub":         a["pub"],
+                })
+
+    return {
+        "nodes": nodes_out,
+        "edges": graph.get("edges", []),
+    }
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
-    columns_out = []
-    for col in COLUMNS:
-        print(f"\n[{col['title']}]")
-        try:
-            articles = fetch_rss(col["query"])
-            print(f"  fetched: {len(articles)} articles")
-        except Exception as e:
-            print(f"  RSS failed: {e}")
-            columns_out.append({"id": col["id"], "title": col["title"], "articles": []})
-            continue
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
+    print(f"Fetching articles published after {cutoff.isoformat()}")
 
-        try:
-            selected = call_gemini(col, articles)
-            print(f"  selected: {len(selected)} articles")
-        except Exception as e:
-            print(f"  Gemini failed: {e}")
-            selected = []
+    seen_urls = set()
+    all_articles = []
 
-        columns_out.append({
-            "id":       col["id"],
-            "title":    col["title"],
-            "articles": selected,
-        })
+    for interest in INTERESTS:
+        query = f"site:nikkei.com {interest}"
+        print(f"\n[{interest}]")
+        items = fetch_rss(query, cutoff)
+        print(f"  fetched: {len(items)} articles (within 24h)")
+        for item in items:
+            if item["url"] not in seen_urls:
+                seen_urls.add(item["url"])
+                all_articles.append(item)
+
+    all_articles = all_articles[:MAX_ARTICLES_TOTAL]
+    print(f"\nTotal unique articles: {len(all_articles)}")
+
+    if not all_articles:
+        output = {"nodes": [], "edges": [], "fetchedAt": datetime.now(timezone.utc).isoformat()}
+        with open("news.json", "w", encoding="utf-8") as f:
+            json.dump(output, f, ensure_ascii=False, indent=2)
+        print("No articles found. Saved empty news.json")
+        return
+
+    print("\nCalling Gemini to build knowledge graph...")
+    try:
+        graph = call_gemini_graph(all_articles)
+        resolved = resolve_graph(graph, all_articles)
+        print(f"  nodes: {len(resolved['nodes'])}, edges: {len(resolved['edges'])}")
+    except Exception as e:
+        print(f"Gemini failed: {e}")
+        resolved = {"nodes": [], "edges": []}
 
     output = {
-        "columns":   columns_out,
+        "nodes":     resolved["nodes"],
+        "edges":     resolved["edges"],
         "fetchedAt": datetime.now(timezone.utc).isoformat(),
     }
 

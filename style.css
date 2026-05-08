@@ -655,87 +655,124 @@ main {
   color: #202124;
 }
 
-/* ── News ────────────────────────────────────────────────────────────────────*/
+/* ── News graph ──────────────────────────────────────────────────────────────*/
 
-.news-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  align-items: start;
-  overflow-x: auto;
-}
-
-/* 列が増えた場合は横スクロール */
-.news-grid[data-cols="5"] { grid-template-columns: repeat(5, minmax(240px, 1fr)); }
-.news-grid[data-cols="6"] { grid-template-columns: repeat(6, minmax(240px, 1fr)); }
-
-.news-col {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.news-col-title {
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: #e94560;
+.news-graph {
+  width: 100%;
+  background: #fafafa;
+  border-radius: 12px;
+  border: 1px solid #e8eaed;
+  overflow: hidden;
   margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 2px solid #e94560;
+  cursor: grab;
 }
 
-.news-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.news-graph:active {
+  cursor: grabbing;
 }
 
-.news-card {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 10px 8px;
-  border-radius: 8px;
-  text-decoration: none;
-  color: #202124;
-  border-bottom: 1px solid #f1f3f4;
-  transition: background 0.12s;
+.news-graph svg {
+  display: block;
 }
 
-.news-card:last-child {
-  border-bottom: none;
+/* Edges */
+.graph-link {
+  fill: none;
+  stroke-linecap: round;
 }
 
-.news-card:hover {
-  background: #f8f9fa;
+.topic-link {
+  stroke: #dadce0;
+  stroke-width: 1.8;
 }
 
-.news-headline {
-  font-size: 0.85rem;
+.article-link {
+  stroke: #e8eaed;
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+.graph-link.dimmed {
+  opacity: 0.1;
+}
+
+/* Nodes */
+.graph-node circle {
+  stroke: #fff;
+  stroke-width: 2;
+  transition: opacity 0.2s;
+}
+
+.graph-node--topic circle {
+  fill: #e94560;
+  filter: drop-shadow(0 2px 6px rgba(233, 69, 96, 0.35));
+}
+
+.graph-node--article circle {
+  fill: #4285f4;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.graph-node--article:hover circle {
+  fill: #1a73e8;
+}
+
+.graph-node.dimmed circle {
+  opacity: 0.15;
+}
+
+.graph-node.dimmed text {
+  opacity: 0.1;
+}
+
+/* Topic labels */
+.topic-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  fill: #fff;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Tooltip */
+.graph-tooltip {
+  position: fixed;
+  z-index: 300;
+  background: #202124;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  max-width: 260px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s, transform 0.15s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+
+.graph-tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.gt-headline {
+  font-size: 0.82rem;
   font-weight: 600;
-  line-height: 1.45;
-  color: #202124;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  line-height: 1.4;
+  margin-bottom: 4px;
 }
 
-.news-description {
+.gt-desc {
   font-size: 0.75rem;
-  color: #5f6368;
+  color: #bdc1c6;
   line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  margin-bottom: 4px;
 }
 
-.news-time {
+.gt-time {
   font-size: 0.68rem;
-  color: #bdc1c6;
+  color: #80868b;
 }
 
 .paper-link {

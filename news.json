@@ -1,197 +1,427 @@
 {
-  "columns": [
+  "nodes": [
     {
-      "id": "morning",
-      "title": "Today's Top",
-      "articles": [
-        {
-          "title": "住友商事と丸紅、米バークシャー・ハザウェイの持ち株比率10%超す - 日本経済新聞",
-          "headline": "商社2社、バフェット氏株10%超",
-          "description": "住友商事と丸紅が米バークシャー・ハザウェイの持ち株比率を10%超に引き上げ。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5PcXRJVG9kNzNacEVWNGlfMUZvai11VzcxbnNkemlkaDhfbldObldTUXh2RXFHcEl0UFFLRVIxV2o1WlVPMWVhcHdwVDhKenVCNzZBc0UwNWJsN01TT1ZFcm1Ic0ZLR0dKcVUyag?oc=5",
-          "pub": "Thu, 07 May 2026 05:41:45 GMT"
-        },
-        {
-          "title": "日経平均大引け 大幅続伸で最高値更新 3320円高の6万2833円 - 日本経済新聞",
-          "headline": "日経平均、最高値更新6万2833円",
-          "description": "大幅続伸し、終値で過去最高値を更新。3320円高の6万2833円で引けた。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFB6aGM3dm80aVBqb0pMYXI5VFp2LWtvQlhoLU5ueW84R3dsejNUZnlUZVJkS0txZGwtNGU2bHBWMDRIQjJZRGdIdVJGcVloUFlidEp2MmJkX3I5aHBvbFZtaENtOC1FRVJTZC1mSw?oc=5",
-          "pub": "Thu, 07 May 2026 06:37:10 GMT"
-        },
-        {
-          "title": "日本、UAEから原油2000万バレル追加調達へ ホルムズ通らない経路模索 - 日本経済新聞",
-          "headline": "日本、UAEから原油2000万バレル追加",
-          "description": "ホルムズ海峡を通らない経路を模索し、エネルギー安定供給を強化。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9aYXpyVVlYbERPdDUwRU9mYXg3OW9TYTFfZDBpS2JnTXhFYjZkMmtlV2F2UHE5d1R1REg1TzlmT3dlb0p1bUZYZ2YzVWcwWDhKUkFkZV90Q1g1WnFpLTYtTlp5UXZJekZjUDdMYw?oc=5",
-          "pub": "Wed, 06 May 2026 11:00:00 GMT"
-        },
-        {
-          "title": "強まる金利先高観 円安抑制のバトンは介入から利上げへ - 日本経済新聞",
-          "headline": "金利先高観強まる、円安抑制へ利上げか",
-          "description": "市場で金利上昇への見方が強まり、円安対策として利上げの可能性が浮上。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5PQXJxaENRaFd5N0p0by10X0Z2enlsSjJuVE1kNUh5TlNqRXpPUFgyM3RQUTRURzZvcmNLV0tzbThMcjI2MEJaQ09KVzRmazAxNzEtVVJHS2liMGVxS05RLXE3d2JxVmtjbzBYaA?oc=5",
-          "pub": "Thu, 07 May 2026 09:31:30 GMT"
-        },
-        {
-          "title": "日経平均株価一時3000円高 6万2000円を上回る 中東衝突の収束期待 - 日本経済新聞",
-          "headline": "日経平均一時3000円高、中東収束期待",
-          "description": "株価が一時6万2000円台に上昇。中東衝突の収束期待が買いを誘った。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE01NkVReXU4TDcwbFNkeTFEWklLMGZOZHNtOW1FbWNHbzhKd281WDBxd3ZObnpPbkM3NHNsd3hJSmpKZzVFeENVZ2lFNVJNRGhVTzdpbGp5SGhuVVFucjQ0NE5DRl9SejlzTzM0NA?oc=5",
-          "pub": "Thu, 07 May 2026 00:11:54 GMT"
-        },
-        {
-          "title": "タイで新型コロナ類似ウイルス発見、人への感染能力ありか 東大など - 日本経済新聞",
-          "headline": "新型コロナ類似ウイルス、タイで発見",
-          "description": "東大などがタイで人への感染能力を持つ可能性のあるウイルスを発見。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9MdzJJWHNqV0tvRXJ0T2ZDQ08tX1dURXJrSWNtMEJZVGt2Ti1fME5yZUdPV3R3YndlWDV4SG4xUkhFY2FOeXhWbUlWV3F5a2ZmbHBfSDM2Q3lKTG9wRDdCb2JHQkZ3Q2xPYmRkUQ?oc=5",
-          "pub": "Wed, 06 May 2026 15:00:00 GMT"
-        }
-      ]
+      "id": "t1",
+      "type": "topic",
+      "title": "AI技術の進化と応用"
     },
     {
-      "id": "tech",
-      "title": "テクノロジー",
-      "articles": [
-        {
-          "title": "スペースX、AI半導体巨大工場「テラファブ」の計画判明 投資8兆円 - 日本経済新聞",
-          "headline": "スペースX、AI半導体工場計画",
-          "description": "マスク氏率いるスペースXがAI半導体工場「テラファブ」を計画。投資額は8兆円規模。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5pTjZjVGxWNEhOc1lxUTczRDlteDFmUlRwYU1wTDZzSXlGSGp3WS1RdHZjd0kwWW5JdWdoTEgzMy1PeF9sMDdwQkJha3NyanNmN2o5QUFKREN4dzRUTWk2RmxSaUZCbXJ6a0pzUg?oc=5",
-          "pub": "Wed, 06 May 2026 18:30:33 GMT"
-        },
-        {
-          "title": "ソフトバンクが国産AIサーバー開発へ AI主権で需要､NVIDIAと協議 - 日本経済新聞",
-          "headline": "ソフトバンク、国産AIサーバー",
-          "description": "ソフトバンクが国産AIサーバー開発を計画。AI主権確立へNVIDIAと協議。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9RVUpLWjBQc09xa3Rhd2Z3c3h2MlhYTmhfRHc1enN0aGVRYVVTVEdSUWJHWXFsU0RGUGVBa2J6N29nMmNhYmFUQXdQYzh4cDA4RWZTSzVoQ2JmYjNQbmg2Njc4eTJmcmNWbnA2ag?oc=5",
-          "pub": "Thu, 07 May 2026 17:00:00 GMT"
-        },
-        {
-          "title": "アンソロピック、マスク氏のスペースXと提携 AIデータセンター利用 - 日本経済新聞",
-          "headline": "アンソロピック、スペースX提携",
-          "description": "AI開発のアンソロピックがスペースXと提携。AIデータセンター利用で協力。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFB3SWZvblJERXN1R1cwSXRxRlpGWkRtUVplaDEweHpjVVhTNllaU0Y4a0JDZXdhbmZ3UFlHVnFzb0laSDc0Wkw0ZWE1SHI5QWt3QzYtZVIza0xaczF4SWxvVlpzOVFXWkNNdjdQXw?oc=5",
-          "pub": "Wed, 06 May 2026 16:26:41 GMT"
-        },
-        {
-          "title": "三菱UFJ、GoogleとAI利用で提携 買い物から資産形成まで個人と接点 - 日本経済新聞",
-          "headline": "三菱UFJ、GoogleとAI提携",
-          "description": "三菱UFJがGoogleとAI利用で提携。個人向け金融サービスを強化。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1FZnUxd1hWbFBuNnlKaUowSlVib1c2dXF4c1pRTlpIZW9mbjZkZWVZZ3g3aUVqNkh1ZzN3NExSZmhUUmw4U2otZ2h3eUNHTHU5a1pyNkRYdUwtYjdfck9rMEpXSy1HNzdtbF9jNQ?oc=5",
-          "pub": "Thu, 07 May 2026 06:02:26 GMT"
-        },
-        {
-          "title": "金融庁、地銀にサイバー攻撃対策要請へ 新型AIモデル「ミュトス」警戒 - 日本経済新聞",
-          "headline": "金融庁、地銀にAI攻撃対策",
-          "description": "金融庁が地銀にサイバー攻撃対策を要請。新型AIモデル「ミュトス」を警戒。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE41V1dpMjVockpjY3k1bG1YbW5waHNXTF80VWszQVhsWVU0Z1kwVTE5Q3RkV25QQl9RYkxuTTVfVW5BTU84V0UteXFpVDVINWhQeEp5cUxZUXV2UHZ5RUY2VzhSWVBZcktNRVF0Vg?oc=5",
-          "pub": "Thu, 07 May 2026 08:22:45 GMT"
-        },
-        {
-          "title": "台湾、AI半導体増産へ「眠る工場」再生 ASEなどが相次ぎ買収 - 日本経済新聞",
-          "headline": "台湾、AI半導体増産へ工場再生",
-          "description": "台湾がAI半導体増産に向け「眠る工場」を再生。ASEなどが買収を加速。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9faTBsZDZzRklsSUN1ZjBJd1lOMjdqWGg1bFg5cWJhRGc2XzlDd3lJWmZtdy1IVHVMNUxyZjNYRm5NM1NNSXNwOWpmbEVqYi03Yi1wZEpzZXdJZ2hTTXBPSE9lcEluUWlmalMxZA?oc=5",
-          "pub": "Thu, 07 May 2026 07:00:00 GMT"
-        }
-      ]
+      "id": "t2",
+      "type": "topic",
+      "title": "AIの安全性と規制"
     },
     {
-      "id": "gov",
-      "title": "日本政府の動き",
-      "articles": [
-        {
-          "title": "米財務長官が首相・財務相・日銀総裁と会談へ 11日訪日、円安議論 - 日本経済新聞",
-          "headline": "米財務長官、首相らと円安議論",
-          "description": "イエレン長官が11日訪日。首相、財務相、日銀総裁と会談し、円安問題について意見交換する。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1BcVhVRDdkeTczbFhWbXZ0ZEVSdENaWWlRSFdYQmpmSDVfUUY2akJVcm1VVmZLVVd3akF4ejhoVmc4UDlpeG9kSEVrWnJtLTNBdDJDQkxlNi1USi1Lc290WHZ2NXhuZWJkMHpnWA?oc=5",
-          "pub": "Wed, 06 May 2026 20:00:00 GMT"
-        },
-        {
-          "title": "時代に応じた「バランスの取れた体系」を 財務省が目指す税制の未来像 - 日経ビジネス電子版",
-          "headline": "財務省、税制の未来像を提示",
-          "description": "財務省が、社会の変化に対応した「バランスの取れた」税制の構築を目指す方針を表明。",
-          "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE0wNzVWRjlUcnEzUi1GcVNTRHVpeDczcDIxYXVlZGVZaDcxREphMWRJZXNfZVV5aWhZcXJmT2JSaE9CdGxpeWxnekpiUFF0OGVyUTRFM2VQWXR0OGUycW9lTHlXUGRNdzQ?oc=5",
-          "pub": "Thu, 07 May 2026 20:00:00 GMT"
-        },
-        {
-          "title": "産業政策の大競争時代に突入 「国主導」の世界潮流 日本は17分野に重点 - 日経ビジネス電子版",
-          "headline": "日本、17分野に産業政策重点",
-          "description": "世界的な国主導の産業政策競争を受け、日本政府も17の重点分野を定め、競争力強化を図る。",
-          "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTFAzUk11cUNZUTcwWl9VZkxyQTdEOENxWFNrYnRFV2ltQ20xN2JZSjFiMzQ0cDBUTHpDTi16R1N1Wmh3bnl6MmdaVWR6WE50SmZZUWNwSTBQdGhLNnEtQnp4bHhwTFg?oc=5",
-          "pub": "Thu, 07 May 2026 15:00:00 GMT"
-        },
-        {
-          "title": "財務省、3月の国の税収3.3%増 企業業績拡大で法人税2割増 - 日本経済新聞",
-          "headline": "3月税収3.3%増、法人税好調",
-          "description": "財務省発表。3月の国の税収は前年比3.3%増。企業業績拡大で法人税が2割増となった。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBWZEtuWUNuUzl5R0Y3S2tNT3dCcW1DTjFhV19SbXZQNnE5YzNuQkF4UjA1Q1B5dmZGZWVTTW5KMDNTM0R4dmw5dlU3WENsSHJmeEtISl8zWGtXV3NvQTlGelBXdUdRSThVcTJ5NA?oc=5",
-          "pub": "Thu, 07 May 2026 08:48:32 GMT"
-        },
-        {
-          "title": "米財務長官、首相と会談へ 11日来日、投機的円売り議題に - 日本経済新聞",
-          "headline": "米財務長官、首相と円売り協議",
-          "description": "イエレン長官が11日に来日し、首相と会談。投機的な円売りへの対応が主要議題となる見込み。",
-          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPR3pmRS0zVW0wOHNhNVhfZl9QZGx1NjRVcjl4TlF4b3RNbzM0bVBueWRZYWpXU2ZrSGZ3QkU3SWt5SXFxdXZRTXFlWmZuY01BdF9XZWxqRnV5SFhmV0FEVTlLbXNuc3FvampHRlZVSkE0N3RBLVRpaHlfbTM5bzd1Y2tQcGFyQ2lFQXUtaGVVRjE3b0w4R2oybnBoNHU2RmgwdU1nRFBVTlo?oc=5",
-          "pub": "Thu, 07 May 2026 17:03:10 GMT"
-        },
-        {
-          "title": "政府・日銀、円買い介入を実施 対ドルで一時155円台に急騰 - 日本経済新聞",
-          "headline": "政府・日銀、円買い介入を実施",
-          "description": "為替市場で政府・日銀が円買い介入を実施。対ドルで一時155円台まで円が急騰した。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1SZDVkaVBzckhDdzF5SXhoOVpnVmY3Nzltd2Uza3l1NDJVdGVkSlJQSmJ2SEg4eXRCR3RSQXd6aEtQN2lTalZLYkc5UW8tMFdHUjBRVHFLVDVZQkl2blVlMzBqR25nQmFwZndUMA?oc=5",
-          "pub": "Thu, 30 Apr 2026 13:16:21 GMT"
-        }
-      ]
+      "id": "t3",
+      "type": "topic",
+      "title": "為替市場の動向と介入"
     },
     {
-      "id": "sports",
-      "title": "スポーツ・ビジネス",
-      "articles": [
-        {
-          "title": "【海外プロスポーツのオーナー企業】26年4月4週の注目記事5選 - 日本経済新聞",
-          "headline": "海外プロスポーツオーナー企業",
-          "description": "海外プロスポーツを所有する企業の動向をまとめた注目記事5選。",
-          "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTFAxOTRjRWFMYjBacjNyWV9pRG5pdWR5WWU3LUZzaFZUSDlNTjBVMlpjUzFyM1dxN1EwRDZ6UzJybUpfWTdoLTBPcjdOQko3YWY4THNYbXBNajRnMkM1bjA4cGNiZzNFb0ttVmc?oc=5",
-          "pub": "Sun, 03 May 2026 21:45:16 GMT"
-        },
-        {
-          "title": "シニアをはじめとした多世代が参加できるeスポーツ「GeeSPORTS」を通じて超高齢社会の課題解決を目指す「株式会社DIGITAL HEARTS GeeSPORTS」設立のお知らせ［デジタルハーツホールディングス］ - 日本経済新聞",
-          "headline": "シニア向けeスポーツ新会社設立",
-          "description": "超高齢社会の課題解決を目指し、多世代参加型eスポーツ「GeeSPORTS」を展開。",
-          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1ud2x6azVaY2Y5NTVLX2dvbld3SVpWVFJmT2Vtb2J0VUhna3JrOUdncHREVVFpeDBZTzhUZXYyQ1Qyc3BqekxHck8xcHJtTWZPaWs4ZFNTZkVqazZ0cENROFpZX0hPRVdVTXhoNUZmYUwxLThHQjZMeV94TDQ?oc=5",
-          "pub": "Thu, 07 May 2026 06:35:35 GMT"
-        },
-        {
-          "title": "ＪリーグとKONAMIが共同開催するeスポーツ大会「eＪリーグ eFootball(TM) 2026シーズン」アビスパ福岡が初優勝を飾る［コナミデジタルエンタテインメント］ - 日本経済新聞",
-          "headline": "eJリーグ、アビスパ福岡が優勝",
-          "description": "JリーグとKONAMI共催のeスポーツ大会でアビスパ福岡が初優勝。",
-          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBINGpmVDkzaDgxdVhSSmZ0cjNTYWt1UzFrTC1CaUJfVkM5V1BLd0ZwMHBXZjdZUnk2NTRfbUpERVowSld4N1pOajlzRk5HMjRMX1RJSEYtdkFsdlJqMnVKM3BFNzFpYzI3eFc2TXRsNG9zamNCUzh4d0Fxek8?oc=5",
-          "pub": "Tue, 05 May 2026 01:59:11 GMT"
-        },
-        {
-          "title": "ミズノがeスポーツ用チェア - 日本経済新聞",
-          "headline": "ミズノがeスポーツ用チェア",
-          "description": "スポーツ用品メーカーのミズノがeスポーツ市場に参入し、専用チェアを開発。",
-          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNSEotbXE0emFCMFJkYTR3STg2ZWhORGhmc1EzaHFjZzBQY2plajhVc2h6LWF5eEhLM2VvdTVtY2RDNk9WdHJmamxrVDluZFhyNmdFd09ZYmg5UFROSGRlN3gtanloaWZnNnFTRGc2bDRJckcyR1pKU2VnTExtNVV5by12aVZvRkZKTGRnb1lSSXZKVlNBYU1ERGxNWDROeWlTc3hnUHRHQWQ?oc=5",
-          "pub": "Fri, 01 May 2026 16:51:02 GMT"
-        },
-        {
-          "title": "韓国eスポーツ文化の象徴「PCバン」が大阪に登場! 体験型イベント「K-GAMING BASE」開催!［駐大阪韓国文化院］ - 日本経済新聞",
-          "headline": "PCバン大阪に登場",
-          "description": "韓国eスポーツ文化の象徴「PCバン」が大阪で体験イベント開催。",
-          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE4wcmV0cTFPTllKT1A3N0pSTFVLYXpOTVg3X0hZX1EtRFdpTXJtWDQ2cWZRNkNLTzVsRU8xMVpoaEp5OTh5SXp2MWQ0S1FRR1hoZUFHa2NEdXFSaGRyYllyaC0wUjF1enpXUjlOeXpBQlFpM0tFcWNBMk5wdWw?oc=5",
-          "pub": "Thu, 07 May 2026 09:32:46 GMT"
-        },
-        {
-          "title": "都市型スポーツ、東京で五輪予選シリーズ開催 IOC発表 - 日本経済新聞",
-          "headline": "都市型スポーツ五輪予選東京開催",
-          "description": "IOCが東京での都市型スポーツ五輪予選シリーズ開催を発表。経済効果に期待。",
-          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBwaG5NTU9yamlac1V3TjNDTXpTWVRJWWFNMzdXTzdHZ0N6R2QwTmpzeGRnR1h3aVlRVXotVUI0RnhydENhM3lzR210RzgxMjFCcUhOQzBzQlZBQTdRLWJhNURNM2FLcllPME9oMA?oc=5",
-          "pub": "Thu, 07 May 2026 15:00:42 GMT"
-        }
-      ]
+      "id": "t4",
+      "type": "topic",
+      "title": "日銀の金融政策"
+    },
+    {
+      "id": "t5",
+      "type": "topic",
+      "title": "AI開発競争と国家戦略"
+    },
+    {
+      "id": "a1",
+      "type": "article",
+      "headline": "中国AI「Kimi」の評価",
+      "description": "コーディング能力の高さが注目される中国製AI「Kimi」の存在感。",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1ZNkIxcWlDQ3JXeEwyZENaMThHSE5DLUhLLWhpcUwwN2g3RFh6cUZ4SGxLS0NSQ01BU2RFVHlPeHZqY2R1a2xLWjZ0dUJaWW9IUlNqNkRnd092Wk91WlFwWGdwZk5tOXFUUWN0SnJYa055Zw?oc=5",
+      "pub": "Thu, 07 May 2026 22:00:00 GMT"
+    },
+    {
+      "id": "a2",
+      "type": "article",
+      "headline": "ソフトバンク国産AIサーバー",
+      "description": "ソフトバンクがAI主権確保のため国産AIサーバー開発、NVIDIAと協議。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9RVUpLWjBQc09xa3Rhd2Z3c3h2MlhYTmhfRHc1enN0aGVRYVVTVEdSUWJHWXFsU0RGUGVBa2J6N29nMmNhYmFUQXdQYzh4cDA4RWZTSzVoQ2JmYjNQbmg2Njc4eTJmcmNWbnA2ag?oc=5",
+      "pub": "Thu, 07 May 2026 17:00:00 GMT"
+    },
+    {
+      "id": "a3",
+      "type": "article",
+      "headline": "EUのAI悪用規制",
+      "description": "EUがAIによる性的画像生成を禁止、Grokなどが対象に。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBMUWxZdzdFSGxMMW03di1weUZ4cHlMR1RXcUU3aW5qenVqdS1DVUxjZEY0UDJCamw3dktVbVY0TUQ5a3hKWnZHRE1xb2hnWkdoTHNETHNYTm5UeGJ2ZFA4b2VUMVkwYVFqM3gtcQ?oc=5",
+      "pub": "Thu, 07 May 2026 08:23:44 GMT"
+    },
+    {
+      "id": "a4",
+      "type": "article",
+      "headline": "AI悪用マルウエア拡散",
+      "description": "AIが善良な開発者を装い、見えない文字でマルウエアを拡散。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1mZ1Jja19wUTBYVkFjZms3ZVk3UGZaTk1KMDVOYVRZV2N3TldMSFUwOEJMXzMwcS1UcFNSOE9xMXhrZDBoMkNXM3VtRnE3d0M1dFhzT2Z6T0J6TXVFc040Rkl6UTdUaVJzU1lwcw?oc=5",
+      "pub": "Thu, 07 May 2026 20:00:00 GMT"
+    },
+    {
+      "id": "a5",
+      "type": "article",
+      "headline": "米のAI技術輸出要請",
+      "description": "米商務省がAI技術輸出規制に日本企業の参画を要請。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1QLWNvRnFoZVBNbHNXOXMtS0h3NHcxcERJb1VQSVd2LW5BeGJ4R2ptcm92THJMOHp4Y0R4RExGYXRkckwtMGpkbUFuaHRFUnBvQm4xU0M4QmFFejBpVmUyckRwLU1Uam41eEcxNw?oc=5",
+      "pub": "Thu, 07 May 2026 23:08:16 GMT"
+    },
+    {
+      "id": "a6",
+      "type": "article",
+      "headline": "円急騰と介入観測",
+      "description": "円が急騰、連日の為替介入観測。金融政策が鍵に。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9Qa0VWcUZyN2ZTamxKT2pMdWZtZEs2RUlXTmV4ZkpCcmQyeDUtX3Y5WmxPanMtdEk5ajZWVm5pdDNUUVFYUUQwYnN0UWpDSlBmX1pEY1cyWGllRjdvWUxIUjRLbTNvUXdsajNsZQ?oc=5",
+      "pub": "Thu, 07 May 2026 05:09:37 GMT"
+    },
+    {
+      "id": "a7",
+      "type": "article",
+      "headline": "GW中の為替介入",
+      "description": "GW中の4〜5兆円規模の為替介入、効果は限定的との見方。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9mbi1GWGFpMXg2T3hiRURqN3lCZUxRUXkzWWFqNmpmUU1hamU3OHl3OFpmNEs4NGVsTDEyZ3Z1ZndzdzU0ZUFJVUE1dWZHSzBFS2liWlpLZF9ibXoteWJZRFI5aWJkSFUtY0JHVA?oc=5",
+      "pub": "Thu, 07 May 2026 09:40:30 GMT"
+    },
+    {
+      "id": "a8",
+      "type": "article",
+      "headline": "米財務長官の訪日",
+      "description": "米財務長官の訪日会談、円安抑止に効果的との声。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5uaWY0NGpveVFvcW1CMFdVRzkyYmJKUGNtaGlXY05CU2tRRldsdDBtOEgzeTZvVExUa3NuS05ucXdSUkwxbEw1ZlVZLUJtc2hMaVRHQlgxRVBwWXlvNEhnRzRWNk05azFFUFpnbQ?oc=5",
+      "pub": "Thu, 07 May 2026 07:09:57 GMT"
+    },
+    {
+      "id": "a11",
+      "type": "article",
+      "headline": "円、対ドルで上昇",
+      "description": "為替市場で円が対ドルで上昇。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE10OTdzb1J1U3Vfck9kcGxwX1U3aTF6bG1nSkxYTTJIRjFvSzlkSFN0UVVWUmxYOS1PVzRObjNWRGpiSGRlMlJENjZoeE90RjhwclVNRGVNYVZmTmZxNGUzcGo4SENpYkRRT0FTMA?oc=5",
+      "pub": "Thu, 07 May 2026 05:30:00 GMT"
+    },
+    {
+      "id": "a12",
+      "type": "article",
+      "headline": "介入は「時間稼ぎ」",
+      "description": "為替介入について「時間稼ぎ」との指摘が多い。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE92QlJkd01XbnpNME16U0Y5ZVhnYjdWUEFDRjhqc3JxcVJ4MTlOTlZwYTNCc0Nxc29VTFJkbWlNeGRqZmtjbGdwSEdhUjhSTy00RkJldTJPN0Z6SXotazFRM0NIUmY2djladkhnbA?oc=5",
+      "pub": "Thu, 07 May 2026 17:00:00 GMT"
+    },
+    {
+      "id": "a13",
+      "type": "article",
+      "headline": "日銀新潟の景気判断",
+      "description": "日銀新潟支店が5月の景気判断を据え置き。",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPQlZIN2ZSXzk0SjQwNnV1UEM1TjBVVEhwLTNyUi14THNCR0RkX2g3SXh6XzItWmE2cEszUklCQU5xNXlxQXRFRkNjck1tdmdybmlEckMtUTlaRjZ2X2dwQTU1X2JGcnhicU9iakJGa1dTMElUYjg5VWI3ZTdUekMxN0NMVXJuWnFJeVJ5dXZJNnBzMGxYSnN5Z3Y0Mm9ER3MwZXh5S3hQMGM?oc=5",
+      "pub": "Thu, 07 May 2026 16:53:09 GMT"
+    },
+    {
+      "id": "a14",
+      "type": "article",
+      "headline": "円買い介入と投資妙味",
+      "description": "円買い介入でドル建て日経平均が最高値、海外投資家の妙味増。",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNeWxybWNJNFl1WGY2TVRHVFR3RUIxOEhPU3hncGZuU2JFWUg2UFBqQjdnZ1BNNGtZUjh4YjlCdUd6bVZ3czZqOVp6T2hhYmdkVFZtVGpwc1h5TWJsNUkzR1dsaEF4TTZNRGw1X1hkMHRmaXZzclhFVDdDb0NtRnJRRDdwcDYxdHY3UDhuMGdoMjdwY0Q5bGpMYmFfSnhGNXA1enJFUy13clI?oc=5",
+      "pub": "Thu, 07 May 2026 11:12:00 GMT"
+    },
+    {
+      "id": "a15",
+      "type": "article",
+      "headline": "円安是正と利上げ観測",
+      "description": "円安是正には利上げが必要との見方、6月利上げ観測高まる。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE93bFZYT2d3NkxzX1JfUkxCOTQtNjNSbVNDUjRPZEhiNkUyeWhUS0NmSWJwZnlnNnUzSkQxR2NGTXdxMm9vTkhvbUk3RUd6Qm9vNVhoejluRWw4VUMwZG5mamQ4TGptemdxVDFxTw?oc=5",
+      "pub": "Thu, 07 May 2026 17:00:00 GMT"
+    },
+    {
+      "id": "a16",
+      "type": "article",
+      "headline": "日銀新潟の景気判断",
+      "description": "日銀新潟支店が5月の景気判断を据え置き、駆け込み需要も。",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPb050TDdNWmwxNzRNY2F1d19kbkppSmVtTks1R2ZseEJsUFdVUF9IYXNSRXl6YTNkc2lreXZlV1pBME9JNzVGZkZnd214bTVjVC1zZFUxVTEyM3NjQWptVXMxUXVUNTYyOTVWb3FORkVzaXBZaVN3WVJIRnNHUjQxWm02RDQ3Zm5MWjlQT3VsWlBwQ1VWME01Mm0wRXY2amFCZXVUaUZKalc?oc=5",
+      "pub": "Thu, 07 May 2026 09:55:00 GMT"
+    },
+    {
+      "id": "a17",
+      "type": "article",
+      "headline": "円相場156円台で膠着",
+      "description": "外為市場で円相場が156円台前半で膠着状態。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5YS1V4dFlrWjNNSFg1M3BVbEp6djQ4SnRLRjZQcU40akRFbkU3dWd0V0xDdS13NlBTX0phSENBV254cWlqeTIxVUx1a0JSRWZkOF9hdjNuMFY0Y2c1dkF3UEFmNUh5MmdiQXBtUw?oc=5",
+      "pub": "Thu, 07 May 2026 05:13:28 GMT"
+    },
+    {
+      "id": "a18",
+      "type": "article",
+      "headline": "日銀利上げの条件",
+      "description": "日銀3月会合要旨、賃上げ継続なら躊躇なく利上げ。",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNeldTQWM3UTB3aGZPaXpjckFiTWl2Q0QyTmNWaW05OE1VMGZPRnhyb3V0Q1k1ekNCRWJvQm1VYWVjVzRGSHpTNzVPU3JqR2VpWTdBRlJkX0hnQmVFNkdYSUozZXRIUEJmSk9GaExMTEctYU5sU1otUy1IelhPNGxlUUJuaUUySm80VTJ5SUlzekVtTWZWVjRxUkZERkdGMWNUXzRNV2gwY0E?oc=5",
+      "pub": "Thu, 07 May 2026 05:36:21 GMT"
+    },
+    {
+      "id": "a19",
+      "type": "article",
+      "headline": "NY円相場反落",
+      "description": "NY円相場が反落、1ドル156円台後半。中東情勢が影響。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBEUlh1ejdLNVRpTWlsRjQ4c2FTQVNmMmxfOUhxa2NYT1RibWUzZ2hwdDFKclp3a1U1bm9MRTBUNDFqcDI3Sm1VNldCZjNYbWZ1a2NVeDkyTTN3TzBzY0J1ZTFqdnFOQ1F5Q1NwRw?oc=5",
+      "pub": "Thu, 07 May 2026 21:59:01 GMT"
+    },
+    {
+      "id": "a20",
+      "type": "article",
+      "headline": "円続伸、156円台前半",
+      "description": "円が続伸し、1ドル156円台前半に。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE95RXBwSTRNazhPcGc4bTlUTnFYVmxkWU5wMlJ5enYxc1lxcFlsQTVzbEl3eGEySUNVMktERWEwbVI3TVZyOFUydHpqbEk0eGJTcEUyRV9xOFRESDh2TjNLeEJDS2hPVGNJM1dXYw?oc=5",
+      "pub": "Thu, 07 May 2026 17:00:00 GMT"
+    },
+    {
+      "id": "a21",
+      "type": "article",
+      "headline": "AIによるプログラミング",
+      "description": "AIがコードを生成し、プログラミング言語が不要になる未来を予測。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1VSHg3bTh1aS1Maklnc1RFb1VVN1VqUUdDU3cwSnVGcFlMVkZvZjdCOFF0MkJYX0tMbGZoUWcxLXpBRDQ5UFhCRmNubUhzTW51ZkpNVzdzSENMMEVMV1JhNFhCVHozclc4QVg2cA?oc=5",
+      "pub": "Thu, 07 May 2026 20:00:00 GMT"
+    },
+    {
+      "id": "a22",
+      "type": "article",
+      "headline": "自然言語でコード生成",
+      "description": "プロンプトからコード生成、コメント追加も可能なAIの進化。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5yTkVBRTZoR1NQVTFrUThpbEJhc3dvY2FhUWFKdkV0eWNEWWQ2QzZlcmw2RWE5WTZJNU1WMXFlbG9jdm5NR3ZVQkY2dndJZ3ZyQjBDWEJCeDBKYTVtazdzdER1c0hMcG8tbHE5Mg?oc=5",
+      "pub": "Thu, 07 May 2026 20:00:00 GMT"
+    },
+    {
+      "id": "a23",
+      "type": "article",
+      "headline": "GPT Cyber版とMythos",
+      "description": "GPTがMythosの優勢を認め、Cyber版提供の意図。",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE9BOURTdXU2NUdLQkM2dG44MHdfem1tbkdhWlVtREE0WG1DTklYNXIzVm1fMzBjSkpILXNSanhxOV9qWklWdWlZT0VVd25jY0ZxOVJ0VFg1ZzdHVFluTmtWR2hDa29fbzFzNGFUV3NpMUpVQQ?oc=5",
+      "pub": "Thu, 07 May 2026 22:00:00 GMT"
+    },
+    {
+      "id": "a25",
+      "type": "article",
+      "headline": "AIエージェント導入警告",
+      "description": "米英豪の情報機関がAIエージェントの慎重な導入を警告。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5sVmZXR0plOTBrbWZja09VNUR5NEpBRGRyZ09FaThNb0dFSURFR0l1Vm5BVnpOUFNHb1BhNEtHbGNabFZSaElFOG5DaElpQ01hVTRLY2hkSU5wOTZaYzlFYXhjYlB1bVlzeWw1WA?oc=5",
+      "pub": "Thu, 07 May 2026 20:00:00 GMT"
+    },
+    {
+      "id": "a26",
+      "type": "article",
+      "headline": "Claude Mythosとサイバー防衛",
+      "description": "限定公開のAI「Claude Mythos」がサイバー防衛に貢献。",
+      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTFBNNHBJSi1pTGEycTExSzRiMXVRaWR4b2xSQWJEZVh6SWV4c3dTdmNfUHNic2tYUEtNUndaTVppSkNzNUgtVlFBSVhvS19fdkxFWnBncEo5N2tYVE05bHBzS2tTSE8xU2JrYUp4akFR?oc=5",
+      "pub": "Thu, 07 May 2026 20:00:00 GMT"
+    },
+    {
+      "id": "a27",
+      "type": "article",
+      "headline": "日産のAI自動運転戦略",
+      "description": "日産がAIを中核に据え、E2E自動運転を9割採用する戦略。",
+      "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE84WjhqUkpSVWd0aFByRUptOXBKTk5UdmpLQ3o4czJJTHctWk4xTXdJVHEwWHkxSVpiNFROZTl5bDdvbmFYamlLYU9GNldoaFdlMmIyM3FsVktJTjEycjV2T2x5MkhZcmM?oc=5",
+      "pub": "Thu, 07 May 2026 20:00:00 GMT"
+    },
+    {
+      "id": "a28",
+      "type": "article",
+      "headline": "闇市場の認証情報",
+      "description": "闇市場で9億件の認証情報が流通、攻撃者が標的にログイン。",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE9DZVhDOFQ4dkx5aWUyWHg3MDZfWXZnSGZvU0d1V0s4ZVRNVXVVQWZXNmFQNUNCcV9uYjhNcTIxcjNueVhpQzB5bWxyTHpEUTRmQU10RjVmNnNpRzhheng0bHRJWTZicXBKUVBqRDZFVEVhdw?oc=5",
+      "pub": "Thu, 07 May 2026 22:00:00 GMT"
     }
   ],
-  "fetchedAt": "2026-05-07T20:14:59.577595+00:00"
+  "edges": [
+    {
+      "source": "t1",
+      "target": "a1"
+    },
+    {
+      "source": "t1",
+      "target": "a21"
+    },
+    {
+      "source": "t1",
+      "target": "a22"
+    },
+    {
+      "source": "t1",
+      "target": "a27"
+    },
+    {
+      "source": "t2",
+      "target": "a3"
+    },
+    {
+      "source": "t2",
+      "target": "a4"
+    },
+    {
+      "source": "t2",
+      "target": "a25"
+    },
+    {
+      "source": "t2",
+      "target": "a28"
+    },
+    {
+      "source": "t3",
+      "target": "a6"
+    },
+    {
+      "source": "t3",
+      "target": "a7"
+    },
+    {
+      "source": "t3",
+      "target": "a8"
+    },
+    {
+      "source": "t3",
+      "target": "a11"
+    },
+    {
+      "source": "t3",
+      "target": "a12"
+    },
+    {
+      "source": "t3",
+      "target": "a14"
+    },
+    {
+      "source": "t3",
+      "target": "a17"
+    },
+    {
+      "source": "t3",
+      "target": "a19"
+    },
+    {
+      "source": "t3",
+      "target": "a20"
+    },
+    {
+      "source": "t4",
+      "target": "a13"
+    },
+    {
+      "source": "t4",
+      "target": "a15"
+    },
+    {
+      "source": "t4",
+      "target": "a16"
+    },
+    {
+      "source": "t4",
+      "target": "a18"
+    },
+    {
+      "source": "t5",
+      "target": "a2"
+    },
+    {
+      "source": "t5",
+      "target": "a5"
+    },
+    {
+      "source": "t5",
+      "target": "a23"
+    },
+    {
+      "source": "t5",
+      "target": "a26"
+    },
+    {
+      "source": "a1",
+      "target": "a21",
+      "label": "関連: AIのコーディング能力の進化"
+    },
+    {
+      "source": "a21",
+      "target": "a22",
+      "label": "関連: AIによるコード生成の具体例"
+    },
+    {
+      "source": "a3",
+      "target": "a4",
+      "label": "関連: AI悪用の具体例"
+    },
+    {
+      "source": "a4",
+      "target": "a25",
+      "label": "関連: AI悪用リスクへの警告"
+    },
+    {
+      "source": "a4",
+      "target": "a28",
+      "label": "関連: サイバー攻撃の脅威"
+    },
+    {
+      "source": "a2",
+      "target": "a5",
+      "label": "関連: AI技術の国際的な戦略"
+    },
+    {
+      "source": "a23",
+      "target": "a26",
+      "label": "関連: MythosというAIモデル"
+    },
+    {
+      "source": "a6",
+      "target": "a7",
+      "label": "関連: 為替介入の実施"
+    },
+    {
+      "source": "a7",
+      "target": "a8",
+      "label": "関連: 為替に関する国際的な動き"
+    },
+    {
+      "source": "a6",
+      "target": "a11",
+      "label": "因果: 介入観測による円高"
+    },
+    {
+      "source": "a7",
+      "target": "a12",
+      "label": "関連: 為替介入の効果評価"
+    },
+    {
+      "source": "a7",
+      "target": "a14",
+      "label": "影響: 為替介入が市場に与える影響"
+    },
+    {
+      "source": "a11",
+      "target": "a17",
+      "label": "関連: 円相場の推移"
+    },
+    {
+      "source": "a17",
+      "target": "a19",
+      "label": "関連: 円相場の推移"
+    },
+    {
+      "source": "a19",
+      "target": "a20",
+      "label": "関連: 円相場の推移"
+    },
+    {
+      "source": "a7",
+      "target": "a15",
+      "label": "因果: 為替介入の効果限定的→利上げ観測"
+    },
+    {
+      "source": "a13",
+      "target": "a16",
+      "label": "関連: 同じ内容の補足情報"
+    },
+    {
+      "source": "a15",
+      "target": "a18",
+      "label": "関連: 利上げ観測の背景"
+    },
+    {
+      "source": "a6",
+      "target": "a18",
+      "label": "関連: 為替介入と金融政策の連携"
+    }
+  ],
+  "fetchedAt": "2026-05-08T05:05:59.634329+00:00"
 }

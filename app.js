@@ -509,6 +509,6 @@ document.getElementById('claude-form').addEventListener('submit', (e) => {
   const input = document.getElementById('claude-input');
   const q = input.value.trim();
   if (!q) return;
-  window.open(`https://claude.ai/new?q=${encodeURIComponent(q)}`, '_blank');
+  window.location.href = `https://claude.ai/new?q=${encodeURIComponent(q)}`;
   input.value = '';
 });

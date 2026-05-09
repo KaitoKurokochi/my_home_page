@@ -128,7 +128,7 @@ function renderGraph(data) {
     )
     .on('click', (e, d) => {
       if (d.type === 'article' && d.url) {
-        window.open(d.url, '_blank', 'noopener,noreferrer');
+        window.location.href = d.url;
       }
     })
     .on('mouseover', (e, d) => {

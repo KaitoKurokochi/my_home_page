@@ -62,6 +62,7 @@
   <nav class="tab-nav">
     <button class="tab-btn active" data-tab="news">News</button>
     <button class="tab-btn" data-tab="sports">Sports</button>
+    <button class="tab-btn" data-tab="note">My Note</button>
   </nav>
 
   <!-- Graph tooltip (shared) -->
@@ -79,10 +80,15 @@
       <h2>Sports</h2>
       <p>Sports videos go here.</p>
     </section>
+
+    <section id="note" class="tab-content">
+      <div id="note-container"></div>
+    </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <script src="news.js"></script>
   <script src="app.js"></script>
+  <script src="note.js"></script>
 </body>
 </html>

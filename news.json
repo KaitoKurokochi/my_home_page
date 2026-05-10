@@ -1,28 +1,560 @@
 {
   "nodes": [
-    {"id": "t1", "type": "topic", "title": "米中貿易摩擦"},
-    {"id": "t2", "type": "topic", "title": "AI・半導体"},
-    {"id": "t3", "type": "topic", "title": "日銀・金融政策"},
-    {"id": "a1", "type": "article", "headline": "日米関税協議、来週も継続", "description": "双方が歩み寄りの姿勢を示し、協議継続で合意。早期妥結に向けた動きが加速。", "url": "https://www.nikkei.com/", "pub": "2026-05-09T01:00:00Z"},
-    {"id": "a2", "type": "article", "headline": "日経平均6.3万円台に続伸", "description": "米景気回復への期待感が投資家心理を改善。幅広い銘柄に買いが広がった。", "url": "https://www.nikkei.com/", "pub": "2026-05-09T02:30:00Z"},
-    {"id": "a3", "type": "article", "headline": "円143円台、利上げ観測で上昇", "description": "日銀が次回会合で追加利上げを検討との報道を受け、円買いが加速した。", "url": "https://www.nikkei.com/", "pub": "2026-05-09T03:00:00Z"},
-    {"id": "a4", "type": "article", "headline": "スペースXが8兆円のAI工場計画", "description": "テキサス州に建設予定の「テラファブ」はNVIDIA製GPUを年間100万枚生産する見込み。", "url": "https://www.nikkei.com/", "pub": "2026-05-09T00:30:00Z"},
-    {"id": "a5", "type": "article", "headline": "NVIDIA、次世代GPU「Blackwell Ultra」発表", "description": "AI学習・推論向けの新チップ。前世代比で処理速度が4倍向上と発表された。", "url": "https://www.nikkei.com/", "pub": "2026-05-09T04:00:00Z"},
-    {"id": "a6", "type": "article", "headline": "訪日客4月380万人で過去最多", "description": "円安を背景に訪日需要が高水準を維持。アジア圏からの旅行者が全体の6割を占めた。", "url": "https://www.nikkei.com/", "pub": "2026-05-08T20:00:00Z"},
-    {"id": "a7", "type": "article", "headline": "日銀、物価目標2%達成を確認", "description": "植田総裁が会見で持続的な物価上昇を認め、追加利上げの条件が整いつつあると示唆。", "url": "https://www.nikkei.com/", "pub": "2026-05-09T05:00:00Z"}
+    {
+      "id": "t1",
+      "type": "topic",
+      "title": "AI・LLM技術とビジネス動向"
+    },
+    {
+      "id": "t2",
+      "type": "topic",
+      "title": "日本経済・金融市場"
+    },
+    {
+      "id": "t3",
+      "type": "topic",
+      "title": "為替・金融政策"
+    },
+    {
+      "id": "t4",
+      "type": "topic",
+      "title": "半導体・テクノロジー産業"
+    },
+    {
+      "id": "t5",
+      "type": "topic",
+      "title": "宇宙開発と国際協力"
+    },
+    {
+      "id": "t6",
+      "type": "topic",
+      "title": "日本政治・政策"
+    },
+    {
+      "id": "t7",
+      "type": "topic",
+      "title": "地政学リスクと資源価格"
+    },
+    {
+      "id": "a1",
+      "type": "article",
+      "headline": "アンソロピック、アカマイと契約",
+      "description": "AI企業アンソロピックが米アカマイと2800億円のクラウド契約を締結し、アカマイ株価が急騰。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1xVVdTdVdKZHN2RU5IRzl4VFdPNjBkUzRwX3dxVkZSSzlnaG5vSXhoVGI3VzJ2RUk2TjFfWkVxbHBBMGE2QXotU1dWX2pQU3VWMllsbnNKYktsc0pWSHUxV3pvY0hvMkMxY2ZiMQ?oc=5",
+      "pub": "Fri, 08 May 2026 22:00:59 GMT"
+    },
+    {
+      "id": "a2",
+      "type": "article",
+      "headline": "日本株高値もみ合い、円介入警戒",
+      "description": "日本株は高値圏で推移するが、政府・日銀による円買い介入への警戒感が続く。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5Mc0hkMEFBSkpfeFlzZ1dnVDQ3NXVFazRtcGo2U24ydmhvclZCWVpqS3l2VThuSlRYMXJ0NGZtWHdCdlRvWTgzcU05X3NzbkNmNHducWo1WUtIZUhObWFUM2h2Wm9kaklkSGRpTQ?oc=5",
+      "pub": "Sat, 09 May 2026 19:00:00 GMT"
+    },
+    {
+      "id": "a3",
+      "type": "article",
+      "headline": "円反発、156円台後半",
+      "description": "NY円相場が1ドル=156円60～70銭に反発。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1UTW04RkdGQ2stZHVqSlRJVUNtekh5Xy03WXd6cnZnM2NjTUVrS2w3OW1pTDJKaERHLWFtN1V3cG5XdlFCYURNN24yeVFaLVhNaE0wU3ZhYWkzNEQzWlFMbER3SXpMRUxla09LWQ?oc=5",
+      "pub": "Sat, 09 May 2026 05:30:00 GMT"
+    },
+    {
+      "id": "a4",
+      "type": "article",
+      "headline": "主要企業決算発表の週",
+      "description": "キオクシア、ホンダ、日産など主要企業の決算発表が今週予定されている。",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOalY0TWN3VVgzMzFGdnpOYWF4alpUZjB1YnFHN3NmQkpMV2VYQkN4WENiVHZTYUZKS0FHT0l2YkZZb1pVUkJBcHhDZnJRaUdEaFRaamFSdHJLc29BSzdTaE9BUWs0aUU4amtxcm9XSVpGNGtCQnhCQy1PVTNDb1JObFJHdHRIZE9PYUFlVUdnMV9udGlzSnZqWnRjRk5kMU8xdnVPaVhNVVU?oc=5",
+      "pub": "Sat, 09 May 2026 15:00:00 GMT"
+    },
+    {
+      "id": "a5",
+      "type": "article",
+      "headline": "FRB新議長にウォーシュ氏",
+      "description": "米連邦準備理事会(FRB)の新議長にウォーシュ氏が就任する見通し。",
+      "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE5vMGF4Nk9INWZuMDFaNHVCNm9FSnFlU2Jkc1kyek1FVUJLY20wOFEwMVlOR0lXUzlVLTRkQWlJNEZ3MlA4VHlhYjdKQURRajZmZ21qblNiVzlNYWhBOThFejY5SXdMT2NUcFFJcGZScVBiNE44MkRuSkx0eXpVdw?oc=5",
+      "pub": "Fri, 08 May 2026 20:00:00 GMT"
+    },
+    {
+      "id": "a7",
+      "type": "article",
+      "headline": "今週の経済イベント",
+      "description": "今週の主要経済イベントや企業決算の予定。",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQVTgzWTR6bkNjRzZpMl9oU1FBRUlZVXhCSW1ucU0tbUFQZ0Z1UlYtMkp2UXI3R1lCUTZtbXhoanh0d0ZCM2NWV09vYXlnV3VjZFo4QUtGMHdfMTNBZzVLZ0pNOUNOdEd0cGJEY3RVV2dyR180dGRBWUptb2ozbmk4Rjd6UmFxa2hudnZqcDZVSlVWSGs2b3JwVWQ2cmpkVDFZZFN3cEUyT3I?oc=5",
+      "pub": "Sat, 09 May 2026 17:04:25 GMT"
+    },
+    {
+      "id": "a8",
+      "type": "article",
+      "headline": "NY円反発、米金利低下で",
+      "description": "NY円相場が1ドル=156円60～70銭に反発。米金利低下がドル売りを誘った。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9kdm5ueDI4OVlUaTBSMWZBVU8zejlmd3dsVEd1a3puTm1XamtQeUtsaWpZX19kQ3I1cmxjMlFkZ3ZwU2dfQUVVQVZRSVVNOFVIdXdJNzNqbXItZ2VIWGo4Wjd1ZGNQSnp1WUlPQw?oc=5",
+      "pub": "Fri, 08 May 2026 21:36:52 GMT"
+    },
+    {
+      "id": "a10",
+      "type": "article",
+      "headline": "ソニー生命、金銭詐取と含み損",
+      "description": "ソニー生命で金銭詐取疑惑と含み損処理問題が浮上し、経営に新たな火種。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9LTE04REgzRml0LW55dkNIaUpaQmNQbm5GMlZkNWU4a3FGakh3OHQ1dFlDVTJTZnpCOVc3YkVVZGJYXzJaYi01aUt1dFRuaG1JS1N4X2NLSFkyQUNhTG9UTFZfYVNSeGw2dUxaMA?oc=5",
+      "pub": "Fri, 08 May 2026 20:00:00 GMT"
+    },
+    {
+      "id": "a12",
+      "type": "article",
+      "headline": "ファンド融資、リスク限定的",
+      "description": "ファンドへの融資について、関係者はリスクが限定的であるとの見方を示す。",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOcG4yNUpoWWNhMTAwdnhXRkVDdW55b25TbWx0S1FwQUYzdzVmSmprUFZkdVpTd0J1azNzYmRzQ2VKZ1ZOY1FYNEVmbER5dzU3dXJhMmlFNmQ0OEZmMlNtZFF6OHpGV1VuSjEtN201ejJ3YW50MkFialNjWUVteEc3X0t1YUIweDU4UjJ1SVhYbXVnTXUwMUtiX2REY2swUWk5TjdOQ1B3?oc=5",
+      "pub": "Sat, 09 May 2026 05:35:06 GMT"
+    },
+    {
+      "id": "a13",
+      "type": "article",
+      "headline": "ホルムズ封鎖で「NACHO」トレード",
+      "description": "ホルムズ海峡封鎖の可能性を巡り、市場で「NACHO」トレードが話題に。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBQSGQ4RXNaS053MWZ3SHFoQzNpelZQX3M2dTM0VWV4bmpsc0ZKUUhUT195eWRKWHVlcnYtUWNnUHZhNjQ5cFBxQ0dIU2RiWDRka05qLTMtMXB2RTlGN2EyUXFFWENkOGk1cFlzaA?oc=5",
+      "pub": "Fri, 08 May 2026 20:41:18 GMT"
+    },
+    {
+      "id": "a14",
+      "type": "article",
+      "headline": "独コメルツ銀、3000人削減へ",
+      "description": "ドイツのコメルツ銀行が3000人の人員削減を発表。",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPbGRaYkYzZkNXWnk3c3lOOHNwSHl2eE4zdkJjWkQwS21COGxYcUhxX3dCSkJPcEVIN0pzdEtzVTAwTnJSc09ZTV9fd0R3eW1GeEhlZEN3X1Z3NHFYVFdDQVRRSmN5Ukk5YVhVTFhxWU5iMGRRVXF0QXNZY0ZpWGVyVmkxeXZPemZaZWU1LVVVWXVRcy1xT0Qzd2hTeFFKSl9iUjF1b05n?oc=5",
+      "pub": "Sat, 09 May 2026 05:35:05 GMT"
+    },
+    {
+      "id": "a16",
+      "type": "article",
+      "headline": "イラン混迷で資源高、日本8兆円流出",
+      "description": "イラン情勢の混迷で資源高騰、日本から8兆円の所得が流出する見込み。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9VdVcwclVYTElkMXk5bEV2aVRTRUFiQnJPY2JSc25tOUVQdEpOWTU3R2xSbVMwd1B2NXEyUVVpSWFTV0o2NXVTdlU3cHc0ZUZmeXo5Tll1eXpZZlNWMFVhbVhpZTF6Wk84V3dCRQ?oc=5",
+      "pub": "Sat, 09 May 2026 02:00:00 GMT"
+    },
+    {
+      "id": "a17",
+      "type": "article",
+      "headline": "中国系開発、市長選に影響",
+      "description": "中国系企業による開発計画が、地方の市長選挙の争点となり波紋を呼ぶ。",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNUmwwaWtOaW1MRFE3SGpoSXBueEwxQWxJTU9CN2RfRHZ1SzVvS3JSTVpnWXJONU1GdEpuOHdTcmloQ3VSWjFHMmt1clNNamFlbnhoT1VoS1hNMXJqeWxxRU0wRlZaWmk3UjVKMWJkanlVYm5lTUZPV0FqdXp4X1c2ajQxUUYyc0hCa29DaXBlT0RnXzVQbHRiYUhUbFNGbFFDWVY3WGtn?oc=5",
+      "pub": "Sat, 09 May 2026 05:41:34 GMT"
+    },
+    {
+      "id": "a18",
+      "type": "article",
+      "headline": "高市首相の9日の動静",
+      "description": "高市首相の9日の活動内容。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5HY1BZTzlXd2hfdkI0eExBa05jcGdGdXVGTXNnNzkyTjljSWtfT3pzaF9VYkZ0SnY2dU9EUGM1S28wYWlEUklySXc0VFpGWnZMenczR3NXQUJvQ0xjVXlianNCYVlaYnB2b0ZCbQ?oc=5",
+      "pub": "Sat, 09 May 2026 13:10:00 GMT"
+    },
+    {
+      "id": "a19",
+      "type": "article",
+      "headline": "日経平均先物、大幅高",
+      "description": "シカゴ市場の日本株先物取引で、日経平均先物が大幅高を記録。",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQTHNab3B1LUNWTDk4Zjd5R1ltaTVhSjIzZnM0Z0dNWXJzLTk5bHBVQXRmWWMzZS03N3VrSm1uT2s0QzQ1LVNmNlVpaFRCb0RKYWV2ZWJ1aFY4UG14MVpseGZ2MzlfMlhUdkh1VTdIX2g2enFiVWJZYkxQeVVNTFduSkk0MUhKQkh6N0IwQXlQdUVITS0yMDI5VA?oc=5",
+      "pub": "Fri, 08 May 2026 21:03:00 GMT"
+    },
+    {
+      "id": "a23",
+      "type": "article",
+      "headline": "アンソロピック、SpaceXと提携",
+      "description": "AI企業アンソロピックが売上高80倍へ、データ拠点確保でSpaceXと提携。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1iX0JMOVNyczVXSEFLc2ZoSW16QlNJMkNuSTUyUG5lLVZIYXZPellmeXhoSnMxWW1zS2pPWnRWWkh3azl3TGpUcl8tbEZ1UFoxRWc4bW84c0ltNmY1T1o4OTU0S0JYc3lrQk9mcA?oc=5",
+      "pub": "Sat, 09 May 2026 17:00:00 GMT"
+    },
+    {
+      "id": "a24",
+      "type": "article",
+      "headline": "アンソロピック、計算資源が制約",
+      "description": "AI企業アンソロピックの成長は計算資源の確保が制約、SpaceXと提携。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9Gd2lNcGdiREtMNjdmalRQR1dUSzZNc0hJT3d5bGRuM3hQMzRveXVFNUFlNWdBMkNEUjFIVXFrblp1M0d0eVo2MGV6Y2l3eml0akhrZXF5QTQ2enRTalplMVE0UW5BcllvcXRPdg?oc=5",
+      "pub": "Fri, 08 May 2026 20:00:00 GMT"
+    },
+    {
+      "id": "a25",
+      "type": "article",
+      "headline": "米、台湾政策変更せず",
+      "description": "米国務長官が台湾政策の不変を強調。トランプ氏の訪中と関連。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBkaWZRWGM2Tk9zU3lIRGppWXlyVVJCclBDaUR6OGZ0T1kwdFB6XzhkUHliV1Y0RmxlSGoweGlEeURIeE4weFNHblJCYmliM0k0Rk4zU0VJUEtUMTk5aFE1WjNBS3NiT28yUHZuVQ?oc=5",
+      "pub": "Sat, 09 May 2026 00:25:23 GMT"
+    },
+    {
+      "id": "a26",
+      "type": "article",
+      "headline": "自民党、「必要悪」消滅後",
+      "description": "自民党内の「必要悪」とされた存在が消えた後の党のあり方を論じる。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5OMnYxSlVwa05jc0VpazNHMndZRWdibWdNRDFrVzZrQ0paTDRwc0g5cDNiWWw0aEhGUVU5eEhnaUk1UE9fVmFhbTdXT1d0aG1LREVlTkNZa25xVGdYanVvRVVGNUxFYWQzSGR0Sw?oc=5",
+      "pub": "Sat, 09 May 2026 17:00:00 GMT"
+    },
+    {
+      "id": "a30",
+      "type": "article",
+      "headline": "高市成長戦略、失敗許容を",
+      "description": "高市氏の成長戦略に対し、失敗を許容する覚悟が必要との指摘。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBTR3hDOXZNY2dpZUFJc3BES0tsa2NTTWNhcUU5aV9yZUpueTZKcENuQzlEOUVzYm9xQU5NYURIM1Fvd0FhQnU0eEh3MURCcmY4aEkxUzV0cUdwcFEtVjlvOTd0TjFmamRRa2VQMg?oc=5",
+      "pub": "Fri, 08 May 2026 20:00:00 GMT"
+    },
+    {
+      "id": "a31",
+      "type": "article",
+      "headline": "民主主義国はCEO型君主制",
+      "description": "民主主義国のあり方について、CEO型君主制を提唱するヤービン氏の思想。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9VYUdMazdBOHA5dURmWVBUM1hQakZLc0VFUjBVNnY1V3gwMmZKOERNQ0tPNmtRbVF3dVJ1cHhxZkN5UW1VbjlnN2hxOFlpcHlmR0twLW1aOGN0d3JuazI0Q0lOc2RqcGlQUFpVTA?oc=5",
+      "pub": "Fri, 08 May 2026 20:00:00 GMT"
+    },
+    {
+      "id": "a32",
+      "type": "article",
+      "headline": "政府、500業務にAI活用へ",
+      "description": "政府が2026年度から府省庁の500業務に自律型AIを導入する計画。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBhSFRsTVMtYVBlU1JPYnk1SlBIY3JYR2JWdUszNHhFbVNxTDVhWi1MaGhWMmFPaEVsTWhqNXJ3QXByY3dKTVhkNU9wQXlvNUFkZEh4d0VMZHNzYXFUUVdGVFFYaTl5Ym9pZFJUbQ?oc=5",
+      "pub": "Sat, 09 May 2026 17:00:00 GMT"
+    },
+    {
+      "id": "a33",
+      "type": "article",
+      "headline": "保険業界、不祥事の膿を",
+      "description": "保険業界の不祥事が相次ぎ、根本的な問題解決を求める社説。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1EOEF4cFlJY2psdzlGZnN1TU5Td1dMUXpCek53UW5lc2dFRUdGU1JrSlpWekJMY2RNLW5tRV8ybGo0WVpIYVF3UnhmR2xtYWtQTFFvZHFxNHhldzVJOXpsM1JMdkxCQ0lPcHVqVA?oc=5",
+      "pub": "Sat, 09 May 2026 10:05:00 GMT"
+    },
+    {
+      "id": "a35",
+      "type": "article",
+      "headline": "革新軽水炉の解説",
+      "description": "革新軽水炉に関する最新ニュースと技術解説。",
+      "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE9yNjQ3N1VfaTdYbDJ5bW5EUElYbXhCOUxiVWd2RWRCZzFZR1oyNV9LS2owbi1LTXZLSkhFM3JDcWVHeFpCeDJtSGFlLU0taGc0TjViZnEwOTI?oc=5",
+      "pub": "Sat, 09 May 2026 17:29:36 GMT"
+    },
+    {
+      "id": "a38",
+      "type": "article",
+      "headline": "日印協会会長に岸田氏",
+      "description": "日印協会の会長に岸田氏が就任。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBrY3RpNEM0cGJwTEhGUk9WQ3lhM1BKcjBLdDNhUnVmN1pGRXVIekVMS2tJdXpzal83Z1NBY1JNb193MGRzeUFySzRScWJxRTVzeG5NVjhacUp0X21XQV9LSXVwZ290WXFrVURRbQ?oc=5",
+      "pub": "Sat, 09 May 2026 17:00:00 GMT"
+    },
+    {
+      "id": "a39",
+      "type": "article",
+      "headline": "中東は台湾有事の教訓",
+      "description": "中東情勢から台湾有事への教訓を学び、中国の「灰色戦術」への備えを提言。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBMZ3phVkVOVWE1UXJrWk9rMkNGd3ZfQzk4MjYzb0JuQ0RpM3FpVGxQb21jN2pUUVFmV2g0M0RPbS1rMEYwalJYUS1YMXdIZ1FDQ01wU2huTDNtbWlLd1AxeXJ5U3ZWUTZiSGtJZQ?oc=5",
+      "pub": "Sat, 09 May 2026 01:00:00 GMT"
+    },
+    {
+      "id": "a40",
+      "type": "article",
+      "headline": "「従来の右派」収まらぬ思想",
+      "description": "従来の右派の枠に収まらない政治思想について論じる。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1oUmR6Q1Y0SDFhd0lITGpPSzRCR1NQcHd2YU51LUhKOUhCRWZfUGVTdDdxVTB1a005YlF1dHk5dzA4VldXRHdMNllLeXBQMVZEMm1DNFZDM0FNMUUwdDZENW1pRFQ2c1F2MFY4Ng?oc=5",
+      "pub": "Sat, 09 May 2026 17:00:00 GMT"
+    },
+    {
+      "id": "a41",
+      "type": "article",
+      "headline": "NATOと日本、衛星拠点相互利用",
+      "description": "NATOと日本が衛星打ち上げ拠点の相互利用を検討し、非常時の対応力向上。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5DMHduMHBiamhOSFVxQ3ViZTJpeVFYdUpfTXhDdC1IbTUtM0ZpbmhQQnZvLW1oa2kybHJNbXc2MC1UdjZlTXVVRlVvTXozT043QWxmLXVCT3JWVHRSRldZczJPdzQtdENoSTFqVg?oc=5",
+      "pub": "Sat, 09 May 2026 17:00:00 GMT"
+    },
+    {
+      "id": "a42",
+      "type": "article",
+      "headline": "米国株、半導体株中心に高値",
+      "description": "米国株は小反発し、半導体株が買いを集め、ナスダックとS&P500種は最高値を更新。",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPVzNmZnZHSDY3SldsR0xZSlpKOHBKRWNVYlZNSzExYXR4RTNVWG1QdFFoOUp1Rm92M2FpSFQwN2M2VFlsMkRRYXdST0ZaUXRITl9zb3FGMTdmUnlyaFR1MThpZnFBWFUtSWtsR2UyWUJrczFMT3JacDkwRXdZYU9uZjJkNzhvcnAtNEdvWWttU3lvSlZWOF8tZw?oc=5",
+      "pub": "Fri, 08 May 2026 21:01:00 GMT"
+    },
+    {
+      "id": "a43",
+      "type": "article",
+      "headline": "アップル、インテルに生産委託",
+      "description": "アップルがインテルに半導体生産を委託する暫定合意に至ったと米紙が報じる。",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQd0VXY1BBby1WVG9rWmlGVU55MERvcUZna0NZd2lLZzV6bG1UMnREU0xKZ2ZNeHN5RzlSYkdjRXEzV2JrQlQwZklsVmdCd09mZU1lSHpOdTAtWXpPcFpuNmRvbm1MMi1raHhXMUJrR2htcWhLYmlkc0FDTG4yeWJuY1BTRUdVWk5OS3lQSlZGa2VIU18tTG1fZg?oc=5",
+      "pub": "Sat, 09 May 2026 05:37:30 GMT"
+    },
+    {
+      "id": "a44",
+      "type": "article",
+      "headline": "AIで銘柄発掘、資産2億円目標",
+      "description": "AIを活用して潜在的な優良銘柄を発掘し、50歳で資産2億円を目指す投資戦略。",
+      "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE1jaU5pY1JsMmV3ZHBhSlp1LWt1dEs2c1Yya3BUcERMTW1mY1FaUmxzWEhBQkJjMFYwR0dJdlktZ0w4MWJQTEZVenZZemdzQk5kRkZuSHFZTW1NRWxXNE56Y184MjR4YXc4VHFkZGt5d2JiODJSOWRhTXFRMlJzdw?oc=5",
+      "pub": "Fri, 08 May 2026 20:00:00 GMT"
+    },
+    {
+      "id": "a47",
+      "type": "article",
+      "headline": "ソニーG最高益、PS5が貢献",
+      "description": "ソニーグループが最高益を達成。PS5が貢献、メモリー高騰で「台数追わず」。",
+      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPQldEN0NzTmNlTE9DZjNxVUVrajBHQUQ5eHdwQUhnV0YtRy1XamVmU3Q0TUlSN0M0YlhGYTBjZE5OLVZFOVgxby1TN2F1dWRSNnk1OVpIVkZJT1NrcjNGS2JtZTBaUjItak5aalNoMFd2NkI3Vy13Umx6Y1pObzBIektYOGdIZi1HSlo1a1lUWDNxbEtRN1Zfa29R?oc=5",
+      "pub": "Fri, 08 May 2026 20:00:00 GMT"
+    },
+    {
+      "id": "a48",
+      "type": "article",
+      "headline": "KOKUSAI、富山で土地取得",
+      "description": "半導体製造装置メーカーKOKUSAIが富山県砺波市から土地を取得。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5MSV90VTh3c1VfOTlrOEFwc19ZanFCR21rclN1Vjl3MjBKMkluLXRiNHI1V0FDQ1V2QW5QWnYwaEl0dV9PdzNsY3RQMkhQUHlWQnZkUURTdVpuVkdEWWN5ZW1xNXJXam9XODNNNw?oc=5",
+      "pub": "Sat, 09 May 2026 05:30:00 GMT"
+    }
   ],
   "edges": [
-    {"source": "t1", "target": "a1"},
-    {"source": "t1", "target": "a2"},
-    {"source": "t1", "target": "a6"},
-    {"source": "t2", "target": "a4"},
-    {"source": "t2", "target": "a5"},
-    {"source": "t3", "target": "a3"},
-    {"source": "t3", "target": "a7"},
-    {"source": "a1", "target": "a2"},
-    {"source": "a3", "target": "a2"},
-    {"source": "a5", "target": "a4"},
-    {"source": "a7", "target": "a3"}
+    {
+      "source": "t1",
+      "target": "a1"
+    },
+    {
+      "source": "t1",
+      "target": "a23"
+    },
+    {
+      "source": "t1",
+      "target": "a24"
+    },
+    {
+      "source": "t1",
+      "target": "a32"
+    },
+    {
+      "source": "t1",
+      "target": "a44"
+    },
+    {
+      "source": "t2",
+      "target": "a2"
+    },
+    {
+      "source": "t2",
+      "target": "a4"
+    },
+    {
+      "source": "t2",
+      "target": "a7"
+    },
+    {
+      "source": "t2",
+      "target": "a10"
+    },
+    {
+      "source": "t2",
+      "target": "a12"
+    },
+    {
+      "source": "t2",
+      "target": "a13"
+    },
+    {
+      "source": "t2",
+      "target": "a14"
+    },
+    {
+      "source": "t2",
+      "target": "a16"
+    },
+    {
+      "source": "t2",
+      "target": "a19"
+    },
+    {
+      "source": "t2",
+      "target": "a33"
+    },
+    {
+      "source": "t2",
+      "target": "a42"
+    },
+    {
+      "source": "t2",
+      "target": "a44"
+    },
+    {
+      "source": "t2",
+      "target": "a47"
+    },
+    {
+      "source": "t2",
+      "target": "a48"
+    },
+    {
+      "source": "t3",
+      "target": "a2"
+    },
+    {
+      "source": "t3",
+      "target": "a3"
+    },
+    {
+      "source": "t3",
+      "target": "a5"
+    },
+    {
+      "source": "t3",
+      "target": "a8"
+    },
+    {
+      "source": "t4",
+      "target": "a35"
+    },
+    {
+      "source": "t4",
+      "target": "a42"
+    },
+    {
+      "source": "t4",
+      "target": "a43"
+    },
+    {
+      "source": "t4",
+      "target": "a47"
+    },
+    {
+      "source": "t4",
+      "target": "a48"
+    },
+    {
+      "source": "t5",
+      "target": "a23"
+    },
+    {
+      "source": "t5",
+      "target": "a24"
+    },
+    {
+      "source": "t5",
+      "target": "a41"
+    },
+    {
+      "source": "t6",
+      "target": "a17"
+    },
+    {
+      "source": "t6",
+      "target": "a18"
+    },
+    {
+      "source": "t6",
+      "target": "a25"
+    },
+    {
+      "source": "t6",
+      "target": "a26"
+    },
+    {
+      "source": "t6",
+      "target": "a30"
+    },
+    {
+      "source": "t6",
+      "target": "a31"
+    },
+    {
+      "source": "t6",
+      "target": "a32"
+    },
+    {
+      "source": "t6",
+      "target": "a38"
+    },
+    {
+      "source": "t6",
+      "target": "a39"
+    },
+    {
+      "source": "t6",
+      "target": "a40"
+    },
+    {
+      "source": "t6",
+      "target": "a41"
+    },
+    {
+      "source": "t7",
+      "target": "a13"
+    },
+    {
+      "source": "t7",
+      "target": "a16"
+    },
+    {
+      "source": "t7",
+      "target": "a25"
+    },
+    {
+      "source": "t7",
+      "target": "a39"
+    },
+    {
+      "source": "a8",
+      "target": "a3",
+      "label": "影響"
+    },
+    {
+      "source": "a7",
+      "target": "a4",
+      "label": "詳細"
+    },
+    {
+      "source": "a5",
+      "target": "a8",
+      "label": "影響の可能性"
+    },
+    {
+      "source": "a13",
+      "target": "a16",
+      "label": "原因"
+    },
+    {
+      "source": "a1",
+      "target": "a23",
+      "label": "関連"
+    },
+    {
+      "source": "a24",
+      "target": "a23",
+      "label": "動機"
+    },
+    {
+      "source": "a23",
+      "target": "a24",
+      "label": "解決策"
+    },
+    {
+      "source": "a18",
+      "target": "a30",
+      "label": "関連"
+    },
+    {
+      "source": "a10",
+      "target": "a33",
+      "label": "事例"
+    },
+    {
+      "source": "a39",
+      "target": "a25",
+      "label": "背景"
+    },
+    {
+      "source": "a23",
+      "target": "a41",
+      "label": "文脈"
+    },
+    {
+      "source": "a42",
+      "target": "a43",
+      "label": "背景"
+    },
+    {
+      "source": "a43",
+      "target": "a47",
+      "label": "関連"
+    },
+    {
+      "source": "a43",
+      "target": "a48",
+      "label": "影響"
+    }
   ],
-  "fetchedAt": "2026-05-09T06:00:00Z"
+  "fetchedAt": "2026-05-09T19:57:49.507723+00:00"
 }

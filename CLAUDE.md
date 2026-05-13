@@ -16,14 +16,21 @@ open index.html
 
 ## Architecture
 
-Vanilla HTML/CSS/JS single page. Only `app.js` handles tab switching; everything else is static.
+Vanilla HTML/CSS/JS single page. Two-column layout below the top bar.
 
 | File | Role |
 |------|------|
-| `index.html` | Structure — tab nav + sections |
-| `style.css` | Theme — dark header (`#1a1a2e`) + accent color (`#e94560`) |
-| `app.js` | Maps `.tab-btn[data-tab]` buttons to `#<tab-id>` sections via class toggling |
+| `index.html` | Structure — `.main-layout` splits into `.left-col` (news + sports) and `.right-col` (note) |
+| `style.css` | Theme + two-column flex layout |
+| `app.js` | Groups/shortcuts, weather, search suggestions, Claude bar; calls `initNews()` on load |
 
-## Adding a tab
+## Layout
 
-Add a `<button data-tab="xxx">` in the nav and a `<section id="xxx">` in the body — no changes to `app.js` needed.
+```
+[ top-bar: search | claude | weather ]
+[ groups section ]
+[ main-layout                         ]
+[ left-col            | right-col     ]
+[ #news               | #note         ]
+[ #sports             |               ]
+```

@@ -592,63 +592,29 @@ body {
   background: #1557b0;
 }
 
-/* ── Tab section ─────────────────────────────────────────────────────────────*/
+/* ── Two-column layout ───────────────────────────────────────────────────────*/
 
-.tab-nav {
+.main-layout {
   display: flex;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e8eaed;
-  padding: 0 16px;
-  gap: 2px;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 24px;
 }
 
-.tab-btn {
-  padding: 11px 20px;
-  border: none;
-  background: transparent;
-  color: #5f6368;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: grab;
-  border-bottom: 3px solid transparent;
-  border-radius: 6px 6px 0 0;
-  transition: color 0.15s, background 0.15s;
-  user-select: none;
+.left-col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
-.tab-btn:hover {
-  color: #202124;
-  background: #e8eaed;
+.right-col {
+  width: 360px;
+  flex-shrink: 0;
 }
 
-.tab-btn.active {
-  color: #1a73e8;
-  background: #e8f0fe;
-  border-bottom-color: #1a73e8;
-}
-
-.tab-btn.dragging {
-  opacity: 0.3;
-}
-
-.tab-btn.drag-over {
-  background: #e8eaed;
-  color: #202124;
-}
-
-main {
-  padding: 24px 24px;
-}
-
-.tab-content {
-  display: none;
-}
-
-.tab-content.active {
-  display: block;
-}
-
-.tab-content h2 {
+.left-col section h2 {
   font-size: 1.1rem;
   font-weight: 500;
   margin-bottom: 16px;

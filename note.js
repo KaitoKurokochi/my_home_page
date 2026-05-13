@@ -261,10 +261,4 @@ function initNote() {
   }
 }
 
-document.querySelector('.tab-btn[data-tab="note"]').addEventListener('click', () => {
-  const container = document.getElementById('note-container');
-  if (!container.hasChildNodes()) initNote();
-});
-
-// Auto-init because My Note is the default active tab
 initNote();

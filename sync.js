@@ -40,7 +40,7 @@ async function pullSync() {
 
 // Push localStorage → remote
 async function pushSync() {
-  if (!_syncToken()) { console.warn('[sync] push skipped: no token'); return; }
+  if (!_syncToken()) return;
   const groups  = JSON.parse(localStorage.getItem('mypage_groups') || '[]');
   const labels  = JSON.parse(localStorage.getItem('note_labels')   || '[]');
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify({ groups, labels }, null, 2))));
@@ -52,11 +52,8 @@ async function pushSync() {
     if (res.ok) {
       const data = await res.json();
       localStorage.setItem(SYNC_SHA_KEY, data.content.sha);
-    } else {
-      const err = await res.json().catch(() => ({}));
-      console.warn('[sync] push failed', res.status, err.message);
     }
-  } catch (e) { console.warn('[sync] push error', e); }
+  } catch (_) { /* silent */ }
 }
 
 // Pull on page load (sync.js is loaded last, so render/renderLabelBar are already defined)

@@ -3,287 +3,420 @@
     {
       "id": "t1",
       "type": "topic",
-      "title": "AI技術の進化と応用"
+      "title": "AI技術の進化と課題"
     },
     {
       "id": "t2",
       "type": "topic",
-      "title": "AIと著作権・倫理問題"
+      "title": "円安と為替介入"
     },
     {
       "id": "t3",
       "type": "topic",
-      "title": "円安と為替市場の動向"
+      "title": "日銀の金融政策と金利動向"
     },
     {
       "id": "t4",
       "type": "topic",
-      "title": "日銀の金融政策と金利"
+      "title": "半導体産業政策"
     },
     {
       "id": "t5",
       "type": "topic",
-      "title": "日本の財政健全化と政策"
+      "title": "自動車産業のEV戦略転換"
     },
     {
       "id": "t6",
       "type": "topic",
-      "title": "政府・行政におけるAI活用と政策"
+      "title": "ソフトウェア開発とIT人材"
     },
     {
       "id": "t7",
       "type": "topic",
-      "title": "ソフトウェア開発とIT業界"
+      "title": "米中AI技術覇権争い"
+    },
+    {
+      "id": "t8",
+      "type": "topic",
+      "title": "日本経済の現状と政策論"
     },
     {
       "id": "a1",
       "type": "article",
-      "headline": "国産AI、海外展開へ",
-      "description": "日本企業が開発したAI技術の海外市場への展開戦略を報じる。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9WcmhjaWdmTkdBT2V0YmtNLXJTVW1UQmc0TmpvamdMTmpDbWx6TnNtZVNuRWlfdWlIMG1ZZkF6UHM0em1uelRqekdfZmgzcHV1NVRhTzE3ektTQmZSV1kxNzVfZFBicHZxelBxdQ?oc=5",
-      "pub": "Wed, 13 May 2026 17:00:00 GMT"
+      "headline": "フィックスターズ決算発表",
+      "description": "2026年9月期第2四半期決算補足説明資料。",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNUThPRFpFV1M5LXdobEZvVk9BTm9uODRzaWo4NjdhSUhhZDlQOG1QMl96TXRhc3pRTldpdzRScl93enliQ0wxU3dtN3FTNUx1blo2d2hRTkVBUGQzME5VdGpIWlZMeHVfS3Z0NXZUQ0t6RmdLX2V0MzExMnFjQzFLV1ZWSEZHWWRCRm1nbUpFZXE5TXBCZWRzdHBvMDA?oc=5",
+      "pub": "Thu, 14 May 2026 08:28:41 GMT"
     },
     {
       "id": "a2",
       "type": "article",
-      "headline": "シャープ、AIキャラ会話",
-      "description": "テレビに搭載されたAIキャラクターとの雑談や番組推薦サービスを発表。",
+      "headline": "シャープ、AIキャラと会話",
+      "description": "テレビ上でAIキャラが雑談や番組推薦サービスを提供。",
       "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFA4aTViQjBlNE9GVm1PZDluWGZXdi1lbTlhdnVCN0l0U1ZhWG5zTTJSQ2c5Z2tPbmF6dHJWclp3RTZ6ZmhEOE03NWFDLVpuQVNnNWg4eC1oOEZBR1BtcEZjTlhmQkFYel91QVFKUA?oc=5",
       "pub": "Thu, 14 May 2026 06:27:28 GMT"
     },
     {
       "id": "a3",
       "type": "article",
-      "headline": "AI検索、記事「ただ乗り」問題",
-      "description": "AI検索サービスによるニュース記事の無断利用が著作権侵害の懸念。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE85LXRnV1FzVFlJeXd2SjBEZ1hrUHFjQ2hVQlhSN1BIUlUxYlpWYnlLVHVsYl9UV2VBNFRuak1ZVG0wdUxXOG4zS1d2WTlnbXFWeVl6WThJSWVPLVNNTTM2UDZxOTl1VmdWWkdTUg?oc=5",
-      "pub": "Thu, 14 May 2026 02:00:50 GMT"
+      "headline": "AI、収益化フェーズへ",
+      "description": "日経BP「トレンドマップ2026上半期」がAIの収益化を指摘。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9ZSXJoaF9CeGNTTzBCMks1YmhLdmlrTDVUMFNFWkJLZVNpb25SdURQQUZrNnJ3cGdhc1Q2T2hvblRETVFWNC1GQ1ZRaEJoWVJycU9teUMtVngxVFE5WV9hTmFrVW83Q2ZaNXNZaQ?oc=5",
+      "pub": "Thu, 14 May 2026 17:00:00 GMT"
     },
     {
       "id": "a4",
       "type": "article",
-      "headline": "AI検索著作権侵害で提訴",
-      "description": "日経・朝日が米AI新興企業を著作権侵害で提訴、初弁論。",
+      "headline": "AI検索で著作権侵害訴訟",
+      "description": "日経･朝日が米新興を提訴、AI検索の著作権問題が顕在化。",
       "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5EZWRYQS0zSEpQejZXeFlxZlJxaFZSWTNPc0o0TjlHN2RhZy1ONEVQc29hNTl2elhERmp4SEFhZFFVOWlGaXBYNGhqMFdGZS01bm1JaXVWT1pnanR5RXZtOGhoODVHQjVJZ0RQVQ?oc=5",
       "pub": "Thu, 14 May 2026 02:00:30 GMT"
     },
     {
+      "id": "a5",
+      "type": "article",
+      "headline": "AI検索「ただ乗り」深刻化",
+      "description": "急拡大するAI検索による記事利用の著作権問題と対策。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE85LXRnV1FzVFlJeXd2SjBEZ1hrUHFjQ2hVQlhSN1BIUlUxYlpWYnlLVHVsYl9UV2VBNFRuak1ZVG0wdUxXOG4zS1d2WTlnbXFWeVl6WThJSWVPLVNNTTM2UDZxOTl1VmdWWkdTUg?oc=5",
+      "pub": "Thu, 14 May 2026 02:00:50 GMT"
+    },
+    {
       "id": "a6",
       "type": "article",
-      "headline": "円相場、日銀発言で乱高下",
-      "description": "日銀委員の発言を受け円相場が一時急伸するも、その後押し戻される。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1OV3E2UV9jbjZrUHR6THdqTlpFZC1DNnRnQ1ViUVlVMEpLX2pzTFY1djNBRTVqeXdSc3ZZcVk5RmZ1dWRoNUdJaGFJcFk1RlA3Mm5DWS1pMGhXQVk1WHd4X1o2MElUYXF2OVpOcg?oc=5",
-      "pub": "Thu, 14 May 2026 05:20:10 GMT"
+      "headline": "アリババ・テンセントAI苦悩",
+      "description": "コスト高と無料提供でAI事業の低収益に直面。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE40WnFVYm1BLUxvRmlrZmhvYW1fcy13aUNKSDRTclotUDFBbDlGbXpsOV83VGFlamRWNFFPaVRaXzB5MUV1cFdhaE9qUEdCSFVabTRFUFFhYVBjSTRkWWwzZlpiTHpkMWRLcjR3VQ?oc=5",
+      "pub": "Thu, 14 May 2026 10:42:17 GMT"
+    },
+    {
+      "id": "a7",
+      "type": "article",
+      "headline": "動画AI米Runwayが東京拠点",
+      "description": "日本アニメ知財活用支援、Sora撤退を商機と捉える。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBiWjB1SG5MUExYbFZ5T19zdG1CXzJjZVlFZW1TNGIwNUpfUlFwZk9saXVOa3gwNEREd0NneXRGMmxxdHdsMTJGb1lrNFBwdnRxdk1VY2szdFhPN1F6eUotNFRmLXF0RVhvNEYzaA?oc=5",
+      "pub": "Thu, 14 May 2026 20:03:07 GMT"
+    },
+    {
+      "id": "a8",
+      "type": "article",
+      "headline": "富士通、OJTで社内AI構築",
+      "description": "IT新人教育でOJTを通じた社内AI環境構築を推進。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5yNENBTHBRc01wZHdUNGNvdGYtQ1BycnIxN0lINl94ZVNtaG9LWlVuSkFrRVBMX29BVjFGUVFsX0Y3YTZ0bkJ1dW1iVmpXMmFHVHhJXzllM25idDl4YXJnTnlGMEdsUEJJWXFobA?oc=5",
+      "pub": "Thu, 14 May 2026 20:00:00 GMT"
     },
     {
       "id": "a10",
       "type": "article",
-      "headline": "円安155円、介入効果に懸念",
-      "description": "円安が155円台に迫る中、輸入企業の円売りで政府介入効果が薄れる可能性。",
-      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQVGgtYWg1eWNETnhsbGtwRlFNMnU2d250MmxaNTRNR284LTQxVWszSFh1MUgtTEZCY0lpR2l0OUhKT3FOLUhMQzJJSUduYjl0cEJyQlJwVmJ2MkVaWlRvZzdsWmN0ZXZkZkp3TGYwWDlwQS1JelZNN1JzLWJUSjVvSUJ0b0hENFRJS0h3OTRJREtCZDJpNWlzM05iVzc1SVRaZVU3U0R5VFc?oc=5",
-      "pub": "Thu, 14 May 2026 09:01:00 GMT"
+      "headline": "円相場、日銀委員発言に限定反応",
+      "description": "一時急伸も押し戻される。増日銀委員発言への市場反応。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1OV3E2UV9jbjZrUHR6THdqTlpFZC1DNnRnQ1ViUVlVMEpLX2pzTFY1djNBRTVqeXdSc3ZZcVk5RmZ1dWRoNUdJaGFJcFk1RlA3Mm5DWS1pMGhXQVk1WHd4X1o2MElUYXF2OVpOcg?oc=5",
+      "pub": "Thu, 14 May 2026 05:20:10 GMT"
     },
     {
-      "id": "a11",
+      "id": "a12",
       "type": "article",
-      "headline": "円相場5日続落、金利差要因",
-      "description": "日米金利差拡大への思惑から円売りが続き、円相場が5日続落。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE0tamtUUl9HRVN0aFNfbWxnemoya25MNGZMeTN1cHVYYzJkX01kM1NqdzBLcndtdHBpX3AyOTF2dDNTTWt0d2J0OGE5UXczVldfaVJyeHc4bFhSZDl3d0lvWGlleGk2WmZuYnh1NQ?oc=5",
-      "pub": "Thu, 14 May 2026 08:38:43 GMT"
-    },
-    {
-      "id": "a13",
-      "type": "article",
-      "headline": "円安158円迫る、米インフレ",
-      "description": "円安が158円に迫り、政府の為替介入ライン突破が懸念される。米インフレが拍車。",
+      "headline": "円じり安、158円迫る",
+      "description": "「介入ライン」突破、米インフレ拍車で円安進行。",
       "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5qSXEzUDc2aEVJMF9aY0hCa2pZRmlCZndtZkZONXctbnlTd0dRMFA4THJkUDFFM3k4NHJjU2dGZ1ZGNU91NkhMdFk1ZlJfOUZZOVhCdlRCaF8zQzFQdlUxZWFqM1p4WUxQcDJqSQ?oc=5",
       "pub": "Thu, 14 May 2026 05:30:00 GMT"
     },
     {
+      "id": "a13",
+      "type": "article",
+      "headline": "155円に円売りの壁",
+      "description": "介入効果を弱める輸入企業の円売り動向。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1KSU1DSmcxZXlSM19TUWg1aWNJdUFPUGJOQzJjYlFlMmVxVlJ4cGlmV0p2SHFUZVRaclFlUDZmSjctQTBhSUFyX2FCeWJNbjhZVVNrQTR0blJFQzV0aWZRVXZoVWdTQjNqa3NrVQ?oc=5",
+      "pub": "Thu, 14 May 2026 09:01:14 GMT"
+    },
+    {
       "id": "a14",
       "type": "article",
-      "headline": "NY円続落、米物価指標で",
-      "description": "予想を上回る米物価指標を受け、NY円相場が続落し157円台後半に。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9Na3dYZ3FmWk1MaEcxaTNOVTIwLUtLUnFrcjBvdDBWSUhsTTVjRFQ4OGV3MFlHektnOVR2eVk3eFNmMngwZ3pwRWZwNDRuOW5rLXRQTzR5WmNOZDhlNGRYWTFKOEZaZXRnQnhUWA?oc=5",
-      "pub": "Wed, 13 May 2026 21:52:03 GMT"
+      "headline": "円相場、157円台後半で横ばい",
+      "description": "対ユーロは下落。為替市場の動向。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBEbXBKSmhnYmh0SVVzbDlKZEM1RFJIWTkybUxJOEpiVVFpRXdYc1Z4WFFKS2ZlTlJ5V0Q4Zl9ldzFhNHlYYjgwWnM3cUxYOXBmTFdpY3I1LUFMVk9ha2J5bG1TNmF1SkhSWkVsaA?oc=5",
+      "pub": "Wed, 13 May 2026 23:49:27 GMT"
     },
     {
       "id": "a15",
       "type": "article",
-      "headline": "日銀松本、景気判断据え置き",
-      "description": "日銀松本支店が5月の地域経済報告で景気判断を据え置いた。",
-      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQVWxDSmFvejBLZ0p3RjBBcDc2dXNEWUVDRjNHWGstOTZTN2ZwZjE0SkVDVC04NDVMSlc5M0VsOS1DUFhpOEltYm9rRXZ0NWtJZF92Z1Uwc2lYVllUVFluUFdTZWRzcDBBYzZIQnZSZklwMHJfczNfRmRnNjRlOXMyYk1ERmZjekxVVmJndW51anNpY3c5ckZxb1ZwaElPZE1aYUFWMDV5dkY?oc=5",
-      "pub": "Thu, 14 May 2026 06:30:00 GMT"
+      "headline": "円一時158円台に下落",
+      "description": "円買い介入後の安値を更新し、円安が進行。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE10RVl1TnI4cGZ0MlRWZXQ3S0kydWR4NE9VdHl5cVl4NmlReFVaczJFZGFUNlNSOU53ejJSZXh0Zl9oWGlhLVhjcEVhb3VrR1RJWndoQ2QwazVQUkJFa2hrRHZvMU1SQk94TWFHNA?oc=5",
+      "pub": "Thu, 14 May 2026 13:06:34 GMT"
+    },
+    {
+      "id": "a17",
+      "type": "article",
+      "headline": "円相場、5日続落",
+      "description": "日米金利差への思惑で円売りが続く。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE0tamtUUl9HRVN0aFNfbWxnemoya25MNGZMeTN1cHVYYzJkX01kM1NqdzBLcndtdHBpX3AyOTF2dDNTTWt0d2J0OGE5UXczVldfaVJyeHc4bFhSZDl3d0lvWGlleGk2WmZuYnh1NQ?oc=5",
+      "pub": "Thu, 14 May 2026 08:38:43 GMT"
     },
     {
       "id": "a18",
       "type": "article",
-      "headline": "長期金利上昇、日銀発言で",
-      "description": "日銀審議委員の発言を受け、長期金利が2.620%に上昇した。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1kbHhMaHNlbnNHUEZQZ3U4dWViakh3Z2otd0FXRWZoRUItSU92V0xvakpUZW1HMC1GTjhlenVwcExCczVxTTlMbTFYQ2JvYXJkNG9HVEFaRklXUmZpU1JUQTBIM1lwTzV4QkpGdQ?oc=5",
-      "pub": "Thu, 14 May 2026 04:34:47 GMT"
+      "headline": "日銀、長野の景気判断据え置き",
+      "description": "5月の地域経済報告で景気判断を据え置き。",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNMXhrQkRTUmxQYkV4QmtKUFdDY1kzR01wWmg1OGRUS2Y0SC1jY21DSmZWWDJIU2tDMWVJY1dHRWtTZXcwR3dIYTlpZkFyUnhodkpNZUhVYWYyUm51SEJoaG5NN0tPRHA2VnZUVDJiYnBfNGI3Wmc3Y09rMFZvX2lsRWJRaGJ3TUo3a1JYcUNyY3F0a3RLZnp2TkM3V2xHSlU3WDBGU3U3cVE?oc=5",
+      "pub": "Thu, 14 May 2026 16:52:34 GMT"
     },
     {
       "id": "a19",
       "type": "article",
-      "headline": "円相場下落、米利上げ観測",
-      "description": "米利上げ観測と実需の円売りにより、円相場が157円台後半に下落。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBhNm02NU9lNmY0enhNZkxJT0hvd1N1WTdiV3VVZEtYUkFsZmRIZDZ5RzEtbVJ2NFJOWmFxR0EyVkFFVTBCS0RUVEdDQ3lvQmJTNmg0T0NjVWhia3dLYXcxN0kyTmt5MDEwRUdxaA?oc=5",
-      "pub": "Thu, 14 May 2026 03:17:13 GMT"
+      "headline": "増日銀審議委員、早期利上げ望む",
+      "description": "日銀審議委員が早期の利上げが望ましいとの見解。",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOVTgwaDZPRENmZW5oVWF5d05GRllJejMtcHpkNVVFMlN2eEZKazhNZVZ5bW5nMUZfa3Mxallxcjc3Z3lWOVlnWWxuVlR4c0M1T29ZZWhLRFRNWDhVWnZwZ1lzNUZtNnlscm1IYmdHQW8wRlRmYmJJcUU0eTZkaHFVbnppXzdTV0dGU2tkeUhHZFFsM1JLT0Q1QTJ3VVkyS2Uwdm5TclBQYVQ?oc=5",
+      "pub": "Thu, 14 May 2026 17:03:23 GMT"
     },
     {
       "id": "a21",
       "type": "article",
-      "headline": "積極財政、財源論を注視",
-      "description": "日本生命の河崎氏が、積極財政における財源確保の重要性を指摘。",
-      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQbk1teTM5MjZPTkwxb1lwZWJHbTF5VVI3TjdtbXJQbm9teHhWTFBIWUhhZDBaZWZzakZLMHVyMENLbGxCUXpnUjNxRmlIamlBNmRuRmRtckhCT3lTQWJaTGN4bmF0bFFXeDFrYjlMajhCbTVBRUNvNnk1elQzeHRVSVIxVGcwdFFVWXV5M1pqa0FxMU1HWlZJeHNSV2NkM1hkZDdOb191ems?oc=5",
-      "pub": "Wed, 13 May 2026 17:06:05 GMT"
+      "headline": "日銀松本支店、景気判断据え置き",
+      "description": "5月の景気判断を据え置き。",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQVWxDSmFvejBLZ0p3RjBBcDc2dXNEWUVDRjNHWGstOTZTN2ZwZjE0SkVDVC04NDVMSlc5M0VsOS1DUFhpOEltYm9rRXZ0NWtJZF92Z1Uwc2lYVllUVFluUFdTZWRzcDBBYzZIQnZSZklwMHJfczNfRmRnNjRlOXMyYk1ERmZjekxVVmJndW51anNpY3c5ckZxb1ZwaElPZE1aYUFWMDV5dkY?oc=5",
+      "pub": "Thu, 14 May 2026 06:30:00 GMT"
+    },
+    {
+      "id": "a22",
+      "type": "article",
+      "headline": "円下落、158円台に",
+      "description": "為替市場で円安がさらに進行し、1ドル158円台に。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBYY0xxN0J0UV9MeUlOYXRJVFk5ZWQ3R3g3b1dFWWVjalRSeWwtcHdERzJIVm5uNE5nbW9iTkpDM0RIa2UwTVh0RXV5ZDhKNmtKT0Nib3RieU1YRXQzOVVPQ21aVFpDT0FaS3dTcA?oc=5",
+      "pub": "Thu, 14 May 2026 17:00:00 GMT"
     },
     {
       "id": "a23",
       "type": "article",
-      "headline": "人民元、対米ドルで元高",
-      "description": "中国人民銀行が人民元基準値を対米ドルで元高に設定した。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5VVE45dDkxenNhT19VTW5LdGxUTzQ0VFVDVE5jTkVVWEZ1c054SW9OZ3UwUWVYX3VxR1JsaVdSdmlMUWMtajFtWVZQdEhRY0ZEOHlYWEg5M0lKM0ZtNTIwbkxROGtQMm53MXBELQ?oc=5",
-      "pub": "Thu, 14 May 2026 01:28:49 GMT"
+      "headline": "NY円相場、続落",
+      "description": "米物価指標受け円売り・ドル買いで1ドル=157円台。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9Na3dYZ3FmWk1MaEcxaTNOVTIwLUtLUnFrcjBvdDBWSUhsTTVjRFQ4OGV3MFlHektnOVR2eVk3eFNmMngwZ3pwRWZwNDRuOW5rLXRQTzR5WmNOZDhlNGRYWTFKOEZaZXRnQnhUWA?oc=5",
+      "pub": "Wed, 13 May 2026 21:52:03 GMT"
     },
     {
-      "id": "a24",
+      "id": "a25",
       "type": "article",
-      "headline": "世界で長期金利上昇、米利下げ期待薄",
-      "description": "世界的に長期金利が上昇し、インフレ観測再燃と米利下げ期待の後退。",
-      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNUDd1OUUwUThGTHdNTzdNMnlXSHdxYWFHeWhtMUlFdEY0SVBLSlVmZmFHRHpjSlZjVEo2UFdTMy1hRHBMMnYzX2didEhtYUVqd0UxQ3l4b21GNU5CaFItWW9QdG1NSGR0UWVqY2VzaFRITXpkd1hNSnczS29idHFpZzl1VC1rLXZCWTZfemM1Y041MW5lS29Yd21jMEkwdzNvNDd6aXpHd3c?oc=5",
-      "pub": "Thu, 14 May 2026 06:00:00 GMT"
+      "headline": "長期金利、2.620%に上昇",
+      "description": "増日銀審議委員の発言を受け、長期金利が上昇。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1kbHhMaHNlbnNHUEZQZ3U4dWViakh3Z2otd0FXRWZoRUItSU92V0xvakpUZW1HMC1GTjhlenVwcExCczVxTTlMbTFYQ2JvYXJkNG9HVEFaRklXUmZpU1JUQTBIM1lwTzV4QkpGdQ?oc=5",
+      "pub": "Thu, 14 May 2026 04:34:47 GMT"
+    },
+    {
+      "id": "a26",
+      "type": "article",
+      "headline": "ロンドン外為、円一時158円台",
+      "description": "ユーロは対ドルで下落、円相場は神経質に振れる。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBaTnZpZ2t0X0VWSXVsUXR1SEJia0pFUjJFbU8zUk9xSDFuTkRLcjhzYUk2UXJBSXUtSHZJdE5JenRJdFU0bnNGSFBKRzhUSl8wNnRVTlc4QmI5cWNHVUdENkVZUGlMZDFnMjVmMw?oc=5",
+      "pub": "Thu, 14 May 2026 15:52:38 GMT"
     },
     {
       "id": "a27",
       "type": "article",
-      "headline": "日米通貨当局連携が重要",
-      "description": "市場安定のため、日米通貨当局の緊密な連携が必要であると社説が指摘。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBWajctX0dnNDNIdDRWVXNrUURVQmNPYTQ2Z19pUjJZYkNsUE55aTlFU29OejVfZzU4WHRXMFV2LUtyNmlzRW9pOEpnRjFnQU5lREI4WEpoY3o1ZFZ3S2ZhV2llMkFpQURQSWplOQ?oc=5",
-      "pub": "Wed, 13 May 2026 17:00:00 GMT"
-    },
-    {
-      "id": "a28",
-      "type": "article",
-      "headline": "AI悪用サイバー攻撃に懸念",
-      "description": "高度なAI技術がサイバー攻撃に悪用される可能性への懸念が高まる。",
-      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQbjU1cUZJT1lDZHpxTVludm9ydmtUcnp1WmJJRWFWcTM5M2lfOUFUaEhKLTk5R2VDQnp3MHhrNHFKTHhsOTB3QUN1Z1lZUDJFa2pIdVZzYjFBNm9IRm9sQ3RVNzRieTB3NlBsZkpyUWRBOXNzM0tkQ1otLXlvNjBaNzdhRGV1NjZxbG9BTzd5WWdRMWJGTVNtd1B3RmZtZ3J4U0VFMzVHRGc?oc=5",
-      "pub": "Wed, 13 May 2026 17:09:57 GMT"
+      "headline": "南日本銀行、純利益46%減",
+      "description": "27年3月期、中東情勢で与信費用増が影響。",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOYXVqdXB3eS1wZ2dlMXhaSUZJcDVydDhJZHNTYTBJaE03R1QzYnV4cFpPVU9sRlplR3dNY21xVEc0dWM0TkpweTBWZ1BwdHBta1ZEMjhlWEdGb1NLR21pb2dqQkUyS0N2T2lUYUlJZWJjMC1JYUpjcThOYWFOSEtjX2IwRk51c1FyWmZ4akhUOXVCWmxDcVN1VWdSU25BcUhFbGxqMk5B?oc=5",
+      "pub": "Thu, 14 May 2026 10:46:00 GMT"
     },
     {
       "id": "a29",
       "type": "article",
-      "headline": "長期金利2.635%に上昇",
-      "description": "長期金利が2.635%まで上昇し、30年債入札が弱めだった。",
-      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNWWoyb2FJVS1ZNlFFYzRHZThZZ2FuUUhZbEJPQkNFWjZydHpkQWRtY2xmM0xJLU9iVEdHekJRSDd0VmlvSEV4dTk0eUZwdllveDU2QVpKcWlsNW9MYW8yaDF2enB2bHNWMFBidDVweXpMbzNUMkhQOGhRUVdaQ3JzYUxGejhaRnhxLVd4cjB5bEwzS2lfUlMzTkpHbGNPQWRnZk03NUd3?oc=5",
-      "pub": "Thu, 14 May 2026 06:31:00 GMT"
+      "headline": "長野「巡るスワン」経済効果185億円",
+      "description": "朝ドラ「巡るスワン」が長野県にもたらす経済効果。",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNUEpYN05QaFo2UDRHZ3B4UVo0UnpYWDd2cmVqTEw4MkpqNDV0dXZ4SlVDV2VIVkcteGVFM3ZhOExuT2xPaHVTRkVrUUtIRU10b1N4enZPSFE0YTZIVUhsS3ZZLXpVSFNMTTJYV3duamZpdkthRUxoVXBLS3lBMGtrQ1BVWmZEZ0F0YlBYRVhxNFhXM1BXMXNtcVYxaENmazBXMnlIOU1tdno?oc=5",
+      "pub": "Thu, 14 May 2026 16:52:38 GMT"
+    },
+    {
+      "id": "a30",
+      "type": "article",
+      "headline": "河合楽器、純利益2.8倍",
+      "description": "前期純利益11億円、為替差益が大きく寄与。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBCdHh5YTZSOVVKNEFjY21PV1QzbDVlX20zVnNhT0g3NU0wR3hqb25YSHkzTGdBdjYycExrTmNseVpBaF92U1BaU3pQYkJjRHBuYUQ0b1pheHVQV3J3c2wyMi1YaFlyNTZsU3Rvcw?oc=5",
+      "pub": "Thu, 14 May 2026 16:49:00 GMT"
     },
     {
       "id": "a31",
       "type": "article",
-      "headline": "三菱自、ベトナムでソフト開発",
-      "description": "三菱自動車がベトナムFPTとソフト開発で協業、合弁会社設立も視野。",
-      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOZ2R5MzdHVVZnNktWMVhhcHNONzRfaFNJOWlpX0VhbVB5Y0VvSzJaQmRqNzNqcjZscXI3akFyRWdOcE1DTXoxcHVzOW5udkJoMHJHMXBDbzJRcDZVUDJ3Y0FqZThEZE04WjViemRla09MZ0ZMUkRfVk9qd2hjWTJCdXNKWDZYemhCNFdkSTFGRkpUOEJBWVlYaEp6ZksxV3B2N0JfcFF3?oc=5",
-      "pub": "Thu, 14 May 2026 08:58:00 GMT"
+      "headline": "日銀大阪支店長が就任会見",
+      "description": "藤田研二氏が就任、「双方向の意思疎通を重視」。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9RT0Q2c25SaWJtRl82TlY5WU5hdHEzNzczTzVwTy1zZEk1SDdsU1lMaGg4eDRsZlR5YTlka0R5MjJPNUpOMWpZZU1Lc1hEZDh1b21wR3F5SG5ERWZQX3ZwM1Jpd2ltaFp0amtReQ?oc=5",
+      "pub": "Thu, 14 May 2026 11:32:53 GMT"
     },
     {
-      "id": "a36",
+      "id": "a32",
       "type": "article",
-      "headline": "配車アプリGO、6月上場へ",
-      "description": "配車アプリ「GO」が6月16日に上場予定、時価総額1800億円規模。",
-      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQLVhKMXJYZTlrOENNOVhOZUEtLVRncXBKYnpOYWl6akotTFpPb2ZRZThqWlY0amk1Wm9kX3hEbVg5c3FrVTRiVHhtNVV1Z2ZYRXhLRnFWWXFJdkt6SHhSYjZiN1l4MThWZ3hEVzQxRmdDeEUwcnN4eHVQZEtGTjZfX0VITGFHRG1QN2NXMmRlNU9HbkUwdmNLdjc2VjBFTWNJWFg0azB3?oc=5",
-      "pub": "Thu, 14 May 2026 09:11:00 GMT"
+      "headline": "朝ドラ経済効果、日銀試算",
+      "description": "「巡るスワン」が長野県内で185億円の経済効果。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE0zckVFdXYta3c0aU5FZDF1cldSQ1FDSS1wa0c5c2ZPcjBjRUpiQ2tNMkNfSWVueWdXM1FHWk5HaGRIYl9vZ0FvVEgyU2RKM1l4Q1FSOVNkdzk3MDhiY0pUdFQyWXljaE52a2tzUA?oc=5",
+      "pub": "Thu, 14 May 2026 06:00:00 GMT"
     },
     {
-      "id": "a40",
+      "id": "a33",
       "type": "article",
-      "headline": "「正しい」政策できない理由",
-      "description": "門間一夫氏が、日本で「正しい」政策が実行されにくい背景を論じる。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5lTGMtNkh2eWVGTFZ0NmJ0UmF6YWk1Q0w0S1FTV21qaXRsYXM1MHVzT0p3QzRhNEdtakxBZVFfM0I1eU9qOFhSbUM2dXFhLU4tTnlSWFhjUmxfVzc3T3FxNjVzcURTakZJNkJOMg?oc=5",
-      "pub": "Thu, 14 May 2026 01:30:00 GMT"
+      "headline": "世界で長期金利上昇",
+      "description": "インフレ観測再燃、米利下げ期待薄れ金利上昇。",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNUDd1OUUwUThGTHdNTzdNMnlXSHdxYWFHeWhtMUlFdEY0SVBLSlVmZmFHRHpjSlZjVEo2UFdTMy1hRHBMMnYzX2didEhtYUVqd0UxQ3l4b21GNU5CaFItWW9QdG1NSGR0UWVqY2VzaFRITXpkd1hNSnczS29idHFpZzl1VC1rLXZCWTZfemM1Y041MW5lS29Yd21jMEkwdzNvNDd6aXpHd3c?oc=5",
+      "pub": "Thu, 14 May 2026 06:00:00 GMT"
+    },
+    {
+      "id": "a34",
+      "type": "article",
+      "headline": "三菱自、ベトナムFPTと協業",
+      "description": "ソフト開発で合弁設立も視野に協業検討。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9FX2laanAxR29RQW1uLVVvTzAzX2F0LVBscTlyaXFuNVBKOHptWmo0QVN4Ykp0dUl0RW0wMUZHd01xTnQyVHhKZEtrUW8xQk9aU09hdl9aZ3RHRHFsdnY0QlVoYV94ck5yX0RVYw?oc=5",
+      "pub": "Thu, 14 May 2026 08:58:57 GMT"
+    },
+    {
+      "id": "a37",
+      "type": "article",
+      "headline": "イメージ情報開発の人事",
+      "description": "イメージ情報開発の最新人事情報。",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNeVBmOGZaMjV0YWdUNlZMbFZtRzlqSnlGbjNxcFdMN0ZJNGhmV05TVVZxTE9oOXVOZ1Qyb0NCelg4Nk1ZMm5fa2UxVktJZi05X1N1eTE0bU5WcTBxSDM4dVRMRmcyb3lXUS1WNGZhNHRjWEFfNW1FY1BhamVmaHBMbUUtR0NCLS13Wkx6cFFZdHdtMHpVdDJwcDItZk15blVHejE3bDln?oc=5",
+      "pub": "Thu, 14 May 2026 10:13:00 GMT"
+    },
+    {
+      "id": "a39",
+      "type": "article",
+      "headline": "アイティフォーの人事",
+      "description": "アイティフォーの最新人事情報。",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOYm1YU0tCbDR6ekxzOHF1NS1hUnFkUV9sRThYN1VBZGZXV2JSMTNPSTk5WWJaUU93ZmtfSF9rc2dyQjloRXl3RnlfQldIS3FWdGNTY1JtekFZUndQdUtITkExZXVPeEZVbU5UZDdGSFlNcWhfcUYxUTdiX1pySDJZMC1ONFpENFp3aDlmQlpfbTdwdVlNMEdYRDY1RWRwQ1ZISGc1clFB?oc=5",
+      "pub": "Thu, 14 May 2026 10:20:00 GMT"
     },
     {
       "id": "a41",
       "type": "article",
-      "headline": "米AI政策、事前審査案を解説",
-      "description": "米国で議論されるAI政策、特にモデルの事前審査案について解説。",
-      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQNlFFZjlhVWdmX2RWOTUySFhvY2Y4Xzl5LTlPZWZOT0VDbVpNVG55YzgzVklwS2Rna2pLXzgyd0lqVHVRSlBSOUNkVUZ5SDB2WThNMjRSbWVpZFJ2eGhPNjRzc1VUWUNJeGk3SDlQYmhwaV9xaG1pcTR6WlpacjdvSkFrQXdDRzFvQ0c4Nw?oc=5",
-      "pub": "Wed, 13 May 2026 20:00:00 GMT"
+      "headline": "鈴与シンワート社長に本多氏",
+      "description": "鈴与シンワートの新社長に本多正樹氏が就任。",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQS1h5MTlNd1RUb0k1NEJjRUkxTWtHSG5DXzZMNjY0QWFHNDNXR0wtVXlQUzVQNGZyU3BLdGVXOUpYRU8zcVNPQ3M1RzZjQkk2aVpPdDkwV2U5a2pUdGkwaFViUjJVZkYwZ1cwU3lKSDh0d1FRZWJ6M0J2c0djeWV4R3ROZWxMbE5taHY2eVVzSDlabFI5ekVfYVFpZERBRFVRNkRnVENB?oc=5",
+      "pub": "Thu, 14 May 2026 09:35:00 GMT"
     },
     {
-      "id": "a44",
+      "id": "a42",
       "type": "article",
-      "headline": "霞が関、AIで答弁作成へ",
-      "description": "国家公務員18万人にAI基盤を開放し、答弁作成や事務負担軽減を図る。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFAxck10bnNER1dLSVJaamlqUFZNMGxTLU1SWERQUlc2X3UwZVBJbTZla2lqc1JGY25WN2JkanM2RTJUNmozMGp6X1V4eEZaanZFX1J2bHVCZDFVZnRwU3pSaVNFTEltYzNZNENMOQ?oc=5",
-      "pub": "Wed, 13 May 2026 17:00:00 GMT"
+      "headline": "チェンジHD、中計目標先送り",
+      "description": "M&A仲介など不調で中期経営計画目標達成を先送り。",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQVGxFV2g3TXhrVEJuRlQ0MUtNM1JfWTNrUmJPOUIybGFLZzlScTVUZUdvM1RIRWZzRDkwakl4Wjd2QXBETGtpVkhGazV5N0hvX2NuMjl2RUpYQ0hMbTJkZTNodHhRUXU1VldYdlRYZDVhZkxhdVdkZ3hNWjNDRk5Pc1RVajd5dHVBUnlnMmVRYzVDc0JwYnZmakE3SVVWSzg0ZUhJYk9R?oc=5",
+      "pub": "Thu, 14 May 2026 10:38:00 GMT"
     },
     {
       "id": "a47",
       "type": "article",
-      "headline": "LINEヤフー、カカクコム買収再提案",
-      "description": "LINEヤフーがカカクコムへの買収を再提案、欧州ファンドに対抗し価格引き上げ。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9sYXc1b1FNSnhTODJvb0pHMEtFNzBwY3o2blBCRTFxYWx6Sjg0WVJndW00MTFnUmZFOHpxYW4zZlN5c1NUSTRfMDFKeW1obzlwMEZDZGxpZHU1WGNHZDh6RTFHTzktcENwczJIWA?oc=5",
-      "pub": "Thu, 14 May 2026 00:12:56 GMT"
+      "headline": "田中精密、純利益33%減",
+      "description": "ホンダのEV開発中止で特損計上、純利益減少。",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQY0VYLUdodURuRGxBWjA3bHZNR1AwNFRscWpOU2NBckIzMTJDeHhmVkJPYUZTZk5XS0gtV0QweTViM014dFFXcjhwQU96VHhQWF9PdnpOWE9fWWZzeWxtODZyYURHRG0zUk5KelR4UG1heEJoYVdyeHJ3Wm14YTkycTJmMHBsTG5vMVA3bXpkM2YtZVpCdlg4SUtJVldBaERpdDhIbXRR?oc=5",
+      "pub": "Thu, 14 May 2026 11:00:00 GMT"
     },
     {
-      "id": "a54",
+      "id": "a51",
       "type": "article",
-      "headline": "岸田氏、戦略分野の人材特定を",
-      "description": "岸田文雄元首相が、戦略17分野における必要な人材特定を城内経財相に要望。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE02ckNCS3lWbnhXOHplZXhEUG1rUHZsVFh1WmZsOUlMOTQ1VGtVZGdENkROcEh6R1pBRlV2dmZBbVE1UEY1NTJDdW5UemRBWUZpcXBONllfT0htRFZEZzJYMDI2emUxNXNYZDI3Sw?oc=5",
-      "pub": "Thu, 14 May 2026 02:42:56 GMT"
+      "headline": "ホンダ社長「中印が基準」",
+      "description": "EV戦略転換の背景にある社長の考え方を一問一答で。",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOcTQ5TEJieUc5UXZtRFc3RGp1OGlZYjlkQW5VWVQ5WlZXT3ZnRk8wYlF1bWc1bm4zUHk2dkRNVVdyNGZiT1JaTXBsNHNaMVl0ZTcxVlI5eFNfSVZOaFhmd2EwcnZfMHhBV0FjbXVpVGZjbjd2ZXJfVjFGMGd3b0YzRGVWVnJ2Q0xMWDNaMVRvNUd1NEloLV9FcTNvYnVmaG1qcldZTTd3?oc=5",
+      "pub": "Thu, 14 May 2026 17:07:03 GMT"
     },
     {
-      "id": "a55",
+      "id": "a52",
       "type": "article",
-      "headline": "コンテンツ産業に公的投資",
-      "description": "自民党がコンテンツ産業振興のため、公的投資5千億円以上を提言。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1BNXJjSmJOaHAyd2pFUnZJQmhvdXVCTWp0Z0hDSUZDbFpLM3NuQVdpWktzTGZmTFBVNGZuTEJod0lRaWRVdlRaU1p4dXJSNTExa0YzLXlIVnNlUEZSYkdRR1loakx2UEtRYjN5Zg?oc=5",
-      "pub": "Thu, 14 May 2026 09:00:00 GMT"
+      "headline": "半導体、非先端品も支援",
+      "description": "経産省、安定調達へ国内生産を支援、車や工作機械向け。",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPSGRVVHZnNmxHa2RNZUtIWVZvdHdKQXBWbUdIZzY5bW5Ha1VmTThBWVNVanlRWlpON2E4UGYwOEZvTFNzTFZhZnY1aFEtWmNfZFdLSUNyQjZuZGJmb3lDcWFoX3JnM3JZeWRPaThBcllZYThCY3JEb3UyWmU1OHR1Tzl0ODl3X2hiVFBERnhMd3gzcUNuZ29VdTE5SEFveTJwVDVBOE13?oc=5",
+      "pub": "Thu, 14 May 2026 17:04:40 GMT"
+    },
+    {
+      "id": "a53",
+      "type": "article",
+      "headline": "米中首脳、AI覇権巡りせめぎ合い",
+      "description": "中国市場の「開放」を演出も、AI技術覇権で対立。",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQdm41VHZyUzZzUTV5VS1pY2sxUWM0d2d2UEJXSlhOeU1uNGgtalIwcnROSUtkRko0OVMtMURsWEFmWkF0RWJpYThLOENsQ1BabzV6Q01KaGVHLW54ZExOeFJ0WG03Tk5tdFpaVzBPcS1OZjJwWWdlRTIwX2lRMzB4VG9OTUk5dnpDNEx3aThnc3ZySlJOSGtSR1U0VUZBM0dTc2c2Mmln?oc=5",
+      "pub": "Thu, 14 May 2026 09:37:00 GMT"
     },
     {
       "id": "a56",
       "type": "article",
-      "headline": "OECD、エネ支援「規模過大」",
-      "description": "OECD事務総長がエネルギー高騰対策の財政支援規模に懸念を表明。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1XOFhrTFBPME1GUU54SkYzTUpfYXdBOXljSm9PZW1mXzRvNXljeno5MmZDTXpFeUdKWkZLaW9WRWo5WWJsd21HcWZWeG9PdU9ONmtlbHV2RW5lVjNtY1BuMV9XdU1wbkJudDBqdQ?oc=5",
-      "pub": "Thu, 14 May 2026 02:42:57 GMT"
+      "headline": "ホンダ「EV空転の5年」",
+      "description": "HV回帰、4.4兆円投資も中国勢に遅れ。",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPUlpTX2R2RS1RdzdWZEs2RXJqcFdsdUp4SjRhUXU3bnhSNjhoc0UyWW5kbEV2WWJfSERRVVJuN2ZGRC1kNHZZVzdmdjRVYlVWdjcxZkNnS1JnNXVyT0N6VGFwcDQ2R201SzhVYXFxaDBjZnQ3VTN6UVEyUzBYR3ZaQk9RMGNvWXpWRzdXQ1V1bDVJSlBHOXdYcWJzQmptRWxrS1FGcnFR?oc=5",
+      "pub": "Thu, 14 May 2026 05:14:00 GMT"
     },
     {
-      "id": "a58",
+      "id": "a59",
       "type": "article",
-      "headline": "財政リスクプレミアム高まる",
-      "description": "長期金利が29年ぶり高水準となり、財政リスクプレミアムが高まっている。",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE11TEl4YlhhdmVBY3dKcEZtWEZVblVSZmhVdVViaE5sOWF5RVNrcTlzM2p4TTlFc2ZLbURJTFpkX09KS3BIRDBNeDBoUXgweExUNzlMMWpSUVVVZWZJQnFva0QxUEZ2T0V1MVFEdA?oc=5",
-      "pub": "Thu, 14 May 2026 06:37:47 GMT"
+      "headline": "なぜ「正しい」政策できないか",
+      "description": "門間一夫氏が日本経済政策の課題を論じる。",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5lTGMtNkh2eWVGTFZ0NmJ0UmF6YWk1Q0w0S1FTV21qaXRsYXM1MHVzT0p3QzRhNEdtakxBZVFfM0I1eU9qOFhSbUM2dXFhLU4tTnlSWFhjUmxfVzc3T3FxNjVzcURTakZJNkJOMg?oc=5",
+      "pub": "Thu, 14 May 2026 01:30:00 GMT"
     }
   ],
   "edges": [
     {
       "source": "t1",
-      "target": "a1"
-    },
-    {
-      "source": "t1",
       "target": "a2"
     },
     {
-      "source": "t2",
+      "source": "t1",
       "target": "a3"
     },
     {
-      "source": "t2",
+      "source": "t1",
       "target": "a4"
     },
     {
-      "source": "t2",
-      "target": "a28"
+      "source": "t1",
+      "target": "a5"
     },
     {
-      "source": "t3",
+      "source": "t1",
       "target": "a6"
+    },
+    {
+      "source": "t1",
+      "target": "a7"
+    },
+    {
+      "source": "t1",
+      "target": "a8"
+    },
+    {
+      "source": "t1",
+      "target": "a53"
+    },
+    {
+      "source": "t2",
+      "target": "a10"
+    },
+    {
+      "source": "t2",
+      "target": "a12"
+    },
+    {
+      "source": "t2",
+      "target": "a13"
+    },
+    {
+      "source": "t2",
+      "target": "a14"
+    },
+    {
+      "source": "t2",
+      "target": "a15"
+    },
+    {
+      "source": "t2",
+      "target": "a17"
+    },
+    {
+      "source": "t2",
+      "target": "a22"
+    },
+    {
+      "source": "t2",
+      "target": "a23"
+    },
+    {
+      "source": "t2",
+      "target": "a26"
+    },
+    {
+      "source": "t2",
+      "target": "a30"
     },
     {
       "source": "t3",
@@ -291,15 +424,7 @@
     },
     {
       "source": "t3",
-      "target": "a11"
-    },
-    {
-      "source": "t3",
-      "target": "a13"
-    },
-    {
-      "source": "t3",
-      "target": "a14"
+      "target": "a18"
     },
     {
       "source": "t3",
@@ -307,55 +432,55 @@
     },
     {
       "source": "t3",
-      "target": "a23"
-    },
-    {
-      "source": "t3",
-      "target": "a27"
-    },
-    {
-      "source": "t4",
-      "target": "a6"
-    },
-    {
-      "source": "t4",
-      "target": "a15"
-    },
-    {
-      "source": "t4",
-      "target": "a18"
-    },
-    {
-      "source": "t4",
-      "target": "a24"
-    },
-    {
-      "source": "t4",
-      "target": "a29"
-    },
-    {
-      "source": "t4",
-      "target": "a58"
-    },
-    {
-      "source": "t5",
       "target": "a21"
     },
     {
-      "source": "t5",
-      "target": "a40"
+      "source": "t3",
+      "target": "a25"
+    },
+    {
+      "source": "t3",
+      "target": "a31"
+    },
+    {
+      "source": "t3",
+      "target": "a32"
+    },
+    {
+      "source": "t3",
+      "target": "a33"
+    },
+    {
+      "source": "t4",
+      "target": "a52"
     },
     {
       "source": "t5",
-      "target": "a55"
+      "target": "a47"
+    },
+    {
+      "source": "t5",
+      "target": "a51"
     },
     {
       "source": "t5",
       "target": "a56"
     },
     {
-      "source": "t5",
-      "target": "a58"
+      "source": "t6",
+      "target": "a8"
+    },
+    {
+      "source": "t6",
+      "target": "a34"
+    },
+    {
+      "source": "t6",
+      "target": "a37"
+    },
+    {
+      "source": "t6",
+      "target": "a39"
     },
     {
       "source": "t6",
@@ -363,94 +488,117 @@
     },
     {
       "source": "t6",
-      "target": "a44"
-    },
-    {
-      "source": "t6",
-      "target": "a54"
+      "target": "a42"
     },
     {
       "source": "t7",
-      "target": "a31"
+      "target": "a53"
     },
     {
-      "source": "t7",
-      "target": "a36"
+      "source": "t8",
+      "target": "a1"
     },
     {
-      "source": "t7",
-      "target": "a47"
+      "source": "t8",
+      "target": "a27"
     },
     {
-      "source": "a3",
-      "target": "a4",
-      "label": "具体化"
+      "source": "t8",
+      "target": "a29"
     },
     {
-      "source": "a11",
-      "target": "a13",
-      "label": "加速要因"
+      "source": "t8",
+      "target": "a32"
     },
     {
-      "source": "a14",
-      "target": "a13",
-      "label": "加速要因"
+      "source": "t8",
+      "target": "a59"
     },
     {
       "source": "a19",
-      "target": "a13",
-      "label": "加速要因"
+      "target": "a25",
+      "label": "影響"
     },
     {
-      "source": "a24",
-      "target": "a11",
+      "source": "a17",
+      "target": "a12",
+      "label": "要因"
+    },
+    {
+      "source": "a23",
+      "target": "a12",
+      "label": "要因"
+    },
+    {
+      "source": "a12",
+      "target": "a15",
+      "label": "進行"
+    },
+    {
+      "source": "a15",
+      "target": "a22",
+      "label": "進行"
+    },
+    {
+      "source": "a13",
+      "target": "a12",
       "label": "背景"
     },
     {
-      "source": "a18",
-      "target": "a6",
+      "source": "a33",
+      "target": "a17",
+      "label": "要因"
+    },
+    {
+      "source": "a33",
+      "target": "a25",
+      "label": "関連"
+    },
+    {
+      "source": "a30",
+      "target": "a12",
+      "label": "影響"
+    },
+    {
+      "source": "a4",
+      "target": "a5",
+      "label": "具体例"
+    },
+    {
+      "source": "a6",
+      "target": "a3",
+      "label": "課題例"
+    },
+    {
+      "source": "a7",
+      "target": "a3",
+      "label": "市場拡大"
+    },
+    {
+      "source": "a56",
+      "target": "a51",
+      "label": "背景"
+    },
+    {
+      "source": "a56",
+      "target": "a47",
       "label": "影響"
     },
     {
       "source": "a29",
-      "target": "a58",
-      "label": "示唆"
+      "target": "a32",
+      "label": "詳細"
     },
     {
-      "source": "a13",
-      "target": "a10",
-      "label": "懸念"
-    },
-    {
-      "source": "a27",
-      "target": "a13",
+      "source": "a59",
+      "target": "a1",
       "label": "背景"
     },
     {
-      "source": "a55",
-      "target": "a21",
-      "label": "関連"
-    },
-    {
-      "source": "a56",
-      "target": "a21",
-      "label": "懸念"
-    },
-    {
-      "source": "a58",
-      "target": "a21",
+      "source": "a59",
+      "target": "a27",
       "label": "背景"
-    },
-    {
-      "source": "a41",
-      "target": "a44",
-      "label": "関連"
-    },
-    {
-      "source": "a54",
-      "target": "a44",
-      "label": "関連"
     }
   ],
-  "fetchedAt": "2026-05-14T09:25:17.523879+00:00"
+  "fetchedAt": "2026-05-14T20:27:59.075361+00:00"
 }

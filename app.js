@@ -62,19 +62,11 @@ function renderPills() {
     const wrapper = document.createElement('div');
     wrapper.className = 'pill-wrapper';
 
-    // Pill button with + instead of X
+    // Pill button (label only — + moved into dropdown footer)
     const btn = document.createElement('button');
     btn.className = 'group-pill';
     btn.style.setProperty('--color', group.color);
-    btn.innerHTML = `
-      <span class="group-pill-label">${group.name}</span>
-      <span class="pill-add" title="Add shortcut">+</span>
-    `;
-    btn.querySelector('.pill-add').addEventListener('click', (e) => {
-      e.stopPropagation();
-      setActiveGroup(gi);
-      openShortcutModal();
-    });
+    btn.innerHTML = `<span class="group-pill-label">${group.name}</span>`;
 
     // Hover dropdown
     const dropdown = document.createElement('div');
@@ -109,13 +101,23 @@ function renderPills() {
     } else {
       const empty = document.createElement('p');
       empty.className = 'pill-dropdown-empty';
-      empty.textContent = 'No shortcuts yet. Click + to add.';
+      empty.textContent = 'No shortcuts yet.';
       dropdown.appendChild(empty);
     }
 
-    // Delete group link at bottom of dropdown
+    // Footer: + Add shortcut (left) | Delete group (right)
     const footer = document.createElement('div');
     footer.className = 'pill-dropdown-footer';
+
+    const addShortcutBtn = document.createElement('button');
+    addShortcutBtn.className = 'pill-dropdown-add';
+    addShortcutBtn.textContent = '+ Add shortcut';
+    addShortcutBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setActiveGroup(gi);
+      openShortcutModal();
+    });
+
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'pill-dropdown-delete';
     deleteBtn.textContent = 'Delete group';
@@ -128,6 +130,8 @@ function renderPills() {
       if (activeGroupIndex >= gs.length) setActiveGroup(Math.max(0, gs.length - 1));
       render();
     });
+
+    footer.appendChild(addShortcutBtn);
     footer.appendChild(deleteBtn);
     dropdown.appendChild(footer);
 

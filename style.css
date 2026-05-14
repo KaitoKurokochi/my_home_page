@@ -372,6 +372,24 @@ body {
   padding-top: 6px;
   margin-top: 2px;
   border-top: 1px solid #f1f3f4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pill-dropdown-add {
+  font-size: 0.72rem;
+  color: #1a73e8;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.pill-dropdown-add:hover {
+  background: #e8f0fe;
 }
 
 .pill-dropdown-delete {

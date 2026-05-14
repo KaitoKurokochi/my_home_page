@@ -1081,3 +1081,60 @@ body {
   padding: 1px 6px;
   margin-bottom: 4px;
 }
+
+/* ── Morning Panel (schedule + report) ──────────────────────────────────────*/
+
+.morning-panel {
+  border: 1px solid #e8eaed;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  background: #fafafa;
+}
+
+.mp-header {
+  margin-bottom: 10px;
+}
+
+.mp-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #5f6368;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Schedule */
+.morning-schedule {
+  margin-bottom: 10px;
+}
+
+.ms-event {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid #f1f3f4;
+  font-size: 0.8rem;
+}
+
+.ms-time  { color: #9aa0a6; flex-shrink: 0; min-width: 80px; }
+.ms-title { color: #202124; font-weight: 500; }
+.ms-loc   { color: #9aa0a6; font-size: 0.74rem; }
+.ms-empty, .ms-error { font-size: 0.78rem; color: #9aa0a6; }
+.ms-error { color: #c5221f; }
+
+/* Report */
+.morning-report {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e8eaed;
+}
+
+.mr-title  { font-size: 0.85rem; font-weight: 600; color: #202124; margin: 6px 0 2px; }
+.mr-cat    { font-size: 0.72rem; font-weight: 600; color: #1a73e8; text-transform: uppercase; letter-spacing: 0.04em; margin: 6px 0 2px; }
+.mr-summary { font-size: 0.78rem; color: #5f6368; margin-bottom: 6px; line-height: 1.5; }
+.mr-item   { font-size: 0.8rem; color: #202124; padding: 1px 0; }
+.mr-text   { font-size: 0.78rem; color: #5f6368; }
+.mr-empty, .mr-error { font-size: 0.78rem; color: #9aa0a6; }
+.mr-error  { color: #c5221f; }

@@ -1,9 +1,7 @@
 name: Fetch Nikkei News
 
 on:
-  schedule:
-    - cron: "0 19 * * *"   # 04:00 JST (19:00 UTC)
-  workflow_dispatch:         # manual trigger
+  workflow_dispatch:         # manual trigger only (news now runs via local LaunchAgent → my_notes)
 
 permissions:
   contents: write

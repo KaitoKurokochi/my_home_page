@@ -202,24 +202,41 @@ function renderGraph(data) {
 
 let newsLoaded = false;
 
+const NEWS_OWNER = 'KaitoKurokochi';
+const NEWS_REPO  = 'my_notes';
+const NEWS_FILE  = 'news.json';
+
+async function fetchNewsFromMyNotes() {
+  const token = localStorage.getItem('NOTE_TOKEN') || '';
+  const headers = token
+    ? { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
+    : { 'Accept': 'application/vnd.github+json' };
+
+  const res = await fetch(
+    `https://api.github.com/repos/${NEWS_OWNER}/${NEWS_REPO}/contents/${NEWS_FILE}`,
+    { headers }
+  );
+  if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+  const meta = await res.json();
+  const content = JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\n/g, '')))));
+  return content;
+}
+
 async function initNews() {
   if (newsLoaded) return;
 
-  const graphEl  = document.getElementById('news-graph');
-  const paperEl  = document.getElementById('nikkei-paper-link');
+  const graphEl = document.getElementById('news-graph');
+  const paperEl = document.getElementById('nikkei-paper-link');
   if (!graphEl) return;
 
   if (paperEl) paperEl.href = morningPaperUrl();
   graphEl.innerHTML = '<p class="news-loading">Loading...</p>';
 
   try {
-    const res = await fetch('news.json?_=' + Date.now());
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    const data = await fetchNewsFromMyNotes();
 
-    // news.json がまだ旧フォーマット（columns）の場合はメッセージ表示
     if (!data.nodes) {
-      graphEl.innerHTML = '<p class="news-error">news.json is outdated. Run GitHub Actions to regenerate.</p>';
+      graphEl.innerHTML = '<p class="news-error">news.json is outdated.</p>';
       return;
     }
 
@@ -228,7 +245,7 @@ async function initNews() {
   } catch (e) {
     const el = document.getElementById('news-graph');
     if (el) el.innerHTML =
-      `<p class="news-error">Could not load news.json.<br><small>${e}</small></p>`;
+      `<p class="news-error">Could not load news.<br><small>${e}</small></p>`;
   }
 }
 

@@ -141,7 +141,7 @@ def call_gemini_graph(all_articles: list[dict]) -> dict:
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=60) as resp:
+    with urllib.request.urlopen(req, timeout=120) as resp:
         result = json.load(resp)
 
     raw = result["candidates"][0]["content"]["parts"][0]["text"].strip()

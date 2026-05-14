@@ -40,7 +40,7 @@ async function pullSync() {
 
 // Push localStorage → remote
 async function pushSync() {
-  if (!_syncToken()) return;
+  if (!_syncToken()) { console.warn('[sync] push skipped: no token'); return; }
   const groups  = JSON.parse(localStorage.getItem('mypage_groups') || '[]');
   const labels  = JSON.parse(localStorage.getItem('note_labels')   || '[]');
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify({ groups, labels }, null, 2))));

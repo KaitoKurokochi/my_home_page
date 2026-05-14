@@ -14,6 +14,7 @@ function loadGroups() {
 
 function saveGroups(groups) {
   localStorage.setItem(GROUPS_KEY, JSON.stringify(groups));
+  if (typeof pushSync === 'function') pushSync();
 }
 
 // Migrate old flat shortcuts to a default group

@@ -13,7 +13,10 @@ const DEFAULT_LABELS  = ['Lions_IS', 'Entertainment', 'Research'];
 
 function getToken()  { return localStorage.getItem(NOTE_TOKEN_KEY) || ''; }
 function getLabels() { return JSON.parse(localStorage.getItem(NOTE_LABELS_KEY) || JSON.stringify(DEFAULT_LABELS)); }
-function saveLabels(labels) { localStorage.setItem(NOTE_LABELS_KEY, JSON.stringify(labels)); }
+function saveLabels(labels) {
+  localStorage.setItem(NOTE_LABELS_KEY, JSON.stringify(labels));
+  if (typeof pushSync === 'function') pushSync();
+}
 
 // ── Token setup UI ────────────────────────────────────────────────────────────
 

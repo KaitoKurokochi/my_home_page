@@ -52,8 +52,11 @@ async function pushSync() {
     if (res.ok) {
       const data = await res.json();
       localStorage.setItem(SYNC_SHA_KEY, data.content.sha);
+    } else {
+      const err = await res.json().catch(() => ({}));
+      console.warn('[sync] push failed', res.status, err.message);
     }
-  } catch (_) { /* silent */ }
+  } catch (e) { console.warn('[sync] push error', e); }
 }
 
 // Pull on page load (sync.js is loaded last, so render/renderLabelBar are already defined)

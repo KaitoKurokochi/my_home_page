@@ -491,7 +491,23 @@ body {
   cursor: pointer;
 }
 
-.shortcut-item:hover .shortcut-remove {
+.shortcut-edit {
+  display: none;
+  position: absolute;
+  top: 1px;
+  right: 18px;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  color: #5f6368;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.shortcut-item:hover .shortcut-remove,
+.shortcut-item:hover .shortcut-edit {
   display: block;
 }
 

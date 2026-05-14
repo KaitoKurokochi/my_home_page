@@ -88,8 +88,14 @@ function renderPills() {
         a.innerHTML = `
           <div class="shortcut-icon"><img src="${faviconUrl(s.url)}" alt="" /></div>
           <span class="shortcut-label">${s.name}</span>
+          <span class="shortcut-edit" title="Edit">✏</span>
           <span class="shortcut-remove">✕</span>
         `;
+        a.querySelector('.shortcut-edit').addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openShortcutModal(gi, si);
+        });
         a.querySelector('.shortcut-remove').addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -144,9 +150,23 @@ const shortcutModal = document.getElementById('shortcut-modal');
 const shortcutNameInput = document.getElementById('shortcut-name');
 const shortcutUrlInput = document.getElementById('shortcut-url');
 
-function openShortcutModal() {
-  shortcutNameInput.value = '';
-  shortcutUrlInput.value = '';
+let editGroupIndex = -1;
+let editShortcutIndex = -1;
+
+function openShortcutModal(editGi = -1, editSi = -1) {
+  editGroupIndex = editGi;
+  editShortcutIndex = editSi;
+  if (editGi >= 0 && editSi >= 0) {
+    const gs = loadGroups();
+    const s = gs[editGi].shortcuts[editSi];
+    shortcutNameInput.value = s.name;
+    shortcutUrlInput.value = s.url;
+    shortcutModal.querySelector('h3').textContent = 'Edit shortcut';
+  } else {
+    shortcutNameInput.value = '';
+    shortcutUrlInput.value = '';
+    shortcutModal.querySelector('h3').textContent = 'Add shortcut';
+  }
   shortcutModal.classList.remove('hidden');
   shortcutNameInput.focus();
 }
@@ -161,7 +181,11 @@ document.getElementById('shortcut-save').addEventListener('click', () => {
   if (!name || !url) return;
   if (!/^https?:\/\//.test(url)) url = 'https://' + url;
   const gs = loadGroups();
-  gs[activeGroupIndex].shortcuts.push({ name, url });
+  if (editShortcutIndex >= 0) {
+    gs[editGroupIndex].shortcuts[editShortcutIndex] = { name, url };
+  } else {
+    gs[activeGroupIndex].shortcuts.push({ name, url });
+  }
   saveGroups(gs);
   render();
   shortcutModal.classList.add('hidden');

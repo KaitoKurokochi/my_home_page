@@ -44,6 +44,8 @@ function renderTokenSetup() {
 // ── Label bar ─────────────────────────────────────────────────────────────────
 
 let selectedLabel = null;
+const selectedRoles = new Set();
+const ROLES = ['Memo', 'Todo', 'Idea', 'Want to do', 'Question'];
 
 function renderLabelBar() {
   const bar = document.getElementById('note-label-bar');
@@ -122,6 +124,25 @@ function startLabelEdit(pill, index, currentName) {
   });
 }
 
+// ── Role bar ──────────────────────────────────────────────────────────────────
+
+function renderRoleBar() {
+  const bar = document.getElementById('note-role-bar');
+  bar.innerHTML = '';
+
+  ROLES.forEach(role => {
+    const pill = document.createElement('span');
+    pill.className = 'note-role-pill' + (selectedRoles.has(role) ? ' selected' : '');
+    pill.textContent = role;
+    pill.addEventListener('click', () => {
+      if (selectedRoles.has(role)) selectedRoles.delete(role);
+      else selectedRoles.add(role);
+      renderRoleBar();
+    });
+    bar.appendChild(pill);
+  });
+}
+
 // ── Note UI ───────────────────────────────────────────────────────────────────
 
 function renderNoteUI() {
@@ -135,6 +156,7 @@ function renderNoteUI() {
         placeholder="What did you notice or learn today?"
         rows="4"
       ></textarea>
+      <div id="note-role-bar" class="note-role-bar"></div>
       <div class="note-form-footer">
         <span id="note-status" class="note-status"></span>
         <button type="submit" class="note-submit">Save</button>
@@ -146,6 +168,7 @@ function renderNoteUI() {
   // Default selection: Research
   if (!selectedLabel) selectedLabel = 'Research';
   renderLabelBar();
+  renderRoleBar();
 
   document.getElementById('note-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -163,7 +186,8 @@ function renderNoteUI() {
     status.textContent = 'Saving...';
     status.className = 'note-status';
 
-    const title = `[${selectedLabel}] ` + text.slice(0, 72) + (text.length > 72 ? '…' : '');
+    const roleStr = [...selectedRoles].map(r => `[${r}]`).join('');
+    const title = `[${selectedLabel}]${roleStr} ` + text.slice(0, 72) + (text.length > 72 ? '…' : '');
 
     try {
       const res = await fetch(GITHUB_API, {
@@ -229,12 +253,16 @@ async function loadNotes() {
       const dateLabel = date.toLocaleDateString('ja-JP', {
         month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
       });
-      // Extract [Label] from title if present
-      const match = issue.title.match(/^\[(.+?)\]\s*/);
-      const tag   = match ? match[1] : '';
+      // Extract [Label] and any number of [Role] tags from title
+      const brackets = [...issue.title.matchAll(/\[(.+?)\]/g)].map(m => m[1]);
+      const tag      = brackets[0] || '';
+      const roleTags = brackets.slice(1);
       return `
         <div class="note-item">
-          ${tag ? `<span class="note-item-tag">${escapeHtml(tag)}</span>` : ''}
+          <div class="note-item-tags">
+            ${tag ? `<span class="note-item-tag">${escapeHtml(tag)}</span>` : ''}
+            ${roleTags.map(r => `<span class="note-item-role">${escapeHtml(r)}</span>`).join('')}
+          </div>
           <p class="note-item-body">${escapeHtml(issue.body || issue.title)}</p>
           <span class="note-item-date">${dateLabel}</span>
         </div>

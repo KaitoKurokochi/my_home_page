@@ -12,25 +12,26 @@
   <div class="top-bar">
     <div class="top-bar-inner">
     <div class="top-bar-left">
-      <form class="search-form" action="https://www.google.com/search" autocomplete="off">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input class="search-input" type="text" name="q" placeholder="Search Google or type a URL" />
-        <ul class="search-suggestions"></ul>
-      </form>
-      <form class="claude-form" id="claude-form" autocomplete="off">
-        <img class="claude-icon" src="https://www.google.com/s2/favicons?domain=claude.ai&sz=64" alt="Claude" />
-        <input class="claude-input" type="text" id="claude-input" placeholder="Ask Claude..." />
-      </form>
-    </div>
-
-    <div class="top-bar-right">
+      <div class="search-forms">
+        <form class="search-form" action="https://www.google.com/search" autocomplete="off">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input class="search-input" type="text" name="q" placeholder="Search Google or type a URL" />
+          <ul class="search-suggestions"></ul>
+        </form>
+        <form class="claude-form" id="claude-form" autocomplete="off">
+          <img class="claude-icon" src="https://www.google.com/s2/favicons?domain=claude.ai&sz=64" alt="Claude" />
+          <input class="claude-input" type="text" id="claude-input" placeholder="Ask Claude..." />
+        </form>
+      </div>
       <!-- Mini calendar -->
       <div id="cal-widget" class="cal-widget">
         <div class="cal-loading">...</div>
       </div>
+    </div>
 
+    <div class="top-bar-right">
       <!-- Apps + weather -->
       <div class="top-bar-actions">
         <div class="google-apps">
@@ -125,7 +126,7 @@
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <script src="news.js?v=20260513"></script>
   <script src="app.js?v=20260513"></script>
-  <script src="note.js?v=20260513"></script>
+  <script src="note.js?v=20260515"></script>
   <script src="sync.js?v=20260514"></script>
   <script src="morning.js?v=20260515"></script>
 </body>

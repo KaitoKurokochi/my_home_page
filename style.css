@@ -25,15 +25,26 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1400px;
   gap: 12px;
 }
 
 .top-bar-left {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.search-forms {
+  display: flex;
   flex-direction: column;
   gap: 6px;
-  flex-shrink: 0;
   width: 380px;
+  flex-shrink: 0;
 }
 
 .top-bar-right {
@@ -1091,6 +1102,13 @@ body {
   color: #1a73e8;
 }
 
+.note-item-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
 .note-item-tag {
   display: inline-block;
   font-size: 0.7rem;
@@ -1099,7 +1117,53 @@ body {
   background: #e8f0fe;
   border-radius: 4px;
   padding: 1px 6px;
-  margin-bottom: 4px;
+}
+
+.note-item-role {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #137333;
+  background: #e6f4ea;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+/* ── Role bar ─────────────────────────────────────────────────────────────────*/
+
+.note-role-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+  max-width: 720px;
+}
+
+.note-role-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1.5px solid #dadce0;
+  background: #fff;
+  font-size: 0.8rem;
+  color: #5f6368;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  user-select: none;
+}
+
+.note-role-pill:hover {
+  border-color: #137333;
+  color: #137333;
+}
+
+.note-role-pill.selected {
+  border-color: #137333;
+  background: #e6f4ea;
+  color: #137333;
+  font-weight: 600;
 }
 
 

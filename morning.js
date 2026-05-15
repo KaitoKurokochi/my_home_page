@@ -90,7 +90,7 @@ async function renderReport() {
   if (!el) return;
 
   try {
-    const md   = await fetchMyNotesFile('reports.md');
+    const md = await fetchMyNotesFile('reports.md');
     el.innerHTML = `<div class="mr-body">${markdownToHtml(md)}</div>`;
   } catch (e) {
     el.innerHTML = `<p class="mr-error">report: ${e.message}</p>`;

@@ -258,12 +258,21 @@ function renderNoteUI() {
       }
       if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
 
+      const created = await res.json();
+
       document.getElementById('note-input').value = '';
       currentMention = null;
       renderMentionBadge();
       status.textContent = 'Saved.';
       status.className = 'note-status note-status--ok';
-      await loadNotes();
+
+      // Optimistic update: prepend the new note immediately without waiting for a reload
+      const list = document.getElementById('note-list');
+      if (list) {
+        const empty = list.querySelector('.note-list-empty');
+        if (empty) list.innerHTML = '';
+        list.prepend(buildNoteItem(created));
+      }
     } catch (err) {
       status.textContent = `Failed: ${err.message}`;
       status.className = 'note-status note-status--err';

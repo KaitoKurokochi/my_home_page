@@ -45,7 +45,14 @@ function renderTokenSetup() {
 
 let selectedLabel = null;
 const selectedRoles = new Set();
-const ROLES = ['Memo', 'Todo', 'Idea', 'Want to do', 'Question'];
+const ROLES = [
+  { key: 'Memo',        icon: '📝' },
+  { key: 'Todo',        icon: '🔲' },
+  { key: 'Idea',        icon: '💡' },
+  { key: 'Want to do',  icon: '⭐' },
+  { key: 'Question',    icon: '❓' },
+  { key: 'Done',        icon: '✅' },
+];
 
 function renderLabelBar() {
   const bar = document.getElementById('note-label-bar');
@@ -130,13 +137,14 @@ function renderRoleBar() {
   const bar = document.getElementById('note-role-bar');
   bar.innerHTML = '';
 
-  ROLES.forEach(role => {
+  ROLES.forEach(({ key, icon }) => {
     const pill = document.createElement('span');
-    pill.className = 'note-role-pill' + (selectedRoles.has(role) ? ' selected' : '');
-    pill.textContent = role;
+    pill.className = 'note-role-pill' + (selectedRoles.has(key) ? ' selected' : '');
+    pill.textContent = icon;
+    pill.dataset.label = key;
     pill.addEventListener('click', () => {
-      if (selectedRoles.has(role)) selectedRoles.delete(role);
-      else selectedRoles.add(role);
+      if (selectedRoles.has(key)) selectedRoles.delete(key);
+      else selectedRoles.add(key);
       renderRoleBar();
     });
     bar.appendChild(pill);
@@ -257,11 +265,12 @@ async function loadNotes() {
       const brackets = [...issue.title.matchAll(/\[(.+?)\]/g)].map(m => m[1]);
       const tag      = brackets[0] || '';
       const roleTags = brackets.slice(1);
+      const roleIconMap = Object.fromEntries(ROLES.map(({ key, icon }) => [key, icon]));
       return `
         <div class="note-item">
           <div class="note-item-tags">
             ${tag ? `<span class="note-item-tag">${escapeHtml(tag)}</span>` : ''}
-            ${roleTags.map(r => `<span class="note-item-role">${escapeHtml(r)}</span>`).join('')}
+            ${roleTags.map(r => `<span class="note-item-role" title="${escapeHtml(r)}">${roleIconMap[r] ?? escapeHtml(r)}</span>`).join('')}
           </div>
           <p class="note-item-body">${escapeHtml(issue.body || issue.title)}</p>
           <span class="note-item-date">${dateLabel}</span>

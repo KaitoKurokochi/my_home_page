@@ -1146,12 +1146,34 @@ body {
   border-radius: 20px;
   border: 1.5px solid #dadce0;
   background: #fff;
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #5f6368;
   cursor: pointer;
   white-space: nowrap;
   transition: border-color 0.15s, background 0.15s, color 0.15s;
   user-select: none;
+  position: relative;
+}
+
+.note-role-pill::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #3c4043;
+  color: #fff;
+  font-size: 0.72rem;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0s;
+}
+
+.note-role-pill:hover::after {
+  opacity: 1;
 }
 
 .note-role-pill:hover {

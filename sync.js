@@ -43,10 +43,12 @@ async function pullSync() {
 // Push localStorage → remote
 async function pushSync() {
   if (!_syncToken()) return;
-  const groups  = JSON.parse(localStorage.getItem('mypage_groups') || '[]');
-  const labels  = JSON.parse(localStorage.getItem('note_labels')   || '[]');
-  const roles   = JSON.parse(localStorage.getItem('note_roles')    || '[]');
-  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify({ groups, labels, roles }, null, 2))));
+  const groups   = JSON.parse(localStorage.getItem('mypage_groups') || '[]');
+  const labels   = JSON.parse(localStorage.getItem('note_labels')   || '[]');
+  const rolesRaw = localStorage.getItem('note_roles');
+  const payload  = { groups, labels };
+  if (rolesRaw !== null) payload.roles = JSON.parse(rolesRaw);
+  const encoded  = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
   const sha     = localStorage.getItem(SYNC_SHA_KEY);
   const body    = { message: 'sync', content: encoded };
   if (sha) body.sha = sha;

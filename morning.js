@@ -33,10 +33,21 @@ async function renderCalWidget() {
   const today = new Date();
   const dateLabel = today.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' });
 
+  const todayStr = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, '0'),
+    String(today.getDate()).padStart(2, '0'),
+  ].join('-');
+
   let events = [];
   try {
     const raw = await fetchMyNotesFile('schedule.json');
-    events = JSON.parse(raw).events || [];
+    const sched = JSON.parse(raw);
+    if (sched.date !== todayStr) {
+      widget.innerHTML = `<button class="cal-summary">📅 ${dateLabel} <span class="cal-err">未取得</span></button>`;
+      return;
+    }
+    events = sched.events || [];
   } catch (e) {
     widget.innerHTML = `<button class="cal-summary">📅 ${dateLabel} <span class="cal-err">–</span></button>`;
     return;

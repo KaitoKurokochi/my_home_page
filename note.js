@@ -45,6 +45,38 @@ function renderTokenSetup() {
 
 let selectedLabel = null;
 const selectedRoles = new Set();
+let currentMention = null;  // { title, section }
+
+// Called from morning.js when user clicks [@] on a report item
+window.setMention = function(item) {
+  currentMention = item;
+  renderMentionBadge();
+  const textarea = document.getElementById('note-input');
+  if (textarea) {
+    textarea.focus();
+    textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+};
+
+function renderMentionBadge() {
+  const badge = document.getElementById('note-mention-badge');
+  if (!badge) return;
+  if (currentMention) {
+    const sec = currentMention.section ? ` · ${currentMention.section}` : '';
+    badge.innerHTML = `
+      <span class="mention-badge-text">@ ${currentMention.title}<span class="mention-badge-section">${sec}</span></span>
+      <button class="mention-badge-clear" title="メンションを外す">✕</button>
+    `;
+    badge.classList.remove('hidden');
+    badge.querySelector('.mention-badge-clear').addEventListener('click', () => {
+      currentMention = null;
+      renderMentionBadge();
+    });
+  } else {
+    badge.innerHTML = '';
+    badge.classList.add('hidden');
+  }
+}
 const ROLES = [
   { key: 'Memo',        icon: '📝' },
   { key: 'Todo',        icon: '🔲' },
@@ -158,6 +190,7 @@ function renderNoteUI() {
   container.innerHTML = `
     <div id="note-label-bar" class="note-label-bar"></div>
     <form id="note-form" class="note-form" autocomplete="off">
+      <div id="note-mention-badge" class="note-mention-badge hidden"></div>
       <textarea
         id="note-input"
         class="note-textarea"
@@ -195,6 +228,10 @@ function renderNoteUI() {
     status.className = 'note-status';
 
     const roleStr = [...selectedRoles].map(r => `[${r}]`).join('');
+    const refPrefix = currentMention
+      ? `> ref: ${currentMention.title}${currentMention.section ? ` (${currentMention.section})` : ''}\n\n`
+      : '';
+    const body = refPrefix + text;
     const title = `[${selectedLabel}]${roleStr} ` + text.slice(0, 72) + (text.length > 72 ? '…' : '');
 
     try {
@@ -205,7 +242,7 @@ function renderNoteUI() {
           'Accept': 'application/vnd.github+json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, body: text, labels: ['note'] }),
+        body: JSON.stringify({ title, body, labels: ['note'] }),
       });
 
       if (res.status === 401) {
@@ -216,6 +253,8 @@ function renderNoteUI() {
       if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
 
       document.getElementById('note-input').value = '';
+      currentMention = null;
+      renderMentionBadge();
       status.textContent = 'Saved.';
       status.className = 'note-status note-status--ok';
       await loadNotes();

@@ -96,13 +96,18 @@ async function renderCalWidget() {
 
 // ── Report (left-col, above news) ─────────────────────────────────────────────
 
+let mentionItems = [];  // shared with note.js via window
+
 async function renderReport() {
   const el = document.getElementById('morning-report');
   if (!el) return;
 
   try {
     const md = await fetchMyNotesFile('reports.md');
+    mentionItems = [];
     el.innerHTML = `<div class="mr-body">${markdownToHtml(md)}</div>`;
+    window.mentionItems = mentionItems;
+    attachMentionButtons(el);
   } catch (e) {
     el.innerHTML = `<p class="mr-error">report: ${e.message}</p>`;
   }
@@ -111,15 +116,43 @@ async function renderReport() {
 function markdownToHtml(md) {
   const lines = md.split('\n');
   let html = '';
+  let currentSection = '';
+  let itemIndex = 0;
   for (const line of lines) {
-    if (line.startsWith('## '))      html += `<h3 class="mr-cat">${esc(line.slice(3))}</h3>`;
-    else if (line.startsWith('# '))  html += `<h2 class="mr-title">${esc(line.slice(2))}</h2>`;
-    else if (line.startsWith('> '))  html += `<p class="mr-summary">${esc(line.slice(2))}</p>`;
-    else if (line.startsWith('- '))  html += `<p class="mr-item">${esc(line.slice(2))}</p>`;
-    else if (line.startsWith('  *')) html += `<p class="mr-detail-text">${esc(line.trim().replace(/\*/g, ''))}</p>`;
-    else if (line.startsWith('  `')) html += `<p class="mr-since">${esc(line.trim().replace(/`/g, ''))}</p>`;
+    if (line.startsWith('## ')) {
+      currentSection = line.slice(3).trim();
+      html += `<h3 class="mr-cat">${esc(currentSection)}</h3>`;
+    } else if (line.startsWith('# ')) {
+      html += `<h2 class="mr-title">${esc(line.slice(2))}</h2>`;
+    } else if (line.startsWith('> ')) {
+      html += `<p class="mr-summary">${esc(line.slice(2))}</p>`;
+    } else if (line.startsWith('- ')) {
+      const title = line.slice(2).trim();
+      mentionItems.push({ title, section: currentSection });
+      html += `<p class="mr-item" data-mention-index="${itemIndex++}">${esc(title)}</p>`;
+    } else if (line.startsWith('  *')) {
+      html += `<p class="mr-detail-text">${esc(line.trim().replace(/\*/g, ''))}</p>`;
+    } else if (line.startsWith('  `')) {
+      html += `<p class="mr-since">${esc(line.trim().replace(/`/g, ''))}</p>`;
+    }
   }
   return html;
+}
+
+function attachMentionButtons(el) {
+  el.querySelectorAll('.mr-item[data-mention-index]').forEach(p => {
+    const idx = Number(p.dataset.mentionIndex);
+    const btn = document.createElement('button');
+    btn.className = 'mr-mention-btn';
+    btn.textContent = '@';
+    btn.title = 'メンションしてメモを書く';
+    btn.addEventListener('click', () => {
+      if (typeof window.setMention === 'function') {
+        window.setMention(mentionItems[idx]);
+      }
+    });
+    p.appendChild(btn);
+  });
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────

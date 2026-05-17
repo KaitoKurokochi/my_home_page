@@ -338,6 +338,10 @@ function escapeHtml(str) {
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 function initNote() {
+  // Initialize note_roles in localStorage if not yet set, so pushSync includes it
+  if (localStorage.getItem(NOTE_ROLES_KEY) === null) {
+    localStorage.setItem(NOTE_ROLES_KEY, JSON.stringify(DEFAULT_ROLES));
+  }
   if (getToken()) {
     renderNoteUI();
     loadNotes();

@@ -9,12 +9,26 @@ const GITHUB_API = `https://api.github.com/repos/${NOTE_OWNER}/${NOTE_REPO}/issu
 
 const NOTE_TOKEN_KEY  = 'NOTE_TOKEN';
 const NOTE_LABELS_KEY = 'note_labels';
+const NOTE_ROLES_KEY  = 'note_roles';
 const DEFAULT_LABELS  = ['Lions_IS', 'Entertainment', 'Research'];
+const DEFAULT_ROLES   = [
+  { key: 'Memo',        icon: '📝' },
+  { key: 'Todo',        icon: '🔲' },
+  { key: 'Idea',        icon: '💡' },
+  { key: 'Want to do',  icon: '⭐' },
+  { key: 'Question',    icon: '❓' },
+  { key: 'Done',        icon: '✅' },
+];
 
 function getToken()  { return localStorage.getItem(NOTE_TOKEN_KEY) || ''; }
 function getLabels() { return JSON.parse(localStorage.getItem(NOTE_LABELS_KEY) || JSON.stringify(DEFAULT_LABELS)); }
+function getRoles()  { return JSON.parse(localStorage.getItem(NOTE_ROLES_KEY)  || JSON.stringify(DEFAULT_ROLES)); }
 function saveLabels(labels) {
   localStorage.setItem(NOTE_LABELS_KEY, JSON.stringify(labels));
+  if (typeof pushSync === 'function') pushSync();
+}
+function saveRoles(roles) {
+  localStorage.setItem(NOTE_ROLES_KEY, JSON.stringify(roles));
   if (typeof pushSync === 'function') pushSync();
 }
 
@@ -77,14 +91,6 @@ function renderMentionBadge() {
     badge.classList.add('hidden');
   }
 }
-const ROLES = [
-  { key: 'Memo',        icon: '📝' },
-  { key: 'Todo',        icon: '🔲' },
-  { key: 'Idea',        icon: '💡' },
-  { key: 'Want to do',  icon: '⭐' },
-  { key: 'Question',    icon: '❓' },
-  { key: 'Done',        icon: '✅' },
-];
 
 function renderLabelBar() {
   const bar = document.getElementById('note-label-bar');
@@ -169,7 +175,7 @@ function renderRoleBar() {
   const bar = document.getElementById('note-role-bar');
   bar.innerHTML = '';
 
-  ROLES.forEach(({ key, icon }) => {
+  getRoles().forEach(({ key, icon }) => {
     const pill = document.createElement('span');
     pill.className = 'note-role-pill' + (selectedRoles.has(key) ? ' selected' : '');
     pill.textContent = icon;
@@ -304,7 +310,7 @@ async function loadNotes() {
       const brackets = [...issue.title.matchAll(/\[(.+?)\]/g)].map(m => m[1]);
       const tag      = brackets[0] || '';
       const roleTags = brackets.slice(1);
-      const roleIconMap = Object.fromEntries(ROLES.map(({ key, icon }) => [key, icon]));
+      const roleIconMap = Object.fromEntries(getRoles().map(({ key, icon }) => [key, icon]));
       return `
         <div class="note-item">
           <div class="note-item-tags">

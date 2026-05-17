@@ -32,9 +32,11 @@ async function pullSync() {
     localStorage.setItem(SYNC_SHA_KEY, data.sha);
     if (content.groups !== undefined) localStorage.setItem('mypage_groups',  JSON.stringify(content.groups));
     if (content.labels !== undefined) localStorage.setItem('note_labels',    JSON.stringify(content.labels));
+    if (content.roles  !== undefined) localStorage.setItem('note_roles',     JSON.stringify(content.roles));
     // Re-render with synced data
     if (typeof render         === 'function') render();
     if (typeof renderLabelBar === 'function' && document.getElementById('note-label-bar')) renderLabelBar();
+    if (typeof renderRoleBar  === 'function' && document.getElementById('note-role-bar'))  renderRoleBar();
   } catch (_) { /* silent */ }
 }
 
@@ -43,7 +45,8 @@ async function pushSync() {
   if (!_syncToken()) return;
   const groups  = JSON.parse(localStorage.getItem('mypage_groups') || '[]');
   const labels  = JSON.parse(localStorage.getItem('note_labels')   || '[]');
-  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify({ groups, labels }, null, 2))));
+  const roles   = JSON.parse(localStorage.getItem('note_roles')    || '[]');
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify({ groups, labels, roles }, null, 2))));
   const sha     = localStorage.getItem(SYNC_SHA_KEY);
   const body    = { message: 'sync', content: encoded };
   if (sha) body.sha = sha;

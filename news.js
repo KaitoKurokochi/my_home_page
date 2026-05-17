@@ -216,6 +216,7 @@ async function fetchNewsFromMyNotes() {
     `https://api.github.com/repos/${NEWS_OWNER}/${NEWS_REPO}/contents/${NEWS_FILE}`,
     { headers }
   );
+  if (res.status === 404) throw Object.assign(new Error('not_found'), { status: 404 });
   if (!res.ok) throw new Error(`GitHub API ${res.status}`);
   const meta = await res.json();
   const content = JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\n/g, '')))));
@@ -244,8 +245,12 @@ async function initNews() {
     newsLoaded = true;
   } catch (e) {
     const el = document.getElementById('news-graph');
-    if (el) el.innerHTML =
-      `<p class="news-error">Could not load news.<br><small>${e}</small></p>`;
+    if (!el) return;
+    if (e.status === 404) {
+      el.innerHTML = '<p class="news-error">ニュースはまだ取得されていません（朝のルーティン待ち）</p>';
+    } else {
+      el.innerHTML = `<p class="news-error">Could not load news.<br><small>${e}</small></p>`;
+    }
   }
 }
 

@@ -276,6 +276,156 @@ function renderNoteUI() {
   });
 }
 
+// ── Issue title parsing / building ────────────────────────────────────────────
+
+function parseTitleParts(title) {
+  const brackets = [...title.matchAll(/\[(.+?)\]/g)].map(m => m[1]);
+  const label = brackets[0] || '';
+  const roles = brackets.slice(1);
+  const text  = title.replace(/^(\[[^\]]+\])+\s*/, '');
+  return { label, roles, text };
+}
+
+function buildTitle(label, roles, text) {
+  const roleStr = roles.map(r => `[${r}]`).join('');
+  return `[${label}]${roleStr} ${text}`;
+}
+
+// ── Issue update (PATCH) ──────────────────────────────────────────────────────
+
+async function updateIssue(number, patch) {
+  const res = await fetch(`${GITHUB_API}/${number}`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${getToken()}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(patch),
+  });
+  if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+  return res.json();
+}
+
+// ── Edit dropdown ─────────────────────────────────────────────────────────────
+
+let _activeDropdown = null;
+
+function closeDropdown() {
+  if (_activeDropdown) { _activeDropdown.remove(); _activeDropdown = null; }
+}
+
+document.addEventListener('click', closeDropdown);
+
+function showDropdown(anchor, items, onSelect) {
+  closeDropdown();
+  const rect = anchor.getBoundingClientRect();
+  const el = document.createElement('div');
+  el.className = 'note-edit-dropdown';
+  el.style.top  = `${rect.bottom + window.scrollY + 4}px`;
+  el.style.left = `${rect.left  + window.scrollX}px`;
+  el.addEventListener('click', e => e.stopPropagation());
+  items.forEach(({ label, value }) => {
+    const row = document.createElement('div');
+    row.className = 'note-edit-dropdown-item';
+    row.textContent = label;
+    row.addEventListener('click', () => { closeDropdown(); onSelect(value); });
+    el.appendChild(row);
+  });
+  document.body.appendChild(el);
+  _activeDropdown = el;
+}
+
+// ── Note item builder ─────────────────────────────────────────────────────────
+
+function buildNoteItem(issue) {
+  const date = new Date(issue.created_at);
+  const dateLabel = date.toLocaleDateString('ja-JP', {
+    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+  });
+  const { label, roles, text } = parseTitleParts(issue.title);
+  const roleIconMap = Object.fromEntries(getRoles().map(({ key, icon }) => [key, icon]));
+
+  const item = document.createElement('div');
+  item.className = 'note-item';
+
+  // ── Tags row ──────────────────────────────────────────────────────────────
+  const tagsDiv = document.createElement('div');
+  tagsDiv.className = 'note-item-tags';
+
+  // Label (click → change)
+  if (label) {
+    const tagSpan = document.createElement('span');
+    tagSpan.className = 'note-item-tag';
+    tagSpan.textContent = label;
+    tagSpan.title = 'クリックでラベル変更';
+    tagSpan.addEventListener('click', e => {
+      e.stopPropagation();
+      const options = getLabels()
+        .filter(l => l !== label)
+        .map(l => ({ label: l, value: l }));
+      showDropdown(tagSpan, options, async newLabel => {
+        try {
+          await updateIssue(issue.number, { title: buildTitle(newLabel, roles, text) });
+          await loadNotes();
+        } catch (err) { console.error(err); }
+      });
+    });
+    tagsDiv.appendChild(tagSpan);
+  }
+
+  // Roles (click → remove)
+  roles.forEach(roleKey => {
+    const roleSpan = document.createElement('span');
+    roleSpan.className = 'note-item-role';
+    roleSpan.title = `${roleKey}（クリックで削除）`;
+    roleSpan.textContent = roleIconMap[roleKey] ?? roleKey;
+    roleSpan.addEventListener('click', e => {
+      e.stopPropagation();
+      const newRoles = roles.filter(r => r !== roleKey);
+      updateIssue(issue.number, { title: buildTitle(label, newRoles, text) })
+        .then(() => loadNotes())
+        .catch(err => console.error(err));
+    });
+    tagsDiv.appendChild(roleSpan);
+  });
+
+  // Add role button
+  const addBtn = document.createElement('button');
+  addBtn.className = 'note-item-add-role';
+  addBtn.textContent = '+';
+  addBtn.title = 'ロールを追加';
+  addBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    const options = getRoles()
+      .filter(r => !roles.includes(r.key))
+      .map(r => ({ label: `${r.icon} ${r.key}`, value: r.key }));
+    showDropdown(addBtn, options, async roleKey => {
+      try {
+        await updateIssue(issue.number, { title: buildTitle(label, [...roles, roleKey], text) });
+        await loadNotes();
+      } catch (err) { console.error(err); }
+    });
+  });
+  tagsDiv.appendChild(addBtn);
+
+  item.appendChild(tagsDiv);
+
+  // Body
+  const body = document.createElement('p');
+  body.className = 'note-item-body';
+  body.innerHTML = escapeHtml(issue.body || issue.title);
+  item.appendChild(body);
+
+  // Date
+  const dateSpan = document.createElement('span');
+  dateSpan.className = 'note-item-date';
+  dateSpan.textContent = dateLabel;
+  item.appendChild(dateSpan);
+
+  return item;
+}
+
 // ── Load recent notes ─────────────────────────────────────────────────────────
 
 async function loadNotes() {
@@ -301,27 +451,8 @@ async function loadNotes() {
       return;
     }
 
-    list.innerHTML = issues.map(issue => {
-      const date  = new Date(issue.created_at);
-      const dateLabel = date.toLocaleDateString('ja-JP', {
-        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
-      });
-      // Extract [Label] and any number of [Role] tags from title
-      const brackets = [...issue.title.matchAll(/\[(.+?)\]/g)].map(m => m[1]);
-      const tag      = brackets[0] || '';
-      const roleTags = brackets.slice(1);
-      const roleIconMap = Object.fromEntries(getRoles().map(({ key, icon }) => [key, icon]));
-      return `
-        <div class="note-item">
-          <div class="note-item-tags">
-            ${tag ? `<span class="note-item-tag">${escapeHtml(tag)}</span>` : ''}
-            ${roleTags.map(r => `<span class="note-item-role" title="${escapeHtml(r)}">${roleIconMap[r] ?? escapeHtml(r)}</span>`).join('')}
-          </div>
-          <p class="note-item-body">${escapeHtml(issue.body || issue.title)}</p>
-          <span class="note-item-date">${dateLabel}</span>
-        </div>
-      `;
-    }).join('');
+    list.innerHTML = '';
+    issues.forEach(issue => list.appendChild(buildNoteItem(issue)));
   } catch (err) {
     list.innerHTML = `<p class="note-list-error">Failed to load: ${err.message}</p>`;
   }

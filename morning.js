@@ -142,6 +142,12 @@ function markdownToHtml(md) {
 function attachMentionButtons(el) {
   el.querySelectorAll('.mr-item[data-mention-index]').forEach(p => {
     const idx = Number(p.dataset.mentionIndex);
+    // Wrap text in span so button sits right next to it
+    const textSpan = document.createElement('span');
+    textSpan.className = 'mr-item-text';
+    textSpan.textContent = p.textContent.trim();
+    p.textContent = '';
+    p.appendChild(textSpan);
     const btn = document.createElement('button');
     btn.className = 'mr-mention-btn';
     btn.textContent = '@';

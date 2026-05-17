@@ -349,6 +349,12 @@ function buildNoteItem(issue) {
   const item = document.createElement('div');
   item.className = 'note-item';
 
+  // Optimistic update: replace this item in-place with updated issue data
+  function replaceWith(newTitle) {
+    const updated = { ...issue, title: newTitle };
+    item.replaceWith(buildNoteItem(updated));
+  }
+
   // ── Tags row ──────────────────────────────────────────────────────────────
   const tagsDiv = document.createElement('div');
   tagsDiv.className = 'note-item-tags';
@@ -364,11 +370,13 @@ function buildNoteItem(issue) {
       const options = getLabels()
         .filter(l => l !== label)
         .map(l => ({ label: l, value: l }));
-      showDropdown(tagSpan, options, async newLabel => {
-        try {
-          await updateIssue(issue.number, { title: buildTitle(newLabel, roles, text) });
-          await loadNotes();
-        } catch (err) { console.error(err); }
+      showDropdown(tagSpan, options, newLabel => {
+        const newTitle = buildTitle(newLabel, roles, text);
+        replaceWith(newTitle);  // instant DOM update
+        updateIssue(issue.number, { title: newTitle }).catch(err => {
+          console.error(err);
+          replaceWith(issue.title);  // revert on failure
+        });
       });
     });
     tagsDiv.appendChild(tagSpan);
@@ -383,9 +391,12 @@ function buildNoteItem(issue) {
     roleSpan.addEventListener('click', e => {
       e.stopPropagation();
       const newRoles = roles.filter(r => r !== roleKey);
-      updateIssue(issue.number, { title: buildTitle(label, newRoles, text) })
-        .then(() => loadNotes())
-        .catch(err => console.error(err));
+      const newTitle = buildTitle(label, newRoles, text);
+      replaceWith(newTitle);
+      updateIssue(issue.number, { title: newTitle }).catch(err => {
+        console.error(err);
+        replaceWith(issue.title);
+      });
     });
     tagsDiv.appendChild(roleSpan);
   });
@@ -400,11 +411,13 @@ function buildNoteItem(issue) {
     const options = getRoles()
       .filter(r => !roles.includes(r.key))
       .map(r => ({ label: `${r.icon} ${r.key}`, value: r.key }));
-    showDropdown(addBtn, options, async roleKey => {
-      try {
-        await updateIssue(issue.number, { title: buildTitle(label, [...roles, roleKey], text) });
-        await loadNotes();
-      } catch (err) { console.error(err); }
+    showDropdown(addBtn, options, roleKey => {
+      const newTitle = buildTitle(label, [...roles, roleKey], text);
+      replaceWith(newTitle);
+      updateIssue(issue.number, { title: newTitle }).catch(err => {
+        console.error(err);
+        replaceWith(issue.title);
+      });
     });
   });
   tagsDiv.appendChild(addBtn);

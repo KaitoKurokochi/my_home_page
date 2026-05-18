@@ -13,7 +13,7 @@ const NOTE_ROLES_KEY  = 'note_roles';
 const DEFAULT_LABELS  = ['Lions_IS', 'Entertainment', 'Research'];
 const DEFAULT_ROLES   = [
   { key: 'Memo',        icon: '📝' },
-  { key: 'Todo',        icon: '❗' },
+  { key: 'Todo',        icon: '🔔' },
   { key: 'Idea',        icon: '💡' },
   { key: 'Want to do',  icon: '⭐' },
   { key: 'Question',    icon: '❓' },

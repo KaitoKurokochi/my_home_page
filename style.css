@@ -956,17 +956,93 @@ body {
   gap: 6px;
 }
 
+.note-item-body-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
 .note-item-body {
+  flex: 1;
   font-size: 0.875rem;
   color: #202124;
   line-height: 1.6;
   white-space: pre-wrap;
 }
 
+.note-item-edit-btn {
+  flex-shrink: 0;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: none;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  color: #5f6368;
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
+  padding: 0;
+}
+
+.note-item:hover .note-item-edit-btn { opacity: 1; }
+.note-item-edit-btn:hover { background: #f1f3f4; color: #202124; }
+
+.note-item-body.is-collapsed {
+  color: #5f6368;
+}
+
+.note-item-toggle {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #5f6368;
+  background: #f1f3f4;
+  border: none;
+  border-radius: 12px;
+  padding: 2px 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.note-item-toggle:hover {
+  background: #e8eaed;
+  color: #202124;
+}
+
+.note-item-toggle-chevron {
+  font-size: 0.8rem;
+  display: inline-block;
+  transition: transform 0.2s;
+}
+
+.note-item-toggle-chevron.rotated {
+  transform: rotate(180deg);
+}
+
+.note-item-edit-textarea {
+  width: 100%;
+  font-size: 0.875rem;
+  font-family: inherit;
+  line-height: 1.6;
+  border: 1px solid #1a73e8;
+  border-radius: 6px;
+  padding: 6px 8px;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+}
+
 .note-item-date {
+  margin-left: auto;
   font-size: 0.72rem;
   color: #9aa0a6;
-  text-align: right;
+  white-space: nowrap;
 }
 
 .note-list-loading,

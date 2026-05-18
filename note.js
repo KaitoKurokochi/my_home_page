@@ -13,7 +13,7 @@ const NOTE_ROLES_KEY  = 'note_roles';
 const DEFAULT_LABELS  = ['Lions_IS', 'Entertainment', 'Research'];
 const DEFAULT_ROLES   = [
   { key: 'Memo',        icon: '📝' },
-  { key: 'Todo',        icon: '🔲' },
+  { key: 'Todo',        icon: '❗' },
   { key: 'Idea',        icon: '💡' },
   { key: 'Want to do',  icon: '⭐' },
   { key: 'Question',    icon: '❓' },
@@ -349,9 +349,11 @@ function showDropdown(anchor, items, onSelect) {
 
 function buildNoteItem(issue) {
   const date = new Date(issue.created_at);
-  const dateLabel = date.toLocaleDateString('ja-JP', {
-    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
-  });
+  const now = new Date();
+  const isToday = date.toDateString() === now.toDateString();
+  const dateLabel = isToday
+    ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
+    : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const { label, roles, text } = parseTitleParts(issue.title);
   const roleIconMap = Object.fromEntries(getRoles().map(({ key, icon }) => [key, icon]));
 
@@ -431,19 +433,91 @@ function buildNoteItem(issue) {
   });
   tagsDiv.appendChild(addBtn);
 
-  item.appendChild(tagsDiv);
-
-  // Body
-  const body = document.createElement('p');
-  body.className = 'note-item-body';
-  body.innerHTML = escapeHtml(issue.body || issue.title);
-  item.appendChild(body);
-
-  // Date
   const dateSpan = document.createElement('span');
   dateSpan.className = 'note-item-date';
   dateSpan.textContent = dateLabel;
-  item.appendChild(dateSpan);
+  tagsDiv.appendChild(dateSpan);
+
+  item.appendChild(tagsDiv);
+
+  // Body (collapse + edit)
+  const COLLAPSE_CHARS = 100;
+  const COLLAPSE_LINES = 3;
+  const bodyText = issue.body || '';
+  const displayText = bodyText || text;
+  const lines = displayText.split('\n');
+  const needsCollapse = displayText.length > COLLAPSE_CHARS || lines.length > COLLAPSE_LINES;
+  let collapsed = needsCollapse;
+
+  const bodyWrap = document.createElement('div');
+  bodyWrap.className = 'note-item-body-wrap';
+
+  const body = document.createElement('p');
+  body.className = 'note-item-body';
+  function setBodyText() {
+    if (collapsed) {
+      const preview = lines.slice(0, COLLAPSE_LINES).join('\n');
+      body.textContent = (preview.length > COLLAPSE_CHARS ? preview.slice(0, COLLAPSE_CHARS) : preview) + '…';
+      body.classList.add('is-collapsed');
+    } else {
+      body.textContent = displayText;
+      body.classList.remove('is-collapsed');
+    }
+  }
+  setBodyText();
+
+  // Edit button
+  const editBtn = document.createElement('button');
+  editBtn.className = 'note-item-edit-btn';
+  editBtn.title = 'Edit';
+  editBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+
+  editBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    const ta = document.createElement('textarea');
+    ta.className = 'note-item-edit-textarea';
+    ta.value = bodyText;
+    ta.rows = Math.max(3, lines.length + 1);
+    bodyWrap.replaceChild(ta, body);
+    editBtn.style.display = 'none';
+    ta.focus();
+
+    function save() {
+      const newBody = ta.value;
+      bodyWrap.replaceChild(body, ta);
+      editBtn.style.display = '';
+      if (newBody === bodyText) return;
+      body.textContent = newBody;
+      updateIssue(issue.number, { body: newBody })
+        .then(updated => item.replaceWith(buildNoteItem(updated)))
+        .catch(err => { console.error(err); setBodyText(); });
+    }
+
+    ta.addEventListener('blur', save);
+    ta.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { bodyWrap.replaceChild(body, ta); editBtn.style.display = ''; }
+      else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { ta.blur(); }
+    });
+  });
+
+  bodyWrap.appendChild(body);
+  bodyWrap.appendChild(editBtn);
+  item.appendChild(bodyWrap);
+
+  if (needsCollapse) {
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'note-item-toggle';
+    toggleBtn.innerHTML = 'Show more <span class="note-item-toggle-chevron">▾</span>';
+    toggleBtn.addEventListener('click', () => {
+      collapsed = !collapsed;
+      setBodyText();
+      toggleBtn.innerHTML = collapsed
+        ? 'Show more <span class="note-item-toggle-chevron">▾</span>'
+        : 'Show less <span class="note-item-toggle-chevron rotated">▾</span>';
+    });
+    item.appendChild(toggleBtn);
+  }
+
 
   return item;
 }

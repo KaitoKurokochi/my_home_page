@@ -61,7 +61,7 @@ let selectedLabel = null;
 const selectedRoles = new Set();
 let currentMention = null;  // { title, section }
 
-// Called from morning.js when user clicks [@] on a report item
+// Called from status.js when user clicks [@] on a report item
 window.setMention = function(item) {
   currentMention = item;
   renderMentionBadge();

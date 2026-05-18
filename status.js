@@ -1,18 +1,18 @@
-// ── Morning: calendar widget (top-bar) + report (left-col) ───────────────────
+// ── Status: calendar widget (top-bar) + report (left-col) ────────────────────
 
-const MORNING_OWNER = 'KaitoKurokochi';
-const MORNING_REPO  = 'my_notes';
+const NOTES_OWNER = 'KaitoKurokochi';
+const NOTES_REPO  = 'my_notes';
 
-function morningToken() {
+function notesToken() {
   return localStorage.getItem('NOTE_TOKEN') || '';
 }
 
 async function fetchMyNotesFile(path) {
-  const token = morningToken();
+  const token = notesToken();
   const headers = { 'Accept': 'application/vnd.github+json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
   const res = await fetch(
-    `https://api.github.com/repos/${MORNING_OWNER}/${MORNING_REPO}/contents/${path}`,
+    `https://api.github.com/repos/${NOTES_OWNER}/${NOTES_REPO}/contents/${path}`,
     { headers }
   );
   if (!res.ok) throw new Error(`${res.status}`);
@@ -99,7 +99,7 @@ async function renderCalWidget() {
 let mentionItems = [];  // shared with note.js via window
 
 async function renderReport() {
-  const el = document.getElementById('morning-report');
+  const el = document.getElementById('status-report');
   if (!el) return;
 
   try {

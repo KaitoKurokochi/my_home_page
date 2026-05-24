@@ -248,9 +248,12 @@ function renderNoteUI() {
     status.className = 'note-status';
 
     const roleStr = [...selectedRoles].map(r => `[${r}]`).join('');
-    const refPrefix = currentMention
-      ? `ref: ${currentMention.number != null ? `#${currentMention.number} ` : ''}${currentMention.title}${currentMention.section ? ` (${currentMention.section})` : ''}\n\n`
-      : '';
+    const refPrefix = currentMention ? (() => {
+      const cleanTitle = currentMention.title.replace(/\s*\(#\d+\)$/, '');
+      const num = currentMention.number != null ? `#${currentMention.number} ` : '';
+      const sec = currentMention.section ? ` (${currentMention.section})` : '';
+      return `ref: ${num}${cleanTitle}${sec}\n\n`;
+    })() : '';
     const body = refPrefix + text;
     const title = `[${selectedLabel}]${roleStr} ` + text.slice(0, 72) + (text.length > 72 ? '…' : '');
 

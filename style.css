@@ -1474,6 +1474,7 @@ body {
   margin-top: 1px;
 }
 
+.cal-preview-empty { font-size: 0.72rem; color: #9aa0a6; }
 .cal-err { color: #c5221f; font-size: 0.7rem; }
 
 /* Detail panel (dropdown) */
@@ -1488,6 +1489,8 @@ body {
   padding: 12px 16px;
   min-width: 220px;
   z-index: 200;
+  max-height: 280px;
+  overflow-y: auto;
 }
 
 .cal-panel.hidden { display: none; }

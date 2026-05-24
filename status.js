@@ -54,21 +54,20 @@ async function renderCalWidget() {
   }
 
   // ── Summary (pill) ──────────────────────────────────────────────────────────
-  const preview = events.slice(0, 3).map(ev => {
-    const time = ev.allDay ? '終日' : ev.start;
-    return `<span class="cal-preview-row"><span class="cal-preview-time">${esc(time)}</span><span class="cal-preview-title">${esc(ev.title)}</span></span>`;
-  }).join('');
-  const more = events.length > 3 ? `<span class="cal-more">+${events.length - 3}</span>` : '';
+  const shown = events.slice(0, 2);
+  const previewRows = shown.length
+    ? shown.map(ev =>
+        `<span class="cal-preview-row"><span class="cal-preview-time">${esc(ev.allDay ? '終日' : ev.start)}</span><span class="cal-preview-title">${esc(ev.title)}</span></span>`
+      ).join('')
+    : `<span class="cal-preview-empty">予定なし</span>`;
+  const more = events.length > 2 ? `<span class="cal-more">+${events.length - 2}</span>` : '';
 
   // ── Detail panel ────────────────────────────────────────────────────────────
   const detailRows = events.map(ev => {
     const timeRange = ev.allDay ? '終日' : `${ev.start} – ${ev.end}`;
-    const extras = [ev.location, ev.notes].filter(Boolean)
-      .map(s => `<div class="cal-panel-extra">${esc(s)}</div>`).join('');
     return `<div class="cal-panel-event">
       <div class="cal-panel-time">${esc(timeRange)}</div>
       <div class="cal-panel-title">${esc(ev.title)}</div>
-      ${extras}
     </div>`;
   }).join('');
 
@@ -77,7 +76,7 @@ async function renderCalWidget() {
   widget.innerHTML = `
     <button class="cal-summary" id="cal-summary">
       <span class="cal-date-label">${dateLabel}</span>
-      <span class="cal-previews">${preview}${more}</span>
+      <span class="cal-previews">${previewRows}${more}</span>
     </button>
     <div class="cal-panel hidden" id="cal-panel">
       <div class="cal-panel-header">${dateLabel}</div>

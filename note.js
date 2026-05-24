@@ -578,3 +578,5 @@ function initNote() {
 }
 
 initNote();
+
+setInterval(() => { if (getToken()) loadNotes(); }, 10 * 60 * 1000);

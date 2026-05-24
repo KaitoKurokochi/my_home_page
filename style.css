@@ -1243,6 +1243,23 @@ body {
 .note-item-tags:hover .note-item-add-role { opacity: 1; }
 .note-item-add-role:hover { color: #137333; border-color: #137333; }
 
+.note-item-mention-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: #80868b;
+  background: none;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  padding: 1px 5px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s, border-color 0.15s;
+}
+.note-item-tags:hover .note-item-mention-btn { opacity: 1; }
+.note-item-mention-btn:hover { color: #1a73e8; border-color: #1a73e8; }
+
 /* ── Edit dropdown ────────────────────────────────────────────────────────────*/
 
 .note-edit-dropdown {

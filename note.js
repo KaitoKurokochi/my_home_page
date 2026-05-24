@@ -61,10 +61,24 @@ let selectedLabel = null;
 const selectedRoles = new Set();
 let currentMention = null;  // { title, section }
 
-// Called from status.js when user clicks [@] on a report item
+function guessLabel(section) {
+  if (!section) return null;
+  const labels = getLabels();
+  if (labels.includes(section)) return section;
+  // Strip emoji/symbols and compare case-insensitively (handles "🔬 Research" → "Research")
+  const norm = s => s.replace(/[^\w]/g, '').toLowerCase();
+  return labels.find(l => norm(l) === norm(section)) || null;
+}
+
+// Called from status.js or note list when user clicks [@] on an item
 window.setMention = function(item) {
   currentMention = item;
   renderMentionBadge();
+  const matched = guessLabel(item.section);
+  if (matched) {
+    selectedLabel = matched;
+    renderLabelBar();
+  }
   const textarea = document.getElementById('note-input');
   if (textarea) {
     textarea.focus();
@@ -432,6 +446,17 @@ function buildNoteItem(issue) {
     });
   });
   tagsDiv.appendChild(addBtn);
+
+  // Mention button
+  const mentionBtn = document.createElement('button');
+  mentionBtn.className = 'note-item-mention-btn';
+  mentionBtn.textContent = '@';
+  mentionBtn.title = 'このノートをメンション';
+  mentionBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    window.setMention({ title: text, section: label });
+  });
+  tagsDiv.appendChild(mentionBtn);
 
   const dateSpan = document.createElement('span');
   dateSpan.className = 'note-item-date';

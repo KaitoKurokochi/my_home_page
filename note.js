@@ -59,7 +59,7 @@ function renderTokenSetup() {
 
 let selectedLabel = null;
 const selectedRoles = new Set();
-let currentMention = null;  // { title, section }
+let currentMention = null;  // { title, section, number }
 
 function guessLabel(section) {
   if (!section) return null;
@@ -249,7 +249,7 @@ function renderNoteUI() {
 
     const roleStr = [...selectedRoles].map(r => `[${r}]`).join('');
     const refPrefix = currentMention
-      ? `ref: ${currentMention.title}${currentMention.section ? ` (${currentMention.section})` : ''}\n\n`
+      ? `ref: #${currentMention.number} ${currentMention.title}${currentMention.section ? ` (${currentMention.section})` : ''}\n\n`
       : '';
     const body = refPrefix + text;
     const title = `[${selectedLabel}]${roleStr} ` + text.slice(0, 72) + (text.length > 72 ? '…' : '');
@@ -454,7 +454,7 @@ function buildNoteItem(issue) {
   mentionBtn.title = 'このノートをメンション';
   mentionBtn.addEventListener('click', e => {
     e.stopPropagation();
-    window.setMention({ title: text, section: label });
+    window.setMention({ title: text, section: label, number: issue.number });
   });
   tagsDiv.appendChild(mentionBtn);
 

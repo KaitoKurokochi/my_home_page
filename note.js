@@ -249,7 +249,7 @@ function renderNoteUI() {
 
     const roleStr = [...selectedRoles].map(r => `[${r}]`).join('');
     const refPrefix = currentMention
-      ? `ref: #${currentMention.number} ${currentMention.title}${currentMention.section ? ` (${currentMention.section})` : ''}\n\n`
+      ? `ref: ${currentMention.number != null ? `#${currentMention.number} ` : ''}${currentMention.title}${currentMention.section ? ` (${currentMention.section})` : ''}\n\n`
       : '';
     const body = refPrefix + text;
     const title = `[${selectedLabel}]${roleStr} ` + text.slice(0, 72) + (text.length > 72 ? '…' : '');

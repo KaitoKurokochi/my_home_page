@@ -127,7 +127,9 @@ function markdownToHtml(md) {
       html += `<p class="mr-summary">${esc(line.slice(2))}</p>`;
     } else if (line.startsWith('- ')) {
       const title = line.slice(2).trim();
-      mentionItems.push({ title, section: currentSection });
+      const numMatch = title.match(/\(#(\d+)\)$/);
+      const number = numMatch ? parseInt(numMatch[1]) : null;
+      mentionItems.push({ title, section: currentSection, number });
       html += `<p class="mr-item" data-mention-index="${itemIndex++}">${esc(title)}</p>`;
     } else if (line.startsWith('  *')) {
       html += `<p class="mr-detail-text">${esc(line.trim().replace(/\*/g, ''))}</p>`;

@@ -1547,10 +1547,10 @@ body {
 .mr-title       { font-size: 1rem; font-weight: 700; color: #202124; margin: 0 0 6px; letter-spacing: -0.01em; }
 .mr-cat         { font-size: 0.82rem; font-weight: 700; color: #1a73e8; text-transform: uppercase; letter-spacing: 0.06em; margin: 14px 0 4px; border-bottom: 1px solid #e8f0fe; padding-bottom: 2px; }
 .mr-phase       { font-size: 0.8rem; font-weight: 700; color: #1a73e8; margin: 10px 0 4px; border-left: 2px solid #1a73e8; padding-left: 6px; }
-.mr-subcat      { font-size: 0.80rem; font-weight: 600; color: #3c4043; margin: 6px 0 2px; padding-left: 8px; }
+.mr-subcat      { font-size: 0.78rem; font-weight: 600; font-style: italic; color: #5f6368; margin: 8px 0 2px; padding-left: 12px; border-left: 2px solid #dadce0; }
 .mr-subhead     { font-size: 0.72rem; font-weight: 600; color: #5f6368; margin: 4px 0 2px; }
 .mr-summary     { font-size: 0.78rem; color: #5f6368; margin-bottom: 6px; line-height: 1.5; }
-.mr-list        { margin: 2px 0 4px; padding-left: 20px; list-style: disc; }
+.mr-list        { margin: 2px 0 6px; padding-left: 28px; list-style: disc; }
 .mr-list .mr-item { display: list-item; font-size: 0.85rem; color: #202124; padding: 1px 0; line-height: 1.4; }
 .mr-item-done      { color: #9aa0a6; text-decoration: line-through; }
 .mr-routine-item   { cursor: pointer; transition: opacity 0.15s; }

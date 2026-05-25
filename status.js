@@ -118,19 +118,30 @@ function markdownToHtml(md) {
   let currentSection = '';
   let itemIndex = 0;
   for (const line of lines) {
-    if (line.startsWith('## ')) {
+    if (line.startsWith('### ')) {
+      html += `<h4 class="mr-subcat">${esc(line.slice(4).trim())}</h4>`;
+    } else if (line.startsWith('## ')) {
       currentSection = line.slice(3).trim();
       html += `<h3 class="mr-cat">${esc(currentSection)}</h3>`;
     } else if (line.startsWith('# ')) {
       html += `<h2 class="mr-title">${esc(line.slice(2))}</h2>`;
     } else if (line.startsWith('> ')) {
       html += `<p class="mr-summary">${esc(line.slice(2))}</p>`;
+    } else if (line.startsWith('- [ ] ') || line.startsWith('- [x] ')) {
+      const checked = line.startsWith('- [x] ');
+      const title = line.slice(6).trim();
+      const numMatch = title.match(/\(#(\d+)\)$/);
+      const number = numMatch ? parseInt(numMatch[1]) : null;
+      mentionItems.push({ title, section: currentSection, number });
+      html += `<p class="mr-item${checked ? ' mr-item-done' : ''}" data-mention-index="${itemIndex++}">${esc(title)}</p>`;
     } else if (line.startsWith('- ')) {
       const title = line.slice(2).trim();
       const numMatch = title.match(/\(#(\d+)\)$/);
       const number = numMatch ? parseInt(numMatch[1]) : null;
       mentionItems.push({ title, section: currentSection, number });
       html += `<p class="mr-item" data-mention-index="${itemIndex++}">${esc(title)}</p>`;
+    } else if (line.startsWith('**') && line.endsWith('**')) {
+      html += `<p class="mr-subhead">${esc(line.replace(/\*\*/g, ''))}</p>`;
     } else if (line.startsWith('  *')) {
       html += `<p class="mr-detail-text">${esc(line.trim().replace(/\*/g, ''))}</p>`;
     } else if (line.startsWith('  `')) {

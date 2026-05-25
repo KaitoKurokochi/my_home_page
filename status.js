@@ -187,9 +187,46 @@ function markdownToHtml(md) {
   let itemIndex = 0;
   let inRoutine = false;
 
+  // Helper: flush a pending item-list run
+  function flushList(listItems) {
+    if (!listItems.length) return '';
+    const liHtml = listItems.map(li => li).join('');
+    return `<ul class="mr-list">${liHtml}</ul>`;
+  }
+
+  // Helper: render a single item/check token as <li>
+  function renderLi(t, section, isRoutine) {
+    const numMatch = t.text.match(/\(#(\d+)\)$/);
+    const number = numMatch ? parseInt(numMatch[1]) : null;
+    mentionItems.push({ title: t.text, section, number });
+    const idx = itemIndex++;
+    if (t.type === 'check') {
+      return `<li class="mr-item${t.checked ? ' mr-item-done' : ''}" data-mention-index="${idx}">${esc(t.text)}</li>`;
+    }
+    if (isRoutine) {
+      return `<li class="mr-item mr-routine-item" data-mention-index="${idx}" data-routine-key="${esc(t.text)}">${esc(t.text)}</li>`;
+    }
+    return `<li class="mr-item" data-mention-index="${idx}">${esc(t.text)}</li>`;
+  }
+
+  let pendingList = [];  // accumulates <li> strings for the current run
+
   for (let i = 0; i < tokens.length; i++) {
     if (skipIdx.has(i)) continue;
     const t = tokens[i];
+
+    const isListToken = (t.type === 'item' || t.type === 'check');
+
+    if (isListToken) {
+      pendingList.push(renderLi(t, currentSection, inRoutine));
+      continue;
+    }
+
+    // Flush any accumulated list before rendering non-list token
+    if (pendingList.length) {
+      html += flushList(pendingList);
+      pendingList = [];
+    }
 
     if (t.type === 'h3') {
       inRoutine = false;
@@ -204,20 +241,6 @@ function markdownToHtml(md) {
       html += `<h2 class="mr-title">${esc(t.text)}</h2>`;
     } else if (t.type === 'summary') {
       html += `<p class="mr-summary">${esc(t.text)}</p>`;
-    } else if (t.type === 'check') {
-      const numMatch = t.text.match(/\(#(\d+)\)$/);
-      const number = numMatch ? parseInt(numMatch[1]) : null;
-      mentionItems.push({ title: t.text, section: currentSection, number });
-      html += `<p class="mr-item${t.checked ? ' mr-item-done' : ''}" data-mention-index="${itemIndex++}">・${esc(t.text)}</p>`;
-    } else if (t.type === 'item') {
-      const numMatch = t.text.match(/\(#(\d+)\)$/);
-      const number = numMatch ? parseInt(numMatch[1]) : null;
-      mentionItems.push({ title: t.text, section: currentSection, number });
-      if (inRoutine) {
-        html += `<p class="mr-item mr-routine-item" data-mention-index="${itemIndex++}" data-routine-key="${esc(t.text)}">・${esc(t.text)}</p>`;
-      } else {
-        html += `<p class="mr-item" data-mention-index="${itemIndex++}">・${esc(t.text)}</p>`;
-      }
     } else if (t.type === 'subhead') {
       html += `<p class="mr-subhead">${esc(t.text)}</p>`;
     } else if (t.type === 'detail') {
@@ -226,6 +249,12 @@ function markdownToHtml(md) {
       html += `<p class="mr-since">${esc(t.text)}</p>`;
     }
   }
+
+  // Flush any remaining list at end
+  if (pendingList.length) {
+    html += flushList(pendingList);
+  }
+
   return html;
 }
 

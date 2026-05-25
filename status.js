@@ -107,46 +107,123 @@ async function renderReport() {
     el.innerHTML = `<div class="mr-body">${markdownToHtml(md)}</div>`;
     window.mentionItems = mentionItems;
     attachMentionButtons(el);
+    attachRoutineItems(el);
   } catch (e) {
     el.innerHTML = `<p class="mr-error">report: ${e.message}</p>`;
   }
 }
 
+// ── Routine done state (localStorage, reset daily) ───────────────────────────
+
+function routineDoneKey() {
+  const today = new Date();
+  const d = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, '0'),
+    String(today.getDate()).padStart(2, '0'),
+  ].join('-');
+  return `routineDone_${d}`;
+}
+
+function loadRoutineDone() {
+  try {
+    return JSON.parse(localStorage.getItem(routineDoneKey()) || '{}');
+  } catch { return {}; }
+}
+
+function saveRoutineDone(state) {
+  localStorage.setItem(routineDoneKey(), JSON.stringify(state));
+}
+
 function markdownToHtml(md) {
   const lines = md.split('\n');
+
+  // ── Pass 1: parse into token objects ──────────────────────────────────────
+  const tokens = [];
+  for (const line of lines) {
+    if (line.startsWith('### ')) {
+      tokens.push({ type: 'h3', text: line.slice(4).trim() });
+    } else if (line.startsWith('## ')) {
+      tokens.push({ type: 'h2', text: line.slice(3).trim() });
+    } else if (line.startsWith('# ')) {
+      tokens.push({ type: 'h1', text: line.slice(2).trim() });
+    } else if (line.startsWith('> ')) {
+      tokens.push({ type: 'summary', text: line.slice(2).trim() });
+    } else if (line.startsWith('- [ ] ') || line.startsWith('- [x] ')) {
+      tokens.push({ type: 'check', text: line.slice(6).trim(), checked: line.startsWith('- [x] ') });
+    } else if (line.startsWith('- ')) {
+      tokens.push({ type: 'item', text: line.slice(2).trim() });
+    } else if (line.startsWith('**') && line.endsWith('**')) {
+      tokens.push({ type: 'subhead', text: line.replace(/\*\*/g, '').trim() });
+    } else if (line.startsWith('  *')) {
+      tokens.push({ type: 'detail', text: line.trim().replace(/\*/g, '') });
+    } else if (line.startsWith('  `')) {
+      tokens.push({ type: 'since', text: line.trim().replace(/`/g, '') });
+    } else {
+      tokens.push({ type: 'blank' });
+    }
+  }
+
+  // ── Pass 2: skip heading tokens whose section has no content ─────────────
+  // A heading (h2/h3) is "empty" if the next non-blank token is another heading or end-of-stream.
+  const HEADING_TYPES = new Set(['h1', 'h2', 'h3']);
+  const CONTENT_TYPES = new Set(['summary', 'check', 'item', 'subhead', 'detail', 'since']);
+  const skipIdx = new Set();
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i];
+    if (t.type !== 'h2' && t.type !== 'h3') continue;
+    // look ahead for content before the next heading
+    let hasContent = false;
+    for (let j = i + 1; j < tokens.length; j++) {
+      if (HEADING_TYPES.has(tokens[j].type)) break;
+      if (CONTENT_TYPES.has(tokens[j].type)) { hasContent = true; break; }
+    }
+    if (!hasContent) skipIdx.add(i);
+  }
+
+  // ── Pass 3: render ────────────────────────────────────────────────────────
   let html = '';
   let currentSection = '';
   let itemIndex = 0;
-  for (const line of lines) {
-    if (line.startsWith('### ')) {
-      html += `<h4 class="mr-subcat">${esc(line.slice(4).trim())}</h4>`;
-    } else if (line.startsWith('## ')) {
-      currentSection = line.slice(3).trim();
+  let inRoutine = false;
+
+  for (let i = 0; i < tokens.length; i++) {
+    if (skipIdx.has(i)) continue;
+    const t = tokens[i];
+
+    if (t.type === 'h3') {
+      inRoutine = false;
+      html += `<h4 class="mr-subcat">${esc(t.text)}</h4>`;
+    } else if (t.type === 'h2') {
+      currentSection = t.text;
+      inRoutine = t.text.includes('ルーティンタスク');
       const isPhase = currentSection.startsWith('Phase:');
       html += `<h3 class="${isPhase ? 'mr-phase' : 'mr-cat'}">${esc(currentSection)}</h3>`;
-    } else if (line.startsWith('# ')) {
-      html += `<h2 class="mr-title">${esc(line.slice(2))}</h2>`;
-    } else if (line.startsWith('> ')) {
-      html += `<p class="mr-summary">${esc(line.slice(2))}</p>`;
-    } else if (line.startsWith('- [ ] ') || line.startsWith('- [x] ')) {
-      const checked = line.startsWith('- [x] ');
-      const title = line.slice(6).trim();
-      const numMatch = title.match(/\(#(\d+)\)$/);
+    } else if (t.type === 'h1') {
+      inRoutine = false;
+      html += `<h2 class="mr-title">${esc(t.text)}</h2>`;
+    } else if (t.type === 'summary') {
+      html += `<p class="mr-summary">${esc(t.text)}</p>`;
+    } else if (t.type === 'check') {
+      const numMatch = t.text.match(/\(#(\d+)\)$/);
       const number = numMatch ? parseInt(numMatch[1]) : null;
-      mentionItems.push({ title, section: currentSection, number });
-      html += `<p class="mr-item${checked ? ' mr-item-done' : ''}" data-mention-index="${itemIndex++}">${esc(title)}</p>`;
-    } else if (line.startsWith('- ')) {
-      const title = line.slice(2).trim();
-      const numMatch = title.match(/\(#(\d+)\)$/);
+      mentionItems.push({ title: t.text, section: currentSection, number });
+      html += `<p class="mr-item${t.checked ? ' mr-item-done' : ''}" data-mention-index="${itemIndex++}">${esc(t.text)}</p>`;
+    } else if (t.type === 'item') {
+      const numMatch = t.text.match(/\(#(\d+)\)$/);
       const number = numMatch ? parseInt(numMatch[1]) : null;
-      mentionItems.push({ title, section: currentSection, number });
-      html += `<p class="mr-item" data-mention-index="${itemIndex++}">${esc(title)}</p>`;
-    } else if (line.startsWith('**') && line.endsWith('**')) {
-      html += `<p class="mr-subhead">${esc(line.replace(/\*\*/g, ''))}</p>`;
-    } else if (line.startsWith('  *')) {
-      html += `<p class="mr-detail-text">${esc(line.trim().replace(/\*/g, ''))}</p>`;
-    } else if (line.startsWith('  `')) {
-      html += `<p class="mr-since">${esc(line.trim().replace(/`/g, ''))}</p>`;
+      mentionItems.push({ title: t.text, section: currentSection, number });
+      if (inRoutine) {
+        html += `<p class="mr-item mr-routine-item" data-mention-index="${itemIndex++}" data-routine-key="${esc(t.text)}">${esc(t.text)}</p>`;
+      } else {
+        html += `<p class="mr-item" data-mention-index="${itemIndex++}">${esc(t.text)}</p>`;
+      }
+    } else if (t.type === 'subhead') {
+      html += `<p class="mr-subhead">${esc(t.text)}</p>`;
+    } else if (t.type === 'detail') {
+      html += `<p class="mr-detail-text">${esc(t.text)}</p>`;
+    } else if (t.type === 'since') {
+      html += `<p class="mr-since">${esc(t.text)}</p>`;
     }
   }
   return html;
@@ -171,6 +248,45 @@ function attachMentionButtons(el) {
       }
     });
     p.appendChild(btn);
+  });
+}
+
+function attachRoutineItems(el) {
+  const doneState = loadRoutineDone();
+  el.querySelectorAll('.mr-routine-item').forEach(p => {
+    const key = p.dataset.routineKey;
+    if (!key) return;
+
+    // Restore saved state
+    const savedState = doneState[key] || 'none'; // 'none' | 'struck' | 'hidden'
+    if (savedState === 'struck') {
+      p.classList.add('mr-routine-struck');
+    } else if (savedState === 'hidden') {
+      p.style.display = 'none';
+    }
+
+    p.style.cursor = 'pointer';
+    p.addEventListener('click', (e) => {
+      // Ignore clicks on the @ mention button
+      if (e.target.classList.contains('mr-mention-btn')) return;
+      const state = loadRoutineDone();
+      const cur = state[key] || 'none';
+      if (cur === 'none') {
+        // First click: add strikethrough
+        p.classList.add('mr-routine-struck');
+        state[key] = 'struck';
+      } else if (cur === 'struck') {
+        // Second click: hide
+        p.style.display = 'none';
+        state[key] = 'hidden';
+      } else {
+        // Third click: restore (toggle back for correction)
+        p.classList.remove('mr-routine-struck');
+        p.style.display = '';
+        state[key] = 'none';
+      }
+      saveRoutineDone(state);
+    });
   });
 }
 

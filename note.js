@@ -559,7 +559,7 @@ async function loadNotes() {
 
   try {
     const res = await fetch(
-      `${GITHUB_API}?labels=note&state=open&per_page=20&sort=created&direction=desc`,
+      `${GITHUB_API}?labels=note&state=all&per_page=20&sort=created&direction=desc`,
       {
         headers: {
           'Authorization': `Bearer ${getToken()}`,
@@ -568,7 +568,12 @@ async function loadNotes() {
       }
     );
     if (!res.ok) throw new Error(`${res.status}`);
-    const issues = await res.json();
+    const allIssues = await res.json();
+
+    const cutoff = Date.now() - 2 * 60 * 60 * 1000;
+    const issues = allIssues
+      .filter(i => new Date(i.created_at).getTime() >= cutoff)
+      .slice(0, 10);
 
     if (!issues.length) {
       list.innerHTML = '<p class="note-list-empty">No notes yet.</p>';

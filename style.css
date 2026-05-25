@@ -1551,7 +1551,10 @@ body {
 .mr-subhead     { font-size: 0.72rem; font-weight: 600; color: #5f6368; margin: 4px 0 2px; }
 .mr-summary     { font-size: 0.78rem; color: #5f6368; margin-bottom: 6px; line-height: 1.5; }
 .mr-item        { font-size: 0.8rem; color: #202124; padding: 1px 0; line-height: 1.4; padding-left: 22px; }
-.mr-item-done   { color: #9aa0a6; text-decoration: line-through; }
+.mr-item-done      { color: #9aa0a6; text-decoration: line-through; }
+.mr-routine-item   { cursor: pointer; transition: opacity 0.15s; }
+.mr-routine-item:hover { opacity: 0.75; }
+.mr-routine-struck { color: #9aa0a6; text-decoration: line-through; }
 .mr-detail-text { font-size: 0.74rem; color: #5f6368; padding-left: 14px; line-height: 1.4; }
 .mr-since       { font-size: 0.7rem; color: #9aa0a6; padding-left: 14px; margin-bottom: 4px; }
 .mr-error       { font-size: 0.78rem; color: #c5221f; }

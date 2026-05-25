@@ -153,6 +153,8 @@ function markdownToHtml(md) {
       tokens.push({ type: 'check', text: line.slice(6).trim(), checked: line.startsWith('- [x] ') });
     } else if (line.startsWith('- ')) {
       tokens.push({ type: 'item', text: line.slice(2).trim() });
+    } else if (line.startsWith('・')) {
+      tokens.push({ type: 'item', text: line.slice(1).trim() });
     } else if (line.startsWith('**') && line.endsWith('**')) {
       tokens.push({ type: 'subhead', text: line.replace(/\*\*/g, '').trim() });
     } else if (line.startsWith('  *')) {

@@ -208,15 +208,15 @@ function markdownToHtml(md) {
       const numMatch = t.text.match(/\(#(\d+)\)$/);
       const number = numMatch ? parseInt(numMatch[1]) : null;
       mentionItems.push({ title: t.text, section: currentSection, number });
-      html += `<p class="mr-item${t.checked ? ' mr-item-done' : ''}" data-mention-index="${itemIndex++}">${esc(t.text)}</p>`;
+      html += `<p class="mr-item${t.checked ? ' mr-item-done' : ''}" data-mention-index="${itemIndex++}">・${esc(t.text)}</p>`;
     } else if (t.type === 'item') {
       const numMatch = t.text.match(/\(#(\d+)\)$/);
       const number = numMatch ? parseInt(numMatch[1]) : null;
       mentionItems.push({ title: t.text, section: currentSection, number });
       if (inRoutine) {
-        html += `<p class="mr-item mr-routine-item" data-mention-index="${itemIndex++}" data-routine-key="${esc(t.text)}">${esc(t.text)}</p>`;
+        html += `<p class="mr-item mr-routine-item" data-mention-index="${itemIndex++}" data-routine-key="${esc(t.text)}">・${esc(t.text)}</p>`;
       } else {
-        html += `<p class="mr-item" data-mention-index="${itemIndex++}">${esc(t.text)}</p>`;
+        html += `<p class="mr-item" data-mention-index="${itemIndex++}">・${esc(t.text)}</p>`;
       }
     } else if (t.type === 'subhead') {
       html += `<p class="mr-subhead">${esc(t.text)}</p>`;
@@ -258,10 +258,8 @@ function attachRoutineItems(el) {
     if (!key) return;
 
     // Restore saved state
-    const savedState = doneState[key] || 'none'; // 'none' | 'struck' | 'hidden'
-    if (savedState === 'struck') {
-      p.classList.add('mr-routine-struck');
-    } else if (savedState === 'hidden') {
+    const savedState = doneState[key] || 'none'; // 'none' | 'hidden'
+    if (savedState === 'hidden') {
       p.style.display = 'none';
     }
 
@@ -272,15 +270,11 @@ function attachRoutineItems(el) {
       const state = loadRoutineDone();
       const cur = state[key] || 'none';
       if (cur === 'none') {
-        // First click: add strikethrough
-        p.classList.add('mr-routine-struck');
-        state[key] = 'struck';
-      } else if (cur === 'struck') {
-        // Second click: hide
+        // First click: hide immediately
         p.style.display = 'none';
         state[key] = 'hidden';
       } else {
-        // Third click: restore (toggle back for correction)
+        // Second click: restore
         p.classList.remove('mr-routine-struck');
         p.style.display = '';
         state[key] = 'none';

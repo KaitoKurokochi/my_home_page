@@ -122,7 +122,8 @@ function markdownToHtml(md) {
       html += `<h4 class="mr-subcat">${esc(line.slice(4).trim())}</h4>`;
     } else if (line.startsWith('## ')) {
       currentSection = line.slice(3).trim();
-      html += `<h3 class="mr-cat">${esc(currentSection)}</h3>`;
+      const isPhase = currentSection.startsWith('Phase:');
+      html += `<h3 class="${isPhase ? 'mr-phase' : 'mr-cat'}">${esc(currentSection)}</h3>`;
     } else if (line.startsWith('# ')) {
       html += `<h2 class="mr-title">${esc(line.slice(2))}</h2>`;
     } else if (line.startsWith('> ')) {

@@ -53,6 +53,20 @@ async function renderCalWidget() {
     return;
   }
 
+  // ── Inject test event (remove after confirming detail panel works) ──────────
+  events = [
+    ...events,
+    {
+      title: 'テスト予定（詳細確認用）',
+      start: '14:00',
+      end: '15:00',
+      allDay: false,
+      description: 'これはテスト用の詳細です。カレンダーアイテムをクリックすると右側にこのような詳細が表示されます。',
+      location: 'オンライン',
+      _test: true,
+    },
+  ];
+
   // ── Summary (pill) ──────────────────────────────────────────────────────────
   // Always render exactly 2 preview rows and 1 more-row so widget height is constant.
   const buildRow = (ev) =>
@@ -75,10 +89,10 @@ async function renderCalWidget() {
     ? `<span class="cal-more">+${events.length - 2}件</span>`
     : `<span class="cal-more" style="visibility:hidden">+0件</span>`;
 
-  // ── Detail panel ────────────────────────────────────────────────────────────
-  const detailRows = events.map(ev => {
+  // ── List panel rows ─────────────────────────────────────────────────────────
+  const detailRows = events.map((ev, i) => {
     const timeRange = ev.allDay ? '終日' : `${ev.start} – ${ev.end}`;
-    return `<div class="cal-panel-event">
+    return `<div class="cal-panel-event" data-event-index="${i}">
       <div class="cal-panel-time">${esc(timeRange)}</div>
       <div class="cal-panel-title">${esc(ev.title)}</div>
     </div>`;
@@ -94,16 +108,101 @@ async function renderCalWidget() {
     <div class="cal-panel hidden" id="cal-panel">
       <div class="cal-panel-header">${dateLabel}</div>
       ${detailRows}${noEvents}
+    </div>
+    <div class="cal-detail-panel hidden" id="cal-detail-panel">
+      <button class="cal-detail-close" id="cal-detail-close" title="閉じる">✕</button>
+      <div class="cal-detail-title" id="cal-detail-title"></div>
+      <div class="cal-detail-time" id="cal-detail-time"></div>
+      <div class="cal-detail-description" id="cal-detail-description"></div>
+      <div class="cal-detail-location" id="cal-detail-location"></div>
     </div>`;
 
-  // toggle panel on click
-  const btn   = document.getElementById('cal-summary');
-  const panel = document.getElementById('cal-panel');
+  // toggle list panel on summary click
+  const btn        = document.getElementById('cal-summary');
+  const panel      = document.getElementById('cal-panel');
+  const detailPanel = document.getElementById('cal-detail-panel');
+
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
     panel.classList.toggle('hidden');
+    // close detail panel when list panel closes
+    if (panel.classList.contains('hidden')) {
+      detailPanel.classList.add('hidden');
+      panel.querySelectorAll('.cal-panel-event--active').forEach(el => el.classList.remove('cal-panel-event--active'));
+    }
   });
-  document.addEventListener('click', () => panel.classList.add('hidden'));
+
+  // Close both panels when clicking outside the widget
+  document.addEventListener('click', (e) => {
+    if (!widget.contains(e.target)) {
+      panel.classList.add('hidden');
+      detailPanel.classList.add('hidden');
+      panel.querySelectorAll('.cal-panel-event--active').forEach(el => el.classList.remove('cal-panel-event--active'));
+    }
+  });
+
+  // Close detail panel via close button
+  document.getElementById('cal-detail-close').addEventListener('click', (e) => {
+    e.stopPropagation();
+    detailPanel.classList.add('hidden');
+    panel.querySelectorAll('.cal-panel-event--active').forEach(el => el.classList.remove('cal-panel-event--active'));
+  });
+
+  // Event item click → show detail panel
+  panel.querySelectorAll('.cal-panel-event[data-event-index]').forEach(row => {
+    row.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const idx = Number(row.dataset.eventIndex);
+      const ev = events[idx];
+      if (!ev) return;
+
+      // Highlight selected row
+      panel.querySelectorAll('.cal-panel-event--active').forEach(el => el.classList.remove('cal-panel-event--active'));
+      row.classList.add('cal-panel-event--active');
+
+      // Populate detail panel
+      const timeRange = ev.allDay ? '終日' : `${ev.start} – ${ev.end}`;
+      document.getElementById('cal-detail-title').textContent = ev.title || '';
+      document.getElementById('cal-detail-time').textContent  = timeRange;
+
+      const descEl = document.getElementById('cal-detail-description');
+      if (ev.description) {
+        descEl.textContent = ev.description;
+        descEl.style.display = '';
+      } else {
+        descEl.textContent = '';
+        descEl.style.display = 'none';
+      }
+
+      const locEl = document.getElementById('cal-detail-location');
+      if (ev.location) {
+        locEl.textContent = ev.location;
+        locEl.style.display = '';
+      } else {
+        locEl.textContent = '';
+        locEl.style.display = 'none';
+      }
+
+      // Position: to the right of the list panel; fall back to left if not enough space
+      const panelRect  = panel.getBoundingClientRect();
+      const widgetRect = widget.getBoundingClientRect();
+      const spaceRight = window.innerWidth - panelRect.right;
+      const detailW    = 300 + 8; // max-width + gap
+
+      detailPanel.classList.remove('hidden');
+
+      if (spaceRight >= detailW) {
+        // Enough space on the right
+        detailPanel.style.left = `${panel.offsetLeft + panel.offsetWidth + 8}px`;
+        detailPanel.style.right = 'auto';
+      } else {
+        // Not enough space → show to the left of the list panel
+        detailPanel.style.right = `${widget.offsetWidth - panel.offsetLeft + 8}px`;
+        detailPanel.style.left = 'auto';
+      }
+      detailPanel.style.top = `${panel.offsetTop}px`;
+    });
+  });
 }
 
 // ── Report (left-col, above news) ─────────────────────────────────────────────
@@ -121,6 +220,7 @@ async function renderReport() {
     window.mentionItems = mentionItems;
     attachMentionButtons(el);
     attachRoutineItems(el);
+    attachBulletToggles(el);
   } catch (e) {
     el.innerHTML = `<p class="mr-error">report: ${e.message}</p>`;
   }
@@ -198,7 +298,8 @@ function markdownToHtml(md) {
 
   // ── Pass 3: render ────────────────────────────────────────────────────────
   let html = '';
-  let currentSection = '';
+  let currentSection = '';      // current h2 text (may be "Phase: ..." subheading)
+  let currentTopSection = '';   // last h2 that is NOT a Phase: block; used for label guessing
   let itemIndex = 0;
   let inRoutine = false;
 
@@ -219,12 +320,12 @@ function markdownToHtml(md) {
     mentionItems.push({ title: t.text, section, number, sourceLabel });
     const idx = itemIndex++;
     if (t.type === 'check') {
-      return `<li class="mr-item${t.checked ? ' mr-item-done' : ''}" data-mention-index="${idx}">${esc(t.text)}</li>`;
+      return `<li class="mr-item${t.checked ? ' mr-item-done' : ''}" data-mention-index="${idx}"><span class="mr-bullet" data-item-key="${esc(t.text)}">-</span>${esc(t.text)}</li>`;
     }
     if (isRoutine) {
-      return `<li class="mr-item mr-routine-item" data-mention-index="${idx}" data-routine-key="${esc(t.text)}">${esc(t.text)}</li>`;
+      return `<li class="mr-item mr-routine-item" data-mention-index="${idx}" data-routine-key="${esc(t.text)}"><span class="mr-bullet" data-item-key="${esc(t.text)}">-</span>${esc(t.text)}</li>`;
     }
-    return `<li class="mr-item" data-mention-index="${idx}">${esc(t.text)}</li>`;
+    return `<li class="mr-item" data-mention-index="${idx}"><span class="mr-bullet" data-item-key="${esc(t.text)}">-</span>${esc(t.text)}</li>`;
   }
 
   let pendingList = [];  // accumulates <li> strings for the current run
@@ -236,7 +337,9 @@ function markdownToHtml(md) {
     const isListToken = (t.type === 'item' || t.type === 'check');
 
     if (isListToken) {
-      pendingList.push(renderLi(t, currentSection, inRoutine));
+      // Use top-level section for label guessing; Phase: items inherit the parent label
+      const sectionForItem = currentSection.startsWith('Phase:') ? currentTopSection : currentSection;
+      pendingList.push(renderLi(t, sectionForItem, inRoutine));
       continue;
     }
 
@@ -253,6 +356,8 @@ function markdownToHtml(md) {
       currentSection = t.text;
       inRoutine = t.text.includes('ルーティンタスク');
       const isPhase = currentSection.startsWith('Phase:');
+      // Track top-level section so items inside Phase: blocks inherit the parent label
+      if (!isPhase) currentTopSection = t.text;
       html += `<h3 class="${isPhase ? 'mr-phase' : 'mr-cat'}">${esc(currentSection)}</h3>`;
     } else if (t.type === 'h1') {
       inRoutine = false;
@@ -279,11 +384,17 @@ function markdownToHtml(md) {
 function attachMentionButtons(el) {
   el.querySelectorAll('.mr-item[data-mention-index]').forEach(p => {
     const idx = Number(p.dataset.mentionIndex);
+
+    // bullet span is already in DOM from renderLi; extract it before rewriting
+    const bulletSpan = p.querySelector('.mr-bullet');
+
     // Wrap text in span so button sits right next to it
     const textSpan = document.createElement('span');
     textSpan.className = 'mr-item-text';
-    textSpan.textContent = p.textContent.trim();
+    // Text content = li text minus the bullet span text
+    textSpan.textContent = p.textContent.replace(/^-\s*/, '').trim();
     p.textContent = '';
+    if (bulletSpan) p.appendChild(bulletSpan);
     p.appendChild(textSpan);
     const btn = document.createElement('button');
     btn.className = 'mr-mention-btn';
@@ -327,6 +438,54 @@ function attachRoutineItems(el) {
         state[key] = 'none';
       }
       saveRoutineDone(state);
+    });
+  });
+}
+
+// ── Mark-as-active (red bullet) ───────────────────────────────────────────────
+
+const MR_ACTIVE_KEY = 'mrActiveItems';
+
+function loadActiveItems() {
+  try {
+    return JSON.parse(localStorage.getItem(MR_ACTIVE_KEY) || '[]');
+  } catch { return []; }
+}
+
+function saveActiveItems(items) {
+  localStorage.setItem(MR_ACTIVE_KEY, JSON.stringify(items));
+}
+
+function attachBulletToggles(el) {
+  const activeItems = loadActiveItems();
+
+  el.querySelectorAll('.mr-bullet').forEach(bullet => {
+    const key = bullet.dataset.itemKey || '';
+    const li = bullet.closest('li');
+
+    // Restore saved state
+    if (activeItems.includes(key)) {
+      bullet.textContent = '🔴';
+      if (li) li.classList.add('mr-item--active');
+    }
+
+    bullet.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const state = loadActiveItems();
+      const isActive = state.includes(key);
+      if (isActive) {
+        // Remove from active
+        const idx = state.indexOf(key);
+        state.splice(idx, 1);
+        bullet.textContent = '-';
+        if (li) li.classList.remove('mr-item--active');
+      } else {
+        // Add to active
+        state.push(key);
+        bullet.textContent = '🔴';
+        if (li) li.classList.add('mr-item--active');
+      }
+      saveActiveItems(state);
     });
   });
 }

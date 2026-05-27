@@ -65,8 +65,9 @@ function guessLabel(section) {
   if (!section) return null;
   const labels = getLabels();
   if (labels.includes(section)) return section;
-  // Strip emoji/symbols and compare case-insensitively (handles "🔬 Research" → "Research")
-  const norm = s => s.replace(/[^\w]/g, '').toLowerCase();
+  // Strip non-alphanumeric chars (emoji, spaces, underscores) and compare case-insensitively.
+  // e.g. "🔬 Research"→"research", "🦁 Lions IS"→"lionsis", "Lions_IS"→"lionsis" all match.
+  const norm = s => s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
   return labels.find(l => norm(l) === norm(section)) || null;
 }
 

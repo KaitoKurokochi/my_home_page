@@ -53,20 +53,6 @@ async function renderCalWidget() {
     return;
   }
 
-  // ── Inject test event (remove after confirming detail panel works) ──────────
-  events = [
-    ...events,
-    {
-      title: 'テスト予定（詳細確認用）',
-      start: '14:00',
-      end: '15:00',
-      allDay: false,
-      description: 'これはテスト用の詳細です。カレンダーアイテムをクリックすると右側にこのような詳細が表示されます。',
-      location: 'オンライン',
-      _test: true,
-    },
-  ];
-
   // ── Summary (pill) ──────────────────────────────────────────────────────────
   // Always render exactly 2 preview rows and 1 more-row so widget height is constant.
   const buildRow = (ev) =>

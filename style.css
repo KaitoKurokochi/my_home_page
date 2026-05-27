@@ -27,7 +27,6 @@ body {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 1400px;
   gap: 12px;
 }
 

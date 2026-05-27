@@ -54,13 +54,26 @@ async function renderCalWidget() {
   }
 
   // ── Summary (pill) ──────────────────────────────────────────────────────────
-  const shown = events.slice(0, 2);
-  const previewRows = shown.length
-    ? shown.map(ev =>
-        `<span class="cal-preview-row"><span class="cal-preview-time">${esc(ev.allDay ? '終日' : ev.start)}</span><span class="cal-preview-title">${esc(ev.title)}</span></span>`
-      ).join('')
-    : `<span class="cal-preview-empty">予定なし</span>`;
-  const more = events.length > 2 ? `<span class="cal-more">+${events.length - 2}</span>` : '';
+  // Always render exactly 2 preview rows and 1 more-row so widget height is constant.
+  const buildRow = (ev) =>
+    `<span class="cal-preview-row"><span class="cal-preview-time">${esc(ev.allDay ? '終日' : ev.start)}</span><span class="cal-preview-title">${esc(ev.title)}</span></span>`;
+
+  let row0, row1;
+  if (events.length === 0) {
+    row0 = `<span class="cal-preview-row"><span class="cal-preview-time"></span><span class="cal-preview-title">予定なし</span></span>`;
+    row1 = `<span class="cal-preview-row" style="visibility:hidden"><span class="cal-preview-time"></span><span class="cal-preview-title">–</span></span>`;
+  } else if (events.length === 1) {
+    row0 = buildRow(events[0]);
+    row1 = `<span class="cal-preview-row" style="visibility:hidden">${buildRow(events[0])}</span>`;
+  } else {
+    row0 = buildRow(events[0]);
+    row1 = buildRow(events[1]);
+  }
+
+  const previewRows = row0 + row1;
+  const more = events.length > 2
+    ? `<span class="cal-more">+${events.length - 2}件</span>`
+    : `<span class="cal-more" style="visibility:hidden">+0件</span>`;
 
   // ── Detail panel ────────────────────────────────────────────────────────────
   const detailRows = events.map(ev => {

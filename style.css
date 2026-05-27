@@ -1658,31 +1658,22 @@ body {
 }
 
 .wr-toggle-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 14px;
-  background: #f8f9fa;
-  border: 1px solid #dadce0;
-  border-radius: 20px;
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: #5f6368;
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 8px 16px;
+  background: #e94560;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-  margin-bottom: 8px;
+  text-decoration: none;
+  transition: opacity 0.15s;
 }
 
 .wr-toggle-btn:hover {
-  background: #e8eaed;
-  border-color: #bdc1c6;
-  color: #202124;
-}
-
-.wr-toggle-btn.wr-btn--open {
-  background: #e8f0fe;
-  border-color: #1a73e8;
-  color: #1a73e8;
+  opacity: 0.85;
 }
 
 /* (wr-panel / wr-body etc. live inside weekly.html as inline styles) */

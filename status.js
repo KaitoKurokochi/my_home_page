@@ -211,9 +211,12 @@ function markdownToHtml(md) {
 
   // Helper: render a single item/check token as <li>
   function renderLi(t, section, isRoutine) {
-    const numMatch = t.text.match(/\(#(\d+)\)$/);
+    // Match "(#NNN)" (solo) or "(#NNN, label_key)" (Others section format)
+    const numMatch = t.text.match(/\(#(\d+)(?:,\s*([^)]+))?\)$/);
     const number = numMatch ? parseInt(numMatch[1]) : null;
-    mentionItems.push({ title: t.text, section, number });
+    // sourceLabel: explicit label from "(#NNN, label)" takes priority over section
+    const sourceLabel = (numMatch && numMatch[2]) ? numMatch[2].trim() : null;
+    mentionItems.push({ title: t.text, section, number, sourceLabel });
     const idx = itemIndex++;
     if (t.type === 'check') {
       return `<li class="mr-item${t.checked ? ' mr-item-done' : ''}" data-mention-index="${idx}">${esc(t.text)}</li>`;

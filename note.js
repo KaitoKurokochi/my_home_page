@@ -74,7 +74,9 @@ function guessLabel(section) {
 window.setMention = function(item) {
   currentMention = item;
   renderMentionBadge();
-  const matched = guessLabel(item.section);
+  // sourceLabel (from "(#NNN, label_key)" in Others section) takes priority over section name
+  const labelCandidate = item.sourceLabel || item.section;
+  const matched = guessLabel(labelCandidate);
   if (matched) {
     selectedLabel = matched;
     renderLabelBar();
@@ -90,7 +92,8 @@ function renderMentionBadge() {
   const badge = document.getElementById('note-mention-badge');
   if (!badge) return;
   if (currentMention) {
-    const sec = currentMention.section ? ` · ${currentMention.section}` : '';
+    const displaySec = currentMention.sourceLabel || currentMention.section;
+    const sec = displaySec ? ` · ${displaySec}` : '';
     badge.innerHTML = `
       <span class="mention-badge-text">@ ${currentMention.title}<span class="mention-badge-section">${sec}</span></span>
       <button class="mention-badge-clear" title="メンションを外す">✕</button>
@@ -249,9 +252,11 @@ function renderNoteUI() {
 
     const roleStr = [...selectedRoles].map(r => `[${r}]`).join('');
     const refPrefix = currentMention ? (() => {
-      const cleanTitle = currentMention.title.replace(/\s*\(#\d+\)$/, '');
+      // Strip both "(#NNN)" and "(#NNN, label_key)" suffixes from the title
+      const cleanTitle = currentMention.title.replace(/\s*\(#\d+(?:,\s*[^)]+)?\)$/, '');
       const num = currentMention.number != null ? `#${currentMention.number} ` : '';
-      const sec = currentMention.section ? ` (${currentMention.section})` : '';
+      const displaySec = currentMention.sourceLabel || currentMention.section;
+      const sec = displaySec ? ` (${displaySec})` : '';
       return `ref: ${num}${cleanTitle}${sec}\n\n`;
     })() : '';
     const body = refPrefix + text;

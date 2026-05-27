@@ -1650,3 +1650,39 @@ body {
 .mr-detail-text { font-size: 0.74rem; color: #5f6368; padding-left: 14px; line-height: 1.4; }
 .mr-since       { font-size: 0.7rem; color: #9aa0a6; padding-left: 14px; margin-bottom: 4px; }
 .mr-error       { font-size: 0.78rem; color: #c5221f; }
+
+/* ── Weekly Report ───────────────────────────────────────────────────────────*/
+
+.weekly-report-wrap {
+  margin-bottom: 0;
+}
+
+.wr-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: #f8f9fa;
+  border: 1px solid #dadce0;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #5f6368;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  margin-bottom: 8px;
+}
+
+.wr-toggle-btn:hover {
+  background: #e8eaed;
+  border-color: #bdc1c6;
+  color: #202124;
+}
+
+.wr-toggle-btn.wr-btn--open {
+  background: #e8f0fe;
+  border-color: #1a73e8;
+  color: #1a73e8;
+}
+
+/* (wr-panel / wr-body etc. live inside weekly.html as inline styles) */

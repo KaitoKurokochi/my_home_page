@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Page</title>
-  <link rel="stylesheet" href="style.css?v=20260527b" />
+  <link rel="stylesheet" href="style.css?v=20260527c" />
 </head>
 <body>
 
@@ -101,6 +101,10 @@
   <main class="main-layout">
     <!-- Left: report + news + sports -->
     <div class="left-col">
+      <!-- Weekly Report (Sunday only; opens weekly.html in new tab) -->
+      <div class="weekly-report-wrap" id="weekly-report-wrap" style="display:none">
+        <button id="weekly-report-btn" class="wr-toggle-btn">Weekly Report</button>
+      </div>
       <section id="status-report" class="status-report-section"></section>
       <section id="news">
         <a id="nikkei-paper-link" class="paper-link" href="#">
@@ -129,5 +133,6 @@
   <script src="note.js?v=20260527c"></script>
   <script src="sync.js?v=20260517b"></script>
   <script src="status.js?v=20260527c"></script>
+  <script src="weekly.js?v=20260527d"></script>
 </body>
 </html>

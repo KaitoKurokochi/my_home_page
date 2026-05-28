@@ -246,7 +246,9 @@ function markdownToHtml(md) {
   // ── Pass 1: parse into token objects ──────────────────────────────────────
   const tokens = [];
   for (const line of lines) {
-    if (line.startsWith('### ')) {
+    if (line.startsWith('#### ')) {
+      tokens.push({ type: 'h4', text: line.slice(5).trim() });
+    } else if (line.startsWith('### ')) {
       tokens.push({ type: 'h3', text: line.slice(4).trim() });
     } else if (line.startsWith('## ')) {
       tokens.push({ type: 'h2', text: line.slice(3).trim() });
@@ -273,12 +275,12 @@ function markdownToHtml(md) {
 
   // ── Pass 2: skip heading tokens whose section has no content ─────────────
   // A heading (h2/h3) is "empty" if the next non-blank token is another heading or end-of-stream.
-  const HEADING_TYPES = new Set(['h1', 'h2', 'h3']);
+  const HEADING_TYPES = new Set(['h1', 'h2', 'h3', 'h4']);
   const CONTENT_TYPES = new Set(['summary', 'check', 'item', 'subhead', 'detail', 'since']);
   const skipIdx = new Set();
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i];
-    if (t.type !== 'h2' && t.type !== 'h3') continue;
+    if (t.type !== 'h3' && t.type !== 'h4') continue;
     // look ahead for content before the next heading
     let hasContent = false;
     for (let j = i + 1; j < tokens.length; j++) {
@@ -290,8 +292,8 @@ function markdownToHtml(md) {
 
   // ── Pass 3: render ────────────────────────────────────────────────────────
   let html = '';
-  let currentSection = '';      // current h2 text (may be "Phase: ..." subheading)
-  let currentTopSection = '';   // last h2 that is NOT a Phase: block; used for label guessing
+  let currentLabel = '';         // current h2 label (Research, Lions_IS, etc.)
+  let currentSection = '';      // current h3 sub-section text (Phase:, Questions, etc.)
   let itemIndex = 0;
   let inRoutine = false;
 
@@ -329,9 +331,7 @@ function markdownToHtml(md) {
     const isListToken = (t.type === 'item' || t.type === 'check');
 
     if (isListToken) {
-      // Use top-level section for label guessing; Phase: items inherit the parent label
-      const sectionForItem = currentSection.startsWith('Phase:') ? currentTopSection : currentSection;
-      pendingList.push(renderLi(t, sectionForItem, inRoutine));
+      pendingList.push(renderLi(t, currentLabel || currentSection, inRoutine));
       continue;
     }
 
@@ -341,16 +341,19 @@ function markdownToHtml(md) {
       pendingList = [];
     }
 
-    if (t.type === 'h3') {
+    if (t.type === 'h4') {
       inRoutine = false;
-      html += `<h4 class="mr-subcat">${esc(t.text)}</h4>`;
-    } else if (t.type === 'h2') {
+      html += `<h5 class="mr-subcat">${esc(t.text)}</h5>`;
+    } else if (t.type === 'h3') {
+      inRoutine = false;
       currentSection = t.text;
+      const isPhase = t.text.startsWith('Phase:');
+      html += `<h4 class="${isPhase ? 'mr-phase' : 'mr-subcat'}">${esc(t.text)}</h4>`;
+    } else if (t.type === 'h2') {
+      currentLabel = t.text;
+      currentSection = '';
       inRoutine = t.text.includes('ルーティンタスク');
-      const isPhase = currentSection.startsWith('Phase:');
-      // Track top-level section so items inside Phase: blocks inherit the parent label
-      if (!isPhase) currentTopSection = t.text;
-      html += `<h3 class="${isPhase ? 'mr-phase' : 'mr-cat'}">${esc(currentSection)}</h3>`;
+      html += `<h2 class="mr-cat">${esc(t.text)}</h2>`;
     } else if (t.type === 'h1') {
       inRoutine = false;
       html += `<h2 class="mr-title">${esc(t.text)}</h2>`;

@@ -24,6 +24,12 @@ function esc(str) {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+// Returns a stable key for an item: issue number if present, otherwise full text.
+function itemKey(text) {
+  const m = text.match(/\(#(\d+)(?:,\s*[^)]+)?\)/);
+  return m ? '#' + m[1] : text;
+}
+
 // ── Calendar widget (top-bar) ─────────────────────────────────────────────────
 
 async function renderCalWidget() {
@@ -306,12 +312,12 @@ function markdownToHtml(md) {
     mentionItems.push({ title: t.text, section, number, sourceLabel });
     const idx = itemIndex++;
     if (t.type === 'check') {
-      return `<li class="mr-item${t.checked ? ' mr-item-done' : ''}" data-mention-index="${idx}"><span class="mr-bullet" data-item-key="${esc(t.text)}">-</span>${esc(t.text)}</li>`;
+      return `<li class="mr-item${t.checked ? ' mr-item-done' : ''}" data-mention-index="${idx}"><span class="mr-bullet" data-item-key="${esc(itemKey(t.text))}">-</span>${esc(t.text)}</li>`;
     }
     if (isRoutine) {
-      return `<li class="mr-item mr-routine-item" data-mention-index="${idx}" data-routine-key="${esc(t.text)}"><span class="mr-bullet" data-item-key="${esc(t.text)}">-</span>${esc(t.text)}</li>`;
+      return `<li class="mr-item mr-routine-item" data-mention-index="${idx}" data-routine-key="${esc(t.text)}"><span class="mr-bullet" data-item-key="${esc(itemKey(t.text))}">-</span>${esc(t.text)}</li>`;
     }
-    return `<li class="mr-item" data-mention-index="${idx}"><span class="mr-bullet" data-item-key="${esc(t.text)}">-</span>${esc(t.text)}</li>`;
+    return `<li class="mr-item" data-mention-index="${idx}"><span class="mr-bullet" data-item-key="${esc(itemKey(t.text))}">-</span>${esc(t.text)}</li>`;
   }
 
   let pendingList = [];  // accumulates <li> strings for the current run

@@ -199,8 +199,12 @@ function renderRoleBar() {
     pill.textContent = icon;
     pill.dataset.label = key;
     pill.addEventListener('click', () => {
-      if (selectedRoles.has(key)) selectedRoles.delete(key);
-      else selectedRoles.add(key);
+      if (selectedRoles.has(key)) {
+        selectedRoles.delete(key);
+      } else {
+        selectedRoles.clear();
+        selectedRoles.add(key);
+      }
       renderRoleBar();
     });
     bar.appendChild(pill);
@@ -434,27 +438,6 @@ function buildNoteItem(issue) {
     });
     tagsDiv.appendChild(roleSpan);
   });
-
-  // Add role button
-  const addBtn = document.createElement('button');
-  addBtn.className = 'note-item-add-role';
-  addBtn.textContent = '+';
-  addBtn.title = 'ロールを追加';
-  addBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    const options = getRoles()
-      .filter(r => !roles.includes(r.key))
-      .map(r => ({ label: `${r.icon} ${r.key}`, value: r.key }));
-    showDropdown(addBtn, options, roleKey => {
-      const newTitle = buildTitle(label, [...roles, roleKey], text);
-      replaceWith(newTitle);
-      updateIssue(issue.number, { title: newTitle }).catch(err => {
-        console.error(err);
-        replaceWith(issue.title);
-      });
-    });
-  });
-  tagsDiv.appendChild(addBtn);
 
   // Mention button
   const mentionBtn = document.createElement('button');

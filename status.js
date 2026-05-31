@@ -51,11 +51,14 @@ async function renderCalWidget() {
     const sched = JSON.parse(raw);
     if (sched.date !== todayStr) {
       widget.innerHTML = `<button class="cal-summary">📅 ${dateLabel} <span class="cal-err">未取得</span></button>`;
+      window.todayEvents = [];
       return;
     }
     events = sched.events || [];
+    window.todayEvents = events;  // expose for meeting_note.js
   } catch (e) {
     widget.innerHTML = `<button class="cal-summary">📅 ${dateLabel} <span class="cal-err">–</span></button>`;
+    window.todayEvents = [];
     return;
   }
 

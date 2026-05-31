@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Page</title>
-  <link rel="stylesheet" href="style.css?v=20260527c" />
+  <link rel="stylesheet" href="style.css?v=20260530a" />
 </head>
 <body>
 
@@ -101,9 +101,14 @@
   <main class="main-layout">
     <!-- Left: report + news + sports -->
     <div class="left-col">
-      <!-- Weekly Report (Sunday only; opens weekly.html in new tab) -->
-      <div class="weekly-report-wrap" id="weekly-report-wrap" style="display:none">
-        <button id="weekly-report-btn" class="wr-toggle-btn">weekly reportを読む →</button>
+      <!-- Meeting Note + Weekly Report buttons (horizontal row) -->
+      <div class="report-btns-row" id="report-btns-row">
+        <div id="meeting-note-wrap" style="display:none">
+          <button id="meeting-note-btn" class="wr-toggle-btn mn-toggle-btn">Research meeting noteを開く →</button>
+        </div>
+        <div id="weekly-report-wrap" style="display:none">
+          <button id="weekly-report-btn" class="wr-toggle-btn">weekly reportを読む →</button>
+        </div>
       </div>
       <section id="status-report" class="status-report-section"></section>
       <section id="news">
@@ -134,5 +139,6 @@
   <script src="sync.js?v=20260517b"></script>
   <script src="status.js?v=20260527c"></script>
   <script src="weekly.js?v=20260527d"></script>
+  <script src="meeting_note.js?v=20260530a"></script>
 </body>
 </html>

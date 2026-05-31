@@ -696,7 +696,7 @@ body {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 10px;
 }
 
 .right-col {
@@ -1653,13 +1653,15 @@ body {
 
 /* ── Weekly Report ───────────────────────────────────────────────────────────*/
 
-.weekly-report-wrap {
-  margin-bottom: 0;
+.report-btns-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .wr-toggle-btn {
   display: inline-block;
-  margin-bottom: 12px;
+  margin-bottom: 0;
   padding: 8px 16px;
   background: #e94560;
   color: #fff;
@@ -1677,3 +1679,13 @@ body {
 }
 
 /* (wr-panel / wr-body etc. live inside weekly.html as inline styles) */
+
+/* ── Meeting Note button (NTT MTG day) ───────────────────────────────────────*/
+
+.mn-toggle-btn {
+  background: #1a73e8;
+}
+
+.mn-toggle-btn:hover {
+  opacity: 0.85;
+}

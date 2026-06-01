@@ -7,20 +7,13 @@
 //
 // If location is unavailable or no match, ALL sections are expanded (fallback).
 
-const NOTES_OWNER = 'KaitoKurokochi';
-const NOTES_REPO  = 'my_notes';
-
-function locationToken() {
-  return localStorage.getItem('NOTE_TOKEN') || '';
-}
-
 async function fetchLocationZones() {
   try {
     const headers = { 'Accept': 'application/vnd.github+json' };
-    const token = locationToken();
+    const token = localStorage.getItem('NOTE_TOKEN') || '';
     if (token) headers['Authorization'] = `Bearer ${token}`;
     const res = await fetch(
-      `https://api.github.com/repos/${NOTES_OWNER}/${NOTES_REPO}/contents/location_zones.json`,
+      `https://api.github.com/repos/KaitoKurokochi/my_notes/contents/location_zones.json`,
       { headers }
     );
     if (!res.ok) return [];

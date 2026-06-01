@@ -298,8 +298,10 @@ async function renderReport() {
     attachMentionButtons(el);
     attachRoutineItems(el);
     attachBulletToggles(el);
-    // Apply location-based collapse asynchronously after render
+    // Apply location-based collapse asynchronously after render.
+    // Also register a callback so app.js can re-trigger after fresh GPS fix.
     applyLocationFilter(bodyEl);
+    window.onLocationReady = () => applyLocationFilter(bodyEl);
   } catch (e) {
     el.innerHTML = `<p class="mr-error">report: ${e.message}</p>`;
   }

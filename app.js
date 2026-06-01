@@ -322,6 +322,8 @@ async function initWeather() {
       const { latitude: lat, longitude: lng } = coords;
       console.log('[location] current:', lat, lng);
       localStorage.setItem('userLocation', JSON.stringify({ lat, lng, ts: Date.now() }));
+      // Notify status.js that fresh location is now available
+      if (typeof window.onLocationReady === 'function') window.onLocationReady();
       try {
         const data = await fetchWeatherData(lat, lng);
         localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));

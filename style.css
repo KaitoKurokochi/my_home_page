@@ -1689,3 +1689,30 @@ body {
 .mn-toggle-btn:hover {
   opacity: 0.85;
 }
+
+/* ── Status report section collapse ─────────────────────────────────────────*/
+
+.sr-section-body {
+  overflow: hidden;
+}
+
+.sr-section.collapsed .sr-section-body {
+  display: none;
+}
+
+.mr-cat {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sr-arrow {
+  float: right;
+  font-size: 0.75rem;
+  color: #9aa0a6;
+  transition: transform 0.2s;
+  line-height: inherit;
+}
+
+.sr-section.collapsed .sr-arrow {
+  transform: rotate(-90deg);
+}

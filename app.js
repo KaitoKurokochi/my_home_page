@@ -319,8 +319,11 @@ async function initWeather() {
 
   navigator.geolocation.getCurrentPosition(
     async ({ coords }) => {
+      const { latitude: lat, longitude: lng } = coords;
+      console.log('[location] current:', lat, lng);
+      localStorage.setItem('userLocation', JSON.stringify({ lat, lng, ts: Date.now() }));
       try {
-        const data = await fetchWeatherData(coords.latitude, coords.longitude);
+        const data = await fetchWeatherData(lat, lng);
         localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
         renderWeather(data);
       } catch {

@@ -1,11 +1,23 @@
 // ── Location zones — section expand/collapse control ─────────────────────────
 //
 // Config is fetched from my_notes/location_zones.json (pushed by status_report.py).
-// Each entry: { name, place_names: [...], sections: [...] }
-//   place_names: exact match against Nominatim's "name" field
-//   sections:    section keys to expand by default at this location
+// Each zone entry supports two matching strategies (evaluated in order):
 //
-// If location is unavailable or no match, ALL sections are expanded (fallback).
+//   address_fields: { <field>: <value>, ... }
+//     Exact match against Nominatim address fields (e.g. quarter, suburb).
+//     A zone matches when ALL specified fields match exactly.
+//     This is the preferred strategy — use it to avoid false positives.
+//
+//   place_names: [...]
+//     Keyword substring match against display_name and address fields.
+//     A zone matches when ANY keyword is found as a substring.
+//     Use this only when exact field matching is not possible.
+//
+// Zones are evaluated in the order they appear in the JSON.
+// The first matching zone wins — put more specific zones (e.g. home) first.
+//
+// sections: section keys to expand by default at this location.
+// If location is unavailable or no zone matches, ALL sections are expanded (fallback).
 
 async function fetchLocationZones() {
   try {
@@ -24,6 +36,20 @@ async function fetchLocationZones() {
   }
 }
 
+// Returns true if the zone's address_fields all match the given addr object.
+function matchAddressFields(zone, addr) {
+  const fields = zone.address_fields;
+  if (!fields || Object.keys(fields).length === 0) return false;
+  return Object.entries(fields).every(([key, val]) => addr[key] === val);
+}
+
+// Returns true if any place_names keyword appears as a substring of matchText.
+function matchPlaceNames(zone, matchText) {
+  const keywords = zone.place_names || [];
+  if (keywords.length === 0) return false;
+  return keywords.some(kw => matchText.includes(kw));
+}
+
 // Returns a Set of section keys to expand, or null (= expand all).
 async function detectExpandedSections() {
   // 1. Get coordinates from localStorage (saved by app.js weather widget)
@@ -38,32 +64,56 @@ async function detectExpandedSections() {
   if (!loc?.lat || !loc?.lng) return null;
 
   // 2. Reverse geocode via Nominatim
-  let placeName;
+  let addr, matchText;
   try {
     const url = `https://nominatim.openstreetmap.org/reverse?lat=${loc.lat}&lon=${loc.lng}&format=json&accept-language=ja`;
     const res = await fetch(url, { headers: { 'User-Agent': 'MyHomePage/1.0' } });
     if (!res.ok) return null;
     const data = await res.json();
-    placeName = data.name || '';
-    console.log('[location] Nominatim name:', placeName);
+    addr = data.address || {};
+
+    // Build matchText for keyword (place_names) matching.
+    // data.name is often empty for Japanese addresses, so we join multiple fields.
+    const parts = [
+      data.name,
+      data.display_name,
+      addr.amenity,
+      addr.tourism,
+      addr.building,
+      addr.road,
+      addr.neighbourhood,
+      addr.quarter,
+      addr.suburb,
+      addr.city_district,
+      addr.town,
+      addr.city,
+    ].filter(Boolean);
+    matchText = parts.join(' ');
+    console.log('[location] Nominatim display_name:', data.display_name);
+    console.log('[location] Nominatim address:', JSON.stringify(addr));
   } catch {
     return null;
   }
 
-  // 3. Load zones from my_notes and match
+  // 3. Load zones from my_notes and match.
+  // Zones are evaluated in order; the first match wins.
+  // Priority: address_fields (exact) > place_names (substring).
   const zones = await fetchLocationZones();
   for (const zone of zones) {
-    const names = zone.place_names || [];
-    if (names.includes(placeName)) {
+    const matched =
+      matchAddressFields(zone, addr) ||
+      matchPlaceNames(zone, matchText);
+
+    if (matched) {
       const label = zone.label || zone.name;
       const locEl = document.getElementById('current-location');
       if (locEl) locEl.textContent = '📍 ' + label;
       const expanded = new Set(zone.sections || []);
-      console.log('[location] matched:', zone.name, '/ expanded:', [...expanded]);
+      console.log('[location] matched zone:', zone.name, '/ expanded:', [...expanded]);
       return expanded;
     }
   }
 
-  console.log('[location] no zone matched for:', placeName);
+  console.log('[location] no zone matched for:', matchText);
   return null;
 }

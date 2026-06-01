@@ -204,6 +204,82 @@ async function renderCalWidget() {
 
 let mentionItems = [];  // shared with note.js via window
 
+// Wraps each ## section (h2.mr-cat + its following sibling nodes up to the
+// next h2) in a <div class="sr-section" data-key="KEY">.
+// Adds a toggle arrow to the h2 and wires click-to-collapse behaviour.
+// expandedKeys: Set of section keys to expand by default, or null = expand all.
+function wrapSections(bodyEl, expandedKeys) {
+  const children = Array.from(bodyEl.childNodes);
+  let currentWrapper = null;
+
+  for (const node of children) {
+    const isH2 = node.nodeType === Node.ELEMENT_NODE && node.tagName === 'H2' && node.classList.contains('mr-cat');
+    if (isH2) {
+      // Derive a section key from the heading text (strip emoji + whitespace)
+      const key = node.textContent.trim().replace(/[\u{1F300}-\u{1FAFF}]/gu, '').trim();
+      currentWrapper = document.createElement('div');
+      currentWrapper.className = 'sr-section';
+      currentWrapper.dataset.key = key;
+      bodyEl.insertBefore(currentWrapper, node);
+      currentWrapper.appendChild(node);
+
+      // Add arrow icon to h2
+      const arrow = document.createElement('span');
+      arrow.className = 'sr-arrow';
+      arrow.textContent = '▼';
+      node.appendChild(arrow);
+
+      // Determine default state
+      const shouldExpand = expandedKeys === null || expandedKeys.has(key);
+      if (!shouldExpand) {
+        currentWrapper.classList.add('collapsed');
+      }
+
+      // Click handler: toggle collapsed state (capture wrapper, not currentWrapper)
+      const wrapper = currentWrapper;
+      node.addEventListener('click', () => {
+        wrapper.classList.toggle('collapsed');
+      });
+    } else if (currentWrapper) {
+      // Wrap content nodes (all siblings after h2) in a body div
+      if (!currentWrapper.querySelector('.sr-section-body')) {
+        const body = document.createElement('div');
+        body.className = 'sr-section-body';
+        currentWrapper.appendChild(body);
+      }
+      currentWrapper.querySelector('.sr-section-body').appendChild(node);
+    }
+  }
+}
+
+// Applies location-based default expand/collapse state to sections.
+// Calls detectExpandedSections() (async, from location_zones.js) and then
+// re-applies the collapsed class to each sr-section wrapper.
+async function applyLocationFilter(bodyEl) {
+  if (typeof detectExpandedSections !== 'function') return;
+
+  const expandedKeys = await detectExpandedSections();
+  if (expandedKeys === null) return;  // fallback: all already expanded
+
+  bodyEl.querySelectorAll('.sr-section').forEach(wrapper => {
+    const key = wrapper.dataset.key || '';
+
+    // Match: exact or substring
+    let shouldExpand = false;
+    for (const k of expandedKeys) {
+      if (key === k || key.includes(k) || k.includes(key)) {
+        shouldExpand = true;
+        break;
+      }
+    }
+    if (!shouldExpand) {
+      wrapper.classList.add('collapsed');
+    } else {
+      wrapper.classList.remove('collapsed');
+    }
+  });
+}
+
 async function renderReport() {
   const el = document.getElementById('status-report');
   if (!el) return;
@@ -211,11 +287,19 @@ async function renderReport() {
   try {
     const md = await fetchMyNotesFile('reports.md');
     mentionItems = [];
-    el.innerHTML = `<div class="mr-body">${markdownToHtml(md)}</div>`;
+    const bodyEl = document.createElement('div');
+    bodyEl.className = 'mr-body';
+    bodyEl.innerHTML = markdownToHtml(md);
+    el.innerHTML = '';
+    el.appendChild(bodyEl);
+    // Pass null initially (expand all); applyLocationFilter will re-collapse as needed.
+    wrapSections(bodyEl, null);
     window.mentionItems = mentionItems;
     attachMentionButtons(el);
     attachRoutineItems(el);
     attachBulletToggles(el);
+    // Apply location-based collapse asynchronously after render
+    applyLocationFilter(bodyEl);
   } catch (e) {
     el.innerHTML = `<p class="mr-error">report: ${e.message}</p>`;
   }

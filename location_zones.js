@@ -46,8 +46,6 @@ async function detectExpandedSections() {
     const data = await res.json();
     placeName = data.name || '';
     console.log('[location] Nominatim name:', placeName);
-    const locEl = document.getElementById('current-location');
-    if (locEl) locEl.textContent = '📍 ' + placeName;
   } catch {
     return null;
   }
@@ -57,6 +55,9 @@ async function detectExpandedSections() {
   for (const zone of zones) {
     const names = zone.place_names || [];
     if (names.includes(placeName)) {
+      const label = zone.label || zone.name;
+      const locEl = document.getElementById('current-location');
+      if (locEl) locEl.textContent = '📍 ' + label;
       const expanded = new Set(zone.sections || []);
       console.log('[location] matched:', zone.name, '/ expanded:', [...expanded]);
       return expanded;

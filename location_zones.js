@@ -18,7 +18,7 @@ async function fetchLocationZones() {
     );
     if (!res.ok) return [];
     const meta = await res.json();
-    return JSON.parse(atob(meta.content.replace(/\n/g, '')));
+    return JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\n/g, '')))));
   } catch {
     return [];
   }

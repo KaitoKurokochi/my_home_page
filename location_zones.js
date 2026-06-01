@@ -46,6 +46,8 @@ async function detectExpandedSections() {
     const data = await res.json();
     placeName = data.name || '';
     console.log('[location] Nominatim name:', placeName);
+    const locEl = document.getElementById('current-location');
+    if (locEl) locEl.textContent = '📍 ' + placeName;
   } catch {
     return null;
   }

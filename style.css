@@ -1716,3 +1716,10 @@ body {
 .sr-section.collapsed .sr-arrow {
   transform: rotate(-90deg);
 }
+
+.current-location {
+  font-size: 0.75rem;
+  color: #5f6368;
+  white-space: nowrap;
+  padding: 2px 6px;
+}

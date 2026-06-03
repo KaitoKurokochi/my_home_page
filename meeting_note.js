@@ -89,6 +89,7 @@
     if (!hasResearchMeeting) return;
 
     wrap.style.display = '';
+    document.getElementById('report-btns-row').style.display = 'flex';
 
     const btn = document.getElementById('meeting-note-btn');
     if (!btn) return;

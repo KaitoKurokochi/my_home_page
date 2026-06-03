@@ -13,6 +13,7 @@
     if (today.getDay() !== 0) return;
 
     wrap.style.display = '';
+    document.getElementById('report-btns-row').style.display = 'flex';
 
     btn.addEventListener('click', () => {
       window.open('weekly.html', '_blank');

@@ -1723,3 +1723,66 @@ body {
   white-space: nowrap;
   text-align: right;
 }
+
+/* ── Due Today section ───────────────────────────────────────────────────────*/
+
+.due-today-section {
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+}
+
+.due-today-heading {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #f57f17;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.due-today-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.due-today-item {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  font-size: 0.83rem;
+  color: #202124;
+  padding: 2px 0;
+  line-height: 1.4;
+}
+
+.due-today-cb {
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.due-today-text {
+  flex: 1;
+}
+
+.due-today-domain {
+  font-size: 0.7rem;
+  color: #9aa0a6;
+  white-space: nowrap;
+}
+
+.due-today-date {
+  font-size: 0.7rem;
+  color: #c5221f;
+  white-space: nowrap;
+}
+
+/* Overdue items: red text */
+.due-today-overdue .due-today-text {
+  color: #c5221f;
+  font-weight: 600;
+}

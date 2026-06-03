@@ -37,10 +37,14 @@ async function fetchLocationZones() {
 }
 
 // Returns true if the zone's address_fields all match the given addr object.
+// Each field value can be a string (exact match) or an array (matches if any element equals the addr value).
 function matchAddressFields(zone, addr) {
   const fields = zone.address_fields;
   if (!fields || Object.keys(fields).length === 0) return false;
-  return Object.entries(fields).every(([key, val]) => addr[key] === val);
+  return Object.entries(fields).every(([key, val]) => {
+    if (Array.isArray(val)) return val.includes(addr[key]);
+    return addr[key] === val;
+  });
 }
 
 // Returns true if any place_names keyword appears as a substring of matchText.

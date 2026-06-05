@@ -252,7 +252,7 @@ function wmoEmoji(code) {
 async function fetchWeatherData(lat, lon) {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
     `&current_weather=true&hourly=temperature_2m,precipitation_probability,weathercode` +
-    `&daily=temperature_2m_max,weathercode,precipitation_probability_max` +
+    `&daily=precipitation_probability_max` +
     `&forecast_days=2&timezone=auto`;
   const res = await fetch(url);
   return res.json();
@@ -279,28 +279,23 @@ function renderWeather(data) {
     const i = idx + h;
     const hour = parseInt((hourly.time[i] ?? hourly.time[idx]).slice(11, 13));
     return {
-      label: `${hour}時`,
+      label: `${hour}:00`,
       emoji: wmoEmoji(h === 0 ? cw.weathercode : (hourly.weathercode[i] ?? cw.weathercode)),
       temp: Math.round(h === 0 ? cw.temperature : (hourly.temperature_2m[i] ?? cw.temperature)),
       precip: h === 0 ? (hourly.precipitation_probability[idx] ?? 0) : (hourly.precipitation_probability[i] ?? 0),
     };
   });
 
-  // Today's max temperature (daily index 0 = today)
-  const todayMaxTemp = daily && daily.temperature_2m_max
-    ? Math.round(daily.temperature_2m_max[0])
-    : null;
-
   // Tomorrow's rain flag (daily index 1 = tomorrow)
   const tomorrowRain = daily && daily.precipitation_probability_max
     ? (daily.precipitation_probability_max[1] ?? 0) >= 40
     : false;
 
-  // Summary: current emoji + today max temp + tomorrow rain warning
-  const maxTempStr = todayMaxTemp !== null ? ` 最高${todayMaxTemp}°C` : '';
-  const tomorrowRainStr = tomorrowRain ? ' ☔明日' : '';
+  // Summary: current + 24h + tomorrow rain warning
+  const p24 = points[4];
+  const tomorrowRainStr = tomorrowRain ? ' ☂☂☂' : '';
   document.getElementById('weather-text').textContent =
-    `${points[0].emoji} ${points[0].temp}°C${maxTempStr}${tomorrowRainStr}`;
+    `${points[0].emoji} ${points[0].temp}°C → ${p24.emoji} ${p24.temp}°C 💧${p24.precip}%${tomorrowRainStr}`;
 
   // Detail panel
   document.getElementById('weather-panel').innerHTML = points.map(p => `

@@ -280,113 +280,6 @@ async function applyLocationFilter(bodyEl) {
   });
 }
 
-// ── Due Today section ─────────────────────────────────────────────────────────
-
-// Parses reports.md and extracts tasks with (due: YYYY-MM-DD) whose due date
-// is today or earlier.  Returns array of { text, domain, due, overdue }.
-function parseDueTasks(md) {
-  const today = new Date();
-  const todayStr = [
-    today.getFullYear(),
-    String(today.getMonth() + 1).padStart(2, '0'),
-    String(today.getDate()).padStart(2, '0'),
-  ].join('-');
-
-  const results = [];
-  const lines = md.split('\n');
-  let currentDomain = '';
-
-  for (const line of lines) {
-    if (line.startsWith('## ')) {
-      currentDomain = line.slice(3).trim()
-        .replace(/[\u{1F300}-\u{1FAFF}]/gu, '').trim();
-      continue;
-    }
-
-    // Match tasks with (due: YYYY-MM-DD) — case-insensitive
-    const dueMatch = line.match(/\(due:\s*(\d{4}-\d{2}-\d{2})\)/i);
-    if (!dueMatch) continue;
-
-    // Only checkbox lines (- [ ] or - [x] )
-    if (!line.match(/^- \[[ x]\] /)) continue;
-
-    const due = dueMatch[1];
-    if (due > todayStr) continue;  // future tasks: skip
-
-    const text = line.replace(/^- \[[ x]\] /, '').trim();
-    const overdue = due < todayStr;
-    results.push({ text, domain: currentDomain, due, overdue });
-  }
-
-  return results;
-}
-
-// Builds and inserts the "Due Today" block right after the .mr-summary element
-// (or at the top of bodyEl if no summary exists).
-function renderDueToday(bodyEl, dueTasks) {
-  if (!dueTasks.length) return;
-
-  const section = document.createElement('div');
-  section.className = 'due-today-section';
-
-  const heading = document.createElement('div');
-  heading.className = 'due-today-heading';
-  heading.textContent = 'Due Today';
-  section.appendChild(heading);
-
-  const ul = document.createElement('ul');
-  ul.className = 'due-today-list';
-
-  for (const task of dueTasks) {
-    const li = document.createElement('li');
-    li.className = 'due-today-item' + (task.overdue ? ' due-today-overdue' : '');
-
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.className = 'due-today-cb';
-
-    const label = document.createElement('span');
-    label.className = 'due-today-text';
-    // Strip (due: ...) and issue number for cleaner display
-    label.textContent = task.text
-      .replace(/\s*\(due:\s*\d{4}-\d{2}-\d{2}\)/i, '')
-      .replace(/\s*\(#\d+[^)]*\)$/, '')
-      .trim();
-
-    const domainTag = document.createElement('span');
-    domainTag.className = 'due-today-domain';
-    domainTag.textContent = '[' + task.domain + ']';
-
-    if (task.overdue) {
-      const dueLabel = document.createElement('span');
-      dueLabel.className = 'due-today-date';
-      dueLabel.textContent = task.due;
-      li.appendChild(cb);
-      li.appendChild(label);
-      li.appendChild(dueLabel);
-      li.appendChild(domainTag);
-    } else {
-      li.appendChild(cb);
-      li.appendChild(label);
-      li.appendChild(domainTag);
-    }
-
-    ul.appendChild(li);
-  }
-
-  section.appendChild(ul);
-
-  // Insert after .mr-summary if present, otherwise prepend
-  const summary = bodyEl.querySelector('.mr-summary');
-  if (summary && summary.nextSibling) {
-    bodyEl.insertBefore(section, summary.nextSibling);
-  } else if (summary) {
-    bodyEl.appendChild(section);
-  } else {
-    bodyEl.prepend(section);
-  }
-}
-
 async function renderReport() {
   const el = document.getElementById('status-report');
   if (!el) return;
@@ -394,14 +287,11 @@ async function renderReport() {
   try {
     const md = await fetchMyNotesFile('reports.md');
     mentionItems = [];
-    const dueTasks = parseDueTasks(md);
     const bodyEl = document.createElement('div');
     bodyEl.className = 'mr-body';
     bodyEl.innerHTML = markdownToHtml(md);
     el.innerHTML = '';
     el.appendChild(bodyEl);
-    // Insert Due Today block after summary (location-filter-exempt)
-    renderDueToday(bodyEl, dueTasks);
     // Pass null initially (expand all); applyLocationFilter will re-collapse as needed.
     wrapSections(bodyEl, null);
     window.mentionItems = mentionItems;

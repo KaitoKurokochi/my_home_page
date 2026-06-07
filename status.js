@@ -369,7 +369,7 @@ function markdownToHtml(md) {
   const skipIdx = new Set();
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i];
-    if (t.type !== 'h3' && t.type !== 'h4') continue;
+    if (t.type !== 'h2' && t.type !== 'h3' && t.type !== 'h4') continue;
     // look ahead for content before the next heading
     let hasContent = false;
     for (let j = i + 1; j < tokens.length; j++) {
@@ -435,17 +435,17 @@ function markdownToHtml(md) {
       html += `<h5 class="mr-subcat">${esc(t.text)}</h5>`;
     } else if (t.type === 'h3') {
       inRoutine = false;
+      html += `<h5 class="mr-subcat">${esc(t.text)}</h5>`;
+    } else if (t.type === 'h2') {
+      inRoutine = false;
       currentSection = t.text;
       const isPhase = t.text.startsWith('Phase:');
       html += `<h4 class="${isPhase ? 'mr-phase' : 'mr-subcat'}">${esc(t.text)}</h4>`;
-    } else if (t.type === 'h2') {
+    } else if (t.type === 'h1') {
       currentLabel = t.text;
       currentSection = '';
       inRoutine = t.text.includes('ルーティンタスク');
       html += `<h2 class="mr-cat">${esc(t.text)}</h2>`;
-    } else if (t.type === 'h1') {
-      inRoutine = false;
-      html += `<h2 class="mr-title">${esc(t.text)}</h2>`;
     } else if (t.type === 'summary') {
       html += `<p class="mr-summary">${esc(t.text)}</p>`;
     } else if (t.type === 'subhead') {

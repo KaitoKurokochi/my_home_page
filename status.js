@@ -435,12 +435,14 @@ function markdownToHtml(md) {
       html += `<h5 class="mr-subcat">${esc(t.text)}</h5>`;
     } else if (t.type === 'h3') {
       inRoutine = false;
-      html += `<h5 class="mr-subcat">${esc(t.text)}</h5>`;
-    } else if (t.type === 'h2') {
-      inRoutine = false;
       currentSection = t.text;
       const isPhase = t.text.startsWith('Phase:');
       html += `<h4 class="${isPhase ? 'mr-phase' : 'mr-subcat'}">${esc(t.text)}</h4>`;
+    } else if (t.type === 'h2') {
+      currentLabel = t.text;
+      currentSection = '';
+      inRoutine = t.text.includes('ルーティンタスク');
+      html += `<h2 class="mr-cat">${esc(t.text)}</h2>`;
     } else if (t.type === 'h1') {
       currentLabel = t.text;
       currentSection = '';

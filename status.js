@@ -432,17 +432,15 @@ function markdownToHtml(md) {
 
     if (t.type === 'h4') {
       inRoutine = false;
-      html += `<h5 class="mr-subcat">${esc(t.text)}</h5>`;
+      html += `<h4>${esc(t.text)}</h4>`;
     } else if (t.type === 'h3') {
+      inRoutine = false;
+      html += `<h3>${esc(t.text)}</h3>`;
+    } else if (t.type === 'h2') {
       inRoutine = false;
       currentSection = t.text;
       const isPhase = t.text.startsWith('Phase:');
-      html += `<h4 class="${isPhase ? 'mr-phase' : 'mr-subcat'}">${esc(t.text)}</h4>`;
-    } else if (t.type === 'h2') {
-      currentLabel = t.text;
-      currentSection = '';
-      inRoutine = t.text.includes('ルーティンタスク');
-      html += `<h2 class="mr-cat">${esc(t.text)}</h2>`;
+      html += isPhase ? `<h2 class="mr-phase">${esc(t.text)}</h2>` : `<h2 class="mr-section">${esc(t.text)}</h2>`;
     } else if (t.type === 'h1') {
       currentLabel = t.text;
       currentSection = '';

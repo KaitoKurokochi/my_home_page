@@ -2,6 +2,7 @@
 
 const NOTES_OWNER = 'KaitoKurokochi';
 const NOTES_REPO  = 'my_notes';
+const AGENT_REPO  = 'agent';
 
 function notesToken() {
   return localStorage.getItem('NOTE_TOKEN') || '';
@@ -18,6 +19,148 @@ async function fetchMyNotesFile(path) {
   if (!res.ok) throw new Error(`${res.status}`);
   const meta = await res.json();
   return decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
+}
+
+async function fetchAgentFile(path) {
+  const token = notesToken();
+  const headers = { 'Accept': 'application/vnd.github+json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(
+    `https://api.github.com/repos/${NOTES_OWNER}/${AGENT_REPO}/contents/${path}`,
+    { headers }
+  );
+  if (!res.ok) throw new Error(`${res.status} ${path}`);
+  const meta = await res.json();
+  return decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
+}
+
+// Extracts the ## Status section from a note.md string.
+// Returns lines from "## Status" up to (but not including) the next "## " heading,
+// with the "## Status" line itself stripped.
+function extractStatusSection(md) {
+  const lines = md.split('\n');
+  let inStatus = false;
+  const result = [];
+  for (const line of lines) {
+    if (/^## Status\s*$/.test(line)) {
+      inStatus = true;
+      continue;
+    }
+    if (inStatus && /^## /.test(line)) break;
+    if (inStatus) result.push(line);
+  }
+  // Trim leading/trailing blank lines
+  while (result.length && result[0].trim() === '') result.shift();
+  while (result.length && result[result.length - 1].trim() === '') result.pop();
+  return result.join('\n');
+}
+
+// All available domains: [filePath, displayName, domainKey]
+const AGENT_DOMAINS = [
+  ['research/note.md',      'Research',     'research'],
+  ['Lions_IS/note.md',      'Lions IS',     'Lions_IS'],
+  ['baseball/note.md',      'Baseball',     'baseball'],
+  ['my_home_page/note.md',  'My Home Page', 'my_home_page'],
+  ['football/note.md',      'Football',     'football'],
+  ['books/note.md',         'Books',        'books'],
+  ['softball/note.md',      'Softball',     'softball'],
+  ['univ/note.md',          'University',   'univ'],
+  ['video_content/note.md', 'Video Content','video_content'],
+  ['general/note.md',       'General',      'general'],
+  ['living/note.md',        'Living',       'living'],
+  ['agent_meta/note.md',    'Agent Meta',   'agent_meta'],
+];
+
+// Default domains shown when no schedule events match any keyword.
+const DEFAULT_DOMAIN_KEYS = ['general', 'my_home_page'];
+
+// Keyword rules: each rule maps to one or more domain keys.
+// Checked against event.calendar (exact/substring), event.title, and event.description.
+// Rules are checked in order; a domain key is only added once even if multiple rules match.
+const DOMAIN_KEYWORD_RULES = [
+  // Lions internship
+  { keys: ['Lions_IS'],              calendars: ['Lions_IS', 'lions'],    keywords: ['lions', 'intern', 'ライオンズ'] },
+  // Research / lab
+  { keys: ['research', 'univ'],      calendars: ['lab', 'research'],       keywords: ['研究', 'lab', 'ゼミ', 'seminar', 'meeting', '輪講', '管理', 'research', 'experiment', '実験'] },
+  // University (administrative, lecture, etc.)
+  { keys: ['univ'],                  calendars: ['univ', 'university', '大学'], keywords: ['授業', '講義', '大学', 'lecture', 'univ'] },
+  // Softball
+  { keys: ['softball'],              calendars: ['softball', 'ソフト'],    keywords: ['softball', 'ソフト', 'グラウンド'] },
+  // Football / soccer
+  { keys: ['football'],              calendars: ['football', 'soccer'],    keywords: ['football', 'soccer', 'サッカー', 'フットボール'] },
+  // Baseball / NPB
+  { keys: ['baseball'],              calendars: ['baseball', 'npb'],       keywords: ['baseball', '野球', 'npb'] },
+  // Books
+  { keys: ['books'],                 calendars: ['books', 'reading'],      keywords: ['本', '読書', 'book', 'reading'] },
+  // Video content
+  { keys: ['video_content'],         calendars: ['video', 'youtube'],      keywords: ['動画', 'video', '映像'] },
+  // Living
+  { keys: ['living'],                calendars: ['living'],                 keywords: ['引越', '住', '家具', '家電', 'living', '賃貸'] },
+  // General (always included when matched)
+  { keys: ['general'],               calendars: ['general', 'personal'],   keywords: [] },
+];
+
+// Derive the set of domain keys to fetch based on today's calendar events.
+// Returns an array of AGENT_DOMAINS entries (i.e. [path, name, key] tuples).
+function selectDomainsFromEvents(events) {
+  const matched = new Set();
+
+  if (!events || events.length === 0) {
+    DEFAULT_DOMAIN_KEYS.forEach(k => matched.add(k));
+    return AGENT_DOMAINS.filter(([,, k]) => matched.has(k));
+  }
+
+  for (const ev of events) {
+    const calendarRaw = (ev.calendar || '').toLowerCase();
+    const titleRaw    = (ev.title       || '').toLowerCase();
+    const descRaw     = (ev.description || '').toLowerCase();
+    const searchText  = titleRaw + ' ' + descRaw;
+
+    for (const rule of DOMAIN_KEYWORD_RULES) {
+      // Check calendar field (exact or substring match)
+      const calMatch = rule.calendars.some(c => calendarRaw === c.toLowerCase() || calendarRaw.includes(c.toLowerCase()));
+      // Check title / description keywords
+      const kwMatch  = rule.keywords.some(kw => searchText.includes(kw.toLowerCase()));
+
+      if (calMatch || kwMatch) {
+        rule.keys.forEach(k => matched.add(k));
+      }
+    }
+  }
+
+  // Always include my_home_page
+  matched.add('my_home_page');
+
+  // Fallback: if nothing matched (only my_home_page), add defaults
+  if (matched.size <= 1) {
+    DEFAULT_DOMAIN_KEYS.forEach(k => matched.add(k));
+  }
+
+  // Return in AGENT_DOMAINS order (preserves display order)
+  return AGENT_DOMAINS.filter(([,, k]) => matched.has(k));
+}
+
+// Fetches domain note.md files selected by today's schedule events in parallel
+// and assembles a combined markdown with # {DisplayName} headers followed by
+// each domain's ## Status content.
+async function fetchAgentStatusReport() {
+  // Wait for window.todayEvents (set by renderCalWidget); fall back to [] if not ready.
+  const events = window.todayEvents || [];
+  const domains = selectDomainsFromEvents(events);
+
+  const results = await Promise.all(
+    domains.map(async ([path, name]) => {
+      try {
+        const md = await fetchAgentFile(path);
+        const status = extractStatusSection(md);
+        if (!status) return null;
+        return `# ${name}\n\n${status}`;
+      } catch (_) {
+        return null;
+      }
+    })
+  );
+  return results.filter(Boolean).join('\n\n');
 }
 
 function esc(str) {
@@ -285,7 +428,7 @@ async function renderReport() {
   if (!el) return;
 
   try {
-    const md = await fetchMyNotesFile('reports.md');
+    const md = await fetchAgentStatusReport();
     mentionItems = [];
     const bodyEl = document.createElement('div');
     bodyEl.className = 'mr-body';
@@ -357,15 +500,17 @@ function markdownToHtml(md) {
       tokens.push({ type: 'detail', text: line.trim().replace(/\*/g, '') });
     } else if (line.startsWith('  `')) {
       tokens.push({ type: 'since', text: line.trim().replace(/`/g, '') });
-    } else {
+    } else if (line.trim() === '') {
       tokens.push({ type: 'blank' });
+    } else {
+      tokens.push({ type: 'paragraph', text: line.trim() });
     }
   }
 
   // ── Pass 2: skip heading tokens whose section has no content ─────────────
   // A heading (h2/h3) is "empty" if the next non-blank token is another heading or end-of-stream.
   const HEADING_TYPES = new Set(['h1', 'h2', 'h3', 'h4']);
-  const CONTENT_TYPES = new Set(['summary', 'check', 'item', 'subhead', 'detail', 'since']);
+  const CONTENT_TYPES = new Set(['summary', 'check', 'item', 'subhead', 'detail', 'since', 'paragraph']);
   const skipIdx = new Set();
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i];
@@ -454,6 +599,8 @@ function markdownToHtml(md) {
       html += `<p class="mr-detail-text">${esc(t.text)}</p>`;
     } else if (t.type === 'since') {
       html += `<p class="mr-since">${esc(t.text)}</p>`;
+    } else if (t.type === 'paragraph') {
+      html += `<p class="mr-para">${esc(t.text)}</p>`;
     }
   }
 
@@ -576,5 +723,6 @@ function attachBulletToggles(el) {
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
-renderCalWidget();
-renderReport();
+// renderReport() depends on window.todayEvents which is populated by renderCalWidget(),
+// so we must await the calendar before fetching domain files.
+renderCalWidget().then(() => renderReport());

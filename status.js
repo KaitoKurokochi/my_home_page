@@ -2,6 +2,7 @@
 
 const NOTES_OWNER = 'KaitoKurokochi';
 const NOTES_REPO  = 'my_notes';
+const AGENT_REPO  = 'agent';
 
 function notesToken() {
   return localStorage.getItem('NOTE_TOKEN') || '';
@@ -18,6 +19,74 @@ async function fetchMyNotesFile(path) {
   if (!res.ok) throw new Error(`${res.status}`);
   const meta = await res.json();
   return decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
+}
+
+async function fetchAgentFile(path) {
+  const token = notesToken();
+  const headers = { 'Accept': 'application/vnd.github+json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(
+    `https://api.github.com/repos/${NOTES_OWNER}/${AGENT_REPO}/contents/${path}`,
+    { headers }
+  );
+  if (!res.ok) throw new Error(`${res.status} ${path}`);
+  const meta = await res.json();
+  return decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
+}
+
+// Extracts the ## Status section from a note.md string.
+// Returns lines from "## Status" up to (but not including) the next "## " heading,
+// with the "## Status" line itself stripped.
+function extractStatusSection(md) {
+  const lines = md.split('\n');
+  let inStatus = false;
+  const result = [];
+  for (const line of lines) {
+    if (/^## Status\s*$/.test(line)) {
+      inStatus = true;
+      continue;
+    }
+    if (inStatus && /^## /.test(line)) break;
+    if (inStatus) result.push(line);
+  }
+  // Trim leading/trailing blank lines
+  while (result.length && result[0].trim() === '') result.shift();
+  while (result.length && result[result.length - 1].trim() === '') result.pop();
+  return result.join('\n');
+}
+
+// Domain list: [filePath, displayName]
+const AGENT_DOMAINS = [
+  ['research/note.md',      'Research'],
+  ['Lions_IS/note.md',      'Lions IS'],
+  ['baseball/note.md',      'Baseball'],
+  ['my_home_page/note.md',  'My Home Page'],
+  ['football/note.md',      'Football'],
+  ['books/note.md',         'Books'],
+  ['softball/note.md',      'Softball'],
+  ['univ/note.md',          'University'],
+  ['video_content/note.md', 'Video Content'],
+  ['general/note.md',       'General'],
+  ['living/note.md',        'Living'],
+  ['agent_meta/note.md',    'Agent Meta'],
+];
+
+// Fetches all domain note.md files in parallel and assembles a combined markdown
+// with # {DisplayName} headers followed by each domain's ## Status content.
+async function fetchAgentStatusReport() {
+  const results = await Promise.all(
+    AGENT_DOMAINS.map(async ([path, name]) => {
+      try {
+        const md = await fetchAgentFile(path);
+        const status = extractStatusSection(md);
+        if (!status) return null;
+        return `# ${name}\n\n${status}`;
+      } catch (_) {
+        return null;
+      }
+    })
+  );
+  return results.filter(Boolean).join('\n\n');
 }
 
 function esc(str) {
@@ -285,7 +354,7 @@ async function renderReport() {
   if (!el) return;
 
   try {
-    const md = await fetchMyNotesFile('reports.md');
+    const md = await fetchAgentStatusReport();
     mentionItems = [];
     const bodyEl = document.createElement('div');
     bodyEl.className = 'mr-body';
@@ -357,15 +426,17 @@ function markdownToHtml(md) {
       tokens.push({ type: 'detail', text: line.trim().replace(/\*/g, '') });
     } else if (line.startsWith('  `')) {
       tokens.push({ type: 'since', text: line.trim().replace(/`/g, '') });
-    } else {
+    } else if (line.trim() === '') {
       tokens.push({ type: 'blank' });
+    } else {
+      tokens.push({ type: 'paragraph', text: line.trim() });
     }
   }
 
   // ── Pass 2: skip heading tokens whose section has no content ─────────────
   // A heading (h2/h3) is "empty" if the next non-blank token is another heading or end-of-stream.
   const HEADING_TYPES = new Set(['h1', 'h2', 'h3', 'h4']);
-  const CONTENT_TYPES = new Set(['summary', 'check', 'item', 'subhead', 'detail', 'since']);
+  const CONTENT_TYPES = new Set(['summary', 'check', 'item', 'subhead', 'detail', 'since', 'paragraph']);
   const skipIdx = new Set();
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i];
@@ -454,6 +525,8 @@ function markdownToHtml(md) {
       html += `<p class="mr-detail-text">${esc(t.text)}</p>`;
     } else if (t.type === 'since') {
       html += `<p class="mr-since">${esc(t.text)}</p>`;
+    } else if (t.type === 'paragraph') {
+      html += `<p class="mr-para">${esc(t.text)}</p>`;
     }
   }
 

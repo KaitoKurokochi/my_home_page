@@ -1650,6 +1650,7 @@ body {
 }
 .mr-detail-text { font-size: 0.74rem; color: #5f6368; padding-left: 14px; line-height: 1.4; }
 .mr-since       { font-size: 0.7rem; color: #9aa0a6; padding-left: 14px; margin-bottom: 4px; }
+.mr-para        { font-size: 0.82rem; color: #3c4043; margin: 3px 0 5px; line-height: 1.5; }
 .mr-error       { font-size: 0.78rem; color: #c5221f; }
 
 /* ── Weekly Report ───────────────────────────────────────────────────────────*/

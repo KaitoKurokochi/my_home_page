@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Page</title>
-  <link rel="stylesheet" href="style.css?v=20260601b" />
+  <link rel="stylesheet" href="css/style.css?v=20260614" />
 </head>
 <body>
 
@@ -109,6 +109,7 @@
           <button id="weekly-report-btn" class="wr-toggle-btn">weekly reportを読む →</button>
         </div>
       </div>
+      <section id="due-today" class="due-today-section" style="display:none"></section>
       <section id="status-report" class="status-report-section"></section>
       <section id="news">
         <a id="nikkei-paper-link" class="paper-link" href="#">
@@ -133,14 +134,17 @@
     </div>
   </main>
 
+  <script src="js/config.js?v=20260614"></script>
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-  <script src="news.js?v=20260517"></script>
-  <script src="app.js?v=20260605b"></script>
-  <script src="note.js?v=20260527c"></script>
-  <script src="sync.js?v=20260517b"></script>
-  <script src="location_zones.js?v=20260601f"></script>
-  <script src="status.js?v=20260606b"></script>
-  <script src="weekly.js?v=20260527d"></script>
-  <script src="meeting_note.js?v=20260530a"></script>
+  <script src="js/news.js?v=20260614"></script>
+  <script src="js/app.js?v=20260614"></script>
+  <script src="js/note.js?v=20260614"></script>
+  <script src="js/sync.js?v=20260614"></script>
+  <script src="js/location_zones.js?v=20260614"></script>
+  <script src="js/calendar.js?v=20260614"></script>
+  <script src="js/status.js?v=20260614"></script>
+  <script src="js/weekly.js?v=20260614"></script>
+  <script src="js/meeting_note.js?v=20260614"></script>
+  <script src="js/due_today.js?v=20260614"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 // ── Weekly Report button ──────────────────────────────────────────────────────
 // Shows a "Weekly Report" button only on Sundays.
-// Clicking it opens weekly.html in a new tab.
+// Clicking it opens pages/weekly.html in a new tab.
 
 (function () {
   function init() {
@@ -16,7 +16,7 @@
     document.getElementById('report-btns-row').style.display = 'flex';
 
     btn.addEventListener('click', () => {
-      window.open('weekly.html', '_blank');
+      window.open('pages/weekly.html', '_blank');
     });
   }
 

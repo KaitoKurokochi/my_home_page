@@ -1,11 +1,10 @@
 // ── Config ────────────────────────────────────────────────────────────────────
+// Depends on: js/config.js (GITHUB_OWNER, NOTES_REPO, getToken, esc)
 // Token is stored in localStorage (never in the codebase).
 // To set it, open DevTools console and run:
 //   localStorage.setItem('NOTE_TOKEN', 'ghp_xxxxxxxxxxxx')
 
-const NOTE_OWNER = 'KaitoKurokochi';
-const NOTE_REPO  = 'my_notes';
-const GITHUB_API = `https://api.github.com/repos/${NOTE_OWNER}/${NOTE_REPO}/issues`;
+const GITHUB_API = `https://api.github.com/repos/${GITHUB_OWNER}/${NOTES_REPO}/issues`;
 
 const NOTE_TOKEN_KEY  = 'NOTE_TOKEN';
 const NOTE_LABELS_KEY = 'note_labels';
@@ -20,7 +19,7 @@ const DEFAULT_ROLES   = [
   { key: 'Done',        icon: '✅' },
 ];
 
-function getToken()  { return localStorage.getItem(NOTE_TOKEN_KEY) || ''; }
+// getToken() is defined in js/config.js
 function getLabels() { return JSON.parse(localStorage.getItem(NOTE_LABELS_KEY) || JSON.stringify(DEFAULT_LABELS)); }
 function getRoles()  { return JSON.parse(localStorage.getItem(NOTE_ROLES_KEY)  || JSON.stringify(DEFAULT_ROLES)); }
 function saveLabels(labels) {
@@ -234,8 +233,8 @@ function renderNoteUI() {
     <div id="note-list" class="note-list"></div>
   `;
 
-  // Default selection: Research
-  if (!selectedLabel) selectedLabel = 'Research';
+  // Default selection: determined by location zone; fall back to 'general'.
+  if (!selectedLabel) selectedLabel = defaultLabelForZone(window.currentZone);
   renderLabelBar();
   renderRoleBar();
 
@@ -597,12 +596,25 @@ async function loadNotes() {
   }
 }
 
-function escapeHtml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/\n/g, '<br>');
+// ── Location-based default label ─────────────────────────────────────────────
+
+// Maps location zone name → default note label.
+// Zone names come from location_zones.json (zone.name field).
+const ZONE_DEFAULT_LABEL = {
+  univ:     'Research',
+  home:     'living',
+  lions_is: 'Lions_IS',
+};
+
+// Returns the default label for the given zone name, or 'general' if unknown.
+function defaultLabelForZone(zoneName) {
+  const labels = getLabels();
+  const candidate = ZONE_DEFAULT_LABEL[zoneName] || 'general';
+  // Verify the candidate is actually in the label list (may have been renamed)
+  if (labels.includes(candidate)) return candidate;
+  // Fall back to general if present, otherwise first label
+  if (labels.includes('general')) return 'general';
+  return labels[0] || null;
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
@@ -621,5 +633,26 @@ function initNote() {
 }
 
 initNote();
+
+// Register location-ready hook to update default label when GPS zone is confirmed.
+// Wraps any previously registered window.onLocationReady (e.g. from status.js)
+// so both callbacks fire.
+(function registerLocationHook() {
+  const prev = window.onLocationReady;
+  window.onLocationReady = function () {
+    // Update default label only if user has not manually selected one this session.
+    // selectedLabel may already be set by user interaction; we only override the
+    // initial default (i.e. when it equals the old fallback or a previous zone default).
+    const autoDefaults = new Set(Object.values(ZONE_DEFAULT_LABEL).concat(['general']));
+    if (selectedLabel === null || autoDefaults.has(selectedLabel)) {
+      const newDefault = defaultLabelForZone(window.currentZone);
+      if (newDefault && newDefault !== selectedLabel) {
+        selectedLabel = newDefault;
+        renderLabelBar();
+      }
+    }
+    if (typeof prev === 'function') prev();
+  };
+})();
 
 setInterval(() => { if (getToken()) loadNotes(); }, 10 * 60 * 1000);

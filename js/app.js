@@ -328,7 +328,6 @@ async function initWeather() {
   navigator.geolocation.getCurrentPosition(
     async ({ coords }) => {
       const { latitude: lat, longitude: lng } = coords;
-      console.log('[location] current:', lat, lng);
       localStorage.setItem('userLocation', JSON.stringify({ lat, lng, ts: Date.now() }));
       // Notify status.js that fresh location is now available
       if (typeof window.onLocationReady === 'function') window.onLocationReady();

@@ -44,57 +44,73 @@ const AGENT_DOMAINS = [
   ['agent_meta/note.md',    'Agent Meta',   'agent_meta'],
 ];
 
-// Default domains shown when no schedule events match any calendar label.
-const DEFAULT_DOMAIN_KEYS = ['general', 'my_home_page'];
+// Domains always shown regardless of selected_domains.json or context.
+const ALWAYS_DOMAIN_KEYS = ['research', 'general', 'living'];
 
-// 1-to-1 mapping: calendar label (case-insensitive exact match) → domain key.
-// Unrecognised calendars fall back to 'general'.
-const CALENDAR_DOMAIN_MAP = {
-  'univ':          'univ',
-  'lions_is':      'Lions_IS',
-  'lab':           'research',
-  'softball':      'softball',
-  'part-time jobs': 'general',
-  'general':       'general',
-};
-
-// Derive the set of domain keys to fetch based on today's calendar events.
-// Uses a simple 1-to-1 calendar label → domain mapping (CALENDAR_DOMAIN_MAP).
-// Unrecognised calendar labels fall back to 'general'.
-// Returns an array of AGENT_DOMAINS entries (i.e. [path, name, key] tuples).
-function selectDomainsFromEvents(events) {
-  const matched = new Set();
-
-  if (!events || events.length === 0) {
-    DEFAULT_DOMAIN_KEYS.forEach(k => matched.add(k));
-    return AGENT_DOMAINS.filter(([,, k]) => matched.has(k));
+// Fetches selected_domains.json from GitHub (agent repo).
+// Returns an array of domain keys, or [] on failure.
+async function fetchSelectedDomains() {
+  try {
+    const text = await githubFetch('my_home_page/selected_domains.json');
+    const parsed = JSON.parse(text);
+    if (Array.isArray(parsed)) return parsed;
+    return [];
+  } catch (_) {
+    return [];
   }
-
-  for (const ev of events) {
-    const calendarKey = (ev.calendar || '').toLowerCase().trim();
-    const domainKey = CALENDAR_DOMAIN_MAP[calendarKey] || 'general';
-    matched.add(domainKey);
-  }
-
-  // Always include my_home_page
-  matched.add('my_home_page');
-
-  // Fallback: if nothing matched (only my_home_page), add defaults
-  if (matched.size <= 1) {
-    DEFAULT_DOMAIN_KEYS.forEach(k => matched.add(k));
-  }
-
-  // Return in AGENT_DOMAINS order (preserves display order)
-  return AGENT_DOMAINS.filter(([,, k]) => matched.has(k));
 }
 
-// Fetches domain note.md files selected by today's schedule events in parallel
-// and assembles a combined markdown with # {DisplayName} headers followed by
-// each domain's ## Status content.
+// Computes the set of domain keys to display based on:
+//   1. always set (ALWAYS_DOMAIN_KEYS)
+//   2. selected_domains.json contents
+//   3. context rules (window.currentZone, day of week)
+// Also computes which domain keys should be auto-expanded.
+// Returns { domainKeys: Set<string>, autoExpandKeys: Set<string> }
+async function computeDomainSelection() {
+  const domainKeys   = new Set(ALWAYS_DOMAIN_KEYS);
+  const autoExpand   = new Set();
+
+  // Merge selected_domains.json
+  const selected = await fetchSelectedDomains();
+  for (const k of selected) domainKeys.add(k);
+
+  // Context-based rules — evaluated with current window.currentZone
+  const zone = window.currentZone;  // may be undefined if GPS not yet ready
+  const dow  = new Date().getDay(); // 0 = Sunday
+
+  if (zone === 'home') {
+    autoExpand.add('living');
+  }
+  if (zone === 'univ') {
+    autoExpand.add('research');
+  }
+  if (zone === 'lions_is') {
+    domainKeys.add('Lions_IS');
+    autoExpand.add('Lions_IS');
+  }
+  if (dow === 0) {
+    domainKeys.add('my_home_page');
+    autoExpand.add('my_home_page');
+  }
+
+  return { domainKeys, autoExpand };
+}
+
+// Returns the display name for a domain key (looks up AGENT_DOMAINS).
+function domainName(key) {
+  const entry = AGENT_DOMAINS.find(([,, k]) => k === key);
+  return entry ? entry[1] : key;
+}
+
+// Fetches domain note.md files for the resolved domain set and assembles a
+// combined markdown string with # {DisplayName} headers.
+// Returns { md: string, autoExpand: Set<string> (display names) }
 async function fetchAgentStatusReport() {
-  // Wait for window.todayEvents (set by renderCalWidget); fall back to [] if not ready.
-  const events = window.todayEvents || [];
-  const domains = selectDomainsFromEvents(events);
+  const { domainKeys, autoExpand } = await computeDomainSelection();
+
+  // Resolve ordered list of [filePath, displayName, domainKey] tuples,
+  // preserving the canonical order defined in AGENT_DOMAINS.
+  const domains = AGENT_DOMAINS.filter(([,, k]) => domainKeys.has(k));
 
   const results = await Promise.all(
     domains.map(async ([path, name]) => {
@@ -108,7 +124,14 @@ async function fetchAgentStatusReport() {
       }
     })
   );
-  return results.filter(Boolean).join('\n\n');
+
+  // Convert autoExpand from domain keys to display names for section matching
+  const autoExpandNames = new Set();
+  for (const k of autoExpand) {
+    autoExpandNames.add(domainName(k));
+  }
+
+  return { md: results.filter(Boolean).join('\n\n'), autoExpand: autoExpandNames };
 }
 
 // Returns a stable key for an item: issue number if present, otherwise full text.
@@ -124,8 +147,10 @@ let mentionItems = [];  // shared with note.js via window
 // Wraps each ## section (h2.mr-cat + its following sibling nodes up to the
 // next h2) in a <div class="sr-section" data-key="KEY">.
 // Adds a toggle arrow to the h2 and wires click-to-collapse behaviour.
-// expandedKeys: Set of section keys to expand by default, or null = expand all.
-function wrapSections(bodyEl, expandedKeys) {
+// autoExpandKeys: Set of display names to auto-expand on load.
+//                 All other sections start collapsed.
+//                 Pass an empty Set (not null) to collapse everything by default.
+function wrapSections(bodyEl, autoExpandKeys) {
   const children = Array.from(bodyEl.childNodes);
   let currentWrapper = null;
 
@@ -146,8 +171,10 @@ function wrapSections(bodyEl, expandedKeys) {
       arrow.textContent = '▼';
       node.appendChild(arrow);
 
-      // Determine default state
-      const shouldExpand = expandedKeys === null || expandedKeys.has(key);
+      // Default: collapsed. Expand only if key matches autoExpandKeys.
+      const shouldExpand = autoExpandKeys !== null && autoExpandKeys.size > 0
+        ? [...autoExpandKeys].some(k => key === k || key.includes(k) || k.includes(key))
+        : false;
       if (!shouldExpand) {
         currentWrapper.classList.add('collapsed');
       }
@@ -169,31 +196,23 @@ function wrapSections(bodyEl, expandedKeys) {
   }
 }
 
-// Applies location-based default expand/collapse state to sections.
-// Calls detectExpandedSections() (async, from location_zones.js) and then
-// re-applies the collapsed class to each sr-section wrapper.
-async function applyLocationFilter(bodyEl) {
-  if (typeof detectExpandedSections !== 'function') return;
-
-  const expandedKeys = await detectExpandedSections();
-  if (expandedKeys === null) return;  // fallback: all already expanded
+// Re-applies auto-expand state to already-rendered .sr-section wrappers
+// based on the current window.currentZone and day of week.
+// Called after initial render and again when GPS zone becomes available.
+async function reapplyAutoExpand(bodyEl) {
+  const { autoExpand } = await computeDomainSelection();
+  const autoExpandNames = new Set();
+  for (const k of autoExpand) autoExpandNames.add(domainName(k));
 
   bodyEl.querySelectorAll('.sr-section').forEach(wrapper => {
     const key = wrapper.dataset.key || '';
-
-    // Match: exact or substring
-    let shouldExpand = false;
-    for (const k of expandedKeys) {
-      if (key === k || key.includes(k) || k.includes(key)) {
-        shouldExpand = true;
-        break;
-      }
-    }
-    if (!shouldExpand) {
-      wrapper.classList.add('collapsed');
-    } else {
+    const shouldExpand = autoExpandNames.size > 0
+      ? [...autoExpandNames].some(k => key === k || key.includes(k) || k.includes(key))
+      : false;
+    if (shouldExpand) {
       wrapper.classList.remove('collapsed');
     }
+    // Never auto-collapse a section that the user has manually expanded.
   });
 }
 
@@ -202,27 +221,24 @@ async function renderReport() {
   if (!el) return;
 
   try {
-    const md = await fetchAgentStatusReport();
+    const { md, autoExpand } = await fetchAgentStatusReport();
     mentionItems = [];
     const bodyEl = document.createElement('div');
     bodyEl.className = 'mr-body';
     bodyEl.innerHTML = markdownToHtml(md);
     el.innerHTML = '';
     el.appendChild(bodyEl);
-    // Pass null initially (expand all); applyLocationFilter will re-collapse as needed.
-    wrapSections(bodyEl, null);
+    // Pass autoExpand directly: sections not in the set start collapsed.
+    wrapSections(bodyEl, autoExpand);
     window.mentionItems = mentionItems;
     attachMentionButtons(el);
     attachRoutineItems(el);
     attachBulletToggles(el);
-    // Apply location-based collapse asynchronously after render.
-    // Register a callback so app.js can re-trigger after fresh GPS fix.
-    // Wrap any previously registered onLocationReady (e.g. from note.js) so
-    // all callbacks fire when location becomes available.
-    applyLocationFilter(bodyEl);
+    // When GPS zone becomes available later, re-evaluate auto-expand rules.
+    // Chain with any previously registered onLocationReady callbacks.
     const _prevLocationReady = window.onLocationReady;
     window.onLocationReady = function () {
-      applyLocationFilter(bodyEl);
+      reapplyAutoExpand(bodyEl);
       if (typeof _prevLocationReady === 'function') _prevLocationReady();
     };
   } catch (e) {

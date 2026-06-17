@@ -234,13 +234,18 @@ async function renderReport() {
     attachMentionButtons(el);
     attachRoutineItems(el);
     attachBulletToggles(el);
-    // When GPS zone becomes available later, re-evaluate auto-expand rules.
+    // Register callback for when GPS zone becomes available later.
     // Chain with any previously registered onLocationReady callbacks.
     const _prevLocationReady = window.onLocationReady;
     window.onLocationReady = function () {
       reapplyAutoExpand(bodyEl);
       if (typeof _prevLocationReady === 'function') _prevLocationReady();
     };
+    // If zone detection already completed before renderReport() finished,
+    // apply auto-expand immediately (no need to wait for the callback).
+    if (window.currentZone) {
+      reapplyAutoExpand(bodyEl);
+    }
   } catch (e) {
     el.innerHTML = `<p class="mr-error">report: ${e.message}</p>`;
   }

@@ -308,13 +308,26 @@ function renderWeather(data) {
   `).join('');
 }
 
+// Runs detectExpandedSections() (location_zones.js) to set window.currentZone
+// and update the #current-location display, then fires window.onLocationReady().
+async function runLocationDetect() {
+  if (typeof detectExpandedSections === 'function') {
+    await detectExpandedSections();
+  }
+  if (typeof window.onLocationReady === 'function') window.onLocationReady();
+}
+
 async function initWeather() {
   const textEl = document.getElementById('weather-text');
 
-  // Use cache if fresh and contains daily data
+  // Use cache if fresh and contains daily data.
+  // Even when cache hits, run location detection so that #current-location
+  // is updated and window.currentZone is set for status.js.
   const cached = JSON.parse(localStorage.getItem(WEATHER_CACHE_KEY) || 'null');
   if (cached && Date.now() - cached.ts < WEATHER_TTL && cached.data.daily) {
     renderWeather(cached.data);
+    // userLocation may already be stored from a previous GPS call — use it.
+    runLocationDetect();
     return;
   }
 
@@ -329,8 +342,8 @@ async function initWeather() {
     async ({ coords }) => {
       const { latitude: lat, longitude: lng } = coords;
       localStorage.setItem('userLocation', JSON.stringify({ lat, lng, ts: Date.now() }));
-      // Notify status.js that fresh location is now available
-      if (typeof window.onLocationReady === 'function') window.onLocationReady();
+      // Detect zone from fresh GPS coords, then notify status.js.
+      await runLocationDetect();
       try {
         const data = await fetchWeatherData(lat, lng);
         localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));

@@ -64,11 +64,15 @@ async function fetchSelectedDomains() {
 //   1. always set (ALWAYS_DOMAIN_KEYS)
 //   2. selected_domains.json contents
 //   3. context rules (window.currentZone, day of week)
+//   4. schedule-based rules (window.todayEvents[].calendar)
 // Also computes which domain keys should be auto-expanded.
 // Returns { domainKeys: Set<string>, autoExpandKeys: Set<string> }
 async function computeDomainSelection() {
   const domainKeys   = new Set(ALWAYS_DOMAIN_KEYS);
   const autoExpand   = new Set();
+
+  // Build a lookup set of valid domain keys for fast membership check
+  const validDomainKeys = new Set(AGENT_DOMAINS.map(([,, k]) => k));
 
   // Merge selected_domains.json
   const selected = await fetchSelectedDomains();
@@ -91,6 +95,16 @@ async function computeDomainSelection() {
   if (dow === 0) {
     domainKeys.add('my_home_page');
     autoExpand.add('my_home_page');
+  }
+
+  // Schedule-based rules — add and auto-expand domains that appear in today's events
+  const events = Array.isArray(window.todayEvents) ? window.todayEvents : [];
+  for (const ev of events) {
+    const cal = ev.calendar;
+    if (cal && validDomainKeys.has(cal)) {
+      domainKeys.add(cal);
+      autoExpand.add(cal);
+    }
   }
 
   return { domainKeys, autoExpand };

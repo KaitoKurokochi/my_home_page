@@ -924,6 +924,25 @@ body {
 .note-status--ok  { color: #137333; }
 .note-status--err { color: #c5221f; }
 
+.note-cancel {
+  padding: 8px 16px;
+  background: transparent;
+  color: #5f6368;
+  border: 1px solid #dadce0;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.note-cancel:hover {
+  background: #f1f3f4;
+  color: #202124;
+}
+
+.note-cancel.hidden { display: none; }
+
 .note-submit {
   padding: 8px 22px;
   background: #1a73e8;

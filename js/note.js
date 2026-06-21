@@ -606,15 +606,19 @@ const ZONE_DEFAULT_LABEL = {
   lions_is: 'Lions_IS',
 };
 
-// Returns the default label for the given zone name, or 'general' if unknown.
+// Returns the default label for the given zone name.
+// Returns null when zoneName is unknown (location not yet resolved) so no label
+// is pre-selected until GPS zone is confirmed via window.onLocationReady().
 function defaultLabelForZone(zoneName) {
+  if (!zoneName) return null;
   const labels = getLabels();
-  const candidate = ZONE_DEFAULT_LABEL[zoneName] || 'general';
+  const candidate = ZONE_DEFAULT_LABEL[zoneName];
+  if (!candidate) return null; // unknown zone — wait for location
   // Verify the candidate is actually in the label list (may have been renamed)
   if (labels.includes(candidate)) return candidate;
-  // Fall back to general if present, otherwise first label
+  // Fall back to general if present
   if (labels.includes('general')) return 'general';
-  return labels[0] || null;
+  return null;
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────

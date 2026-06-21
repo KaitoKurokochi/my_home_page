@@ -652,12 +652,11 @@ function defaultLabelForZone(zoneName) {
   if (!zoneName) return null;
   const labels = getLabels();
   const candidate = ZONE_DEFAULT_LABEL[zoneName];
-  if (!candidate) return null; // unknown zone — wait for location
-  // Verify the candidate is actually in the label list (may have been renamed)
-  if (labels.includes(candidate)) return candidate;
-  // Fall back to general if present
-  if (labels.includes('general')) return 'general';
-  return null;
+  if (!candidate) return null;
+  const matched = labels.find(l => l.toLowerCase() === candidate.toLowerCase());
+  if (matched) return matched;
+  const general = labels.find(l => l.toLowerCase() === 'general');
+  return general || null;
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────

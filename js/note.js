@@ -86,9 +86,6 @@ window.setMention = function(item) {
     textarea.focus();
     textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-  // Show cancel button when mention is active
-  const cancelBtn = document.getElementById('note-cancel');
-  if (cancelBtn) cancelBtn.classList.remove('hidden');
 };
 
 function renderMentionBadge() {
@@ -215,17 +212,6 @@ function renderRoleBar() {
 
 // ── Note UI ───────────────────────────────────────────────────────────────────
 
-function resetForm() {
-  const textarea = document.getElementById('note-input');
-  const cancelBtn = document.getElementById('note-cancel');
-  if (textarea) textarea.value = '';
-  if (cancelBtn) cancelBtn.classList.add('hidden');
-  selectedRoles.clear();
-  renderRoleBar();
-  currentMention = null;
-  renderMentionBadge();
-}
-
 function renderNoteUI() {
   const container = document.getElementById('note-container');
   container.innerHTML = `
@@ -241,7 +227,6 @@ function renderNoteUI() {
       <div id="note-role-bar" class="note-role-bar"></div>
       <div class="note-form-footer">
         <span id="note-status" class="note-status"></span>
-        <button type="button" id="note-cancel" class="note-cancel hidden">取り消し</button>
         <button type="submit" class="note-submit">Save</button>
       </div>
     </form>
@@ -252,21 +237,6 @@ function renderNoteUI() {
   if (!selectedLabel) selectedLabel = defaultLabelForZone(window.currentZone);
   renderLabelBar();
   renderRoleBar();
-
-  // Show/hide cancel button based on textarea content
-  document.getElementById('note-input').addEventListener('input', () => {
-    const cancelBtn = document.getElementById('note-cancel');
-    if (!cancelBtn) return;
-    if (document.getElementById('note-input').value.trim()) {
-      cancelBtn.classList.remove('hidden');
-    } else {
-      cancelBtn.classList.add('hidden');
-    }
-  });
-
-  document.getElementById('note-cancel').addEventListener('click', () => {
-    resetForm();
-  });
 
   document.getElementById('note-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -316,7 +286,9 @@ function renderNoteUI() {
 
       const created = await res.json();
 
-      resetForm();
+      document.getElementById('note-input').value = '';
+      currentMention = null;
+      renderMentionBadge();
       status.textContent = 'Saved.';
       status.className = 'note-status note-status--ok';
 

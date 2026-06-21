@@ -384,8 +384,7 @@ function showDropdown(anchor, items, onSelect) {
   const rect = anchor.getBoundingClientRect();
   const el = document.createElement('div');
   el.className = 'note-edit-dropdown';
-  el.style.top  = `${rect.bottom + window.scrollY + 4}px`;
-  el.style.left = `${rect.left  + window.scrollX}px`;
+  el.style.top = `${rect.bottom + window.scrollY + 4}px`;
   el.addEventListener('click', e => e.stopPropagation());
   items.forEach(({ label, value, danger }) => {
     const row = document.createElement('div');
@@ -395,6 +394,13 @@ function showDropdown(anchor, items, onSelect) {
     el.appendChild(row);
   });
   document.body.appendChild(el);
+  // Adjust horizontal position: align left edge to anchor, but clamp so the
+  // dropdown does not overflow the right edge of the viewport.
+  const elWidth = el.getBoundingClientRect().width;
+  const viewportWidth = document.documentElement.clientWidth;
+  const preferredLeft = rect.left + window.scrollX;
+  const maxLeft = viewportWidth + window.scrollX - elWidth - 4;
+  el.style.left = `${Math.min(preferredLeft, maxLeft)}px`;
   _activeDropdown = el;
 }
 
@@ -571,42 +577,7 @@ function buildNoteItem(issue) {
   }
   setBodyText();
 
-  // Edit button
-  const editBtn = document.createElement('button');
-  editBtn.className = 'note-item-edit-btn';
-  editBtn.title = 'Edit';
-  editBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
-
-  editBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    const ta = document.createElement('textarea');
-    ta.className = 'note-item-edit-textarea';
-    ta.value = bodyText;
-    ta.rows = Math.max(3, lines.length + 1);
-    bodyWrap.replaceChild(ta, body);
-    editBtn.style.display = 'none';
-    ta.focus();
-
-    function save() {
-      const newBody = ta.value;
-      bodyWrap.replaceChild(body, ta);
-      editBtn.style.display = '';
-      if (newBody === bodyText) return;
-      body.textContent = newBody;
-      updateIssue(issue.number, { body: newBody })
-        .then(updated => item.replaceWith(buildNoteItem(updated)))
-        .catch(err => { console.error(err); setBodyText(); });
-    }
-
-    ta.addEventListener('blur', save);
-    ta.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { bodyWrap.replaceChild(body, ta); editBtn.style.display = ''; }
-      else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { ta.blur(); }
-    });
-  });
-
   bodyWrap.appendChild(body);
-  bodyWrap.appendChild(editBtn);
   item.appendChild(bodyWrap);
 
   if (needsCollapse) {

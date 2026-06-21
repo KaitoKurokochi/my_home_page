@@ -1179,6 +1179,7 @@ body {
 
 .note-item-tags {
   display: flex;
+  align-items: center;
   gap: 4px;
   flex-wrap: wrap;
   margin-bottom: 4px;
@@ -1259,6 +1260,24 @@ body {
 .note-item-tags:hover .note-item-mention-btn { opacity: 1; }
 .note-item-mention-btn:hover { color: #1a73e8; border-color: #1a73e8; }
 
+.note-item-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  line-height: 1;
+  color: #80868b;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  padding: 1px 4px;
+  cursor: pointer;
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+.note-item-menu-btn:hover { background: #f1f3f4; color: #202124; }
+
 /* ── Edit dropdown ────────────────────────────────────────────────────────────*/
 
 .note-edit-dropdown {
@@ -1280,6 +1299,8 @@ body {
   white-space: nowrap;
 }
 .note-edit-dropdown-item:hover { background: #f1f3f4; }
+.note-edit-dropdown-item--danger { color: #c5221f; }
+.note-edit-dropdown-item--danger:hover { background: #fce8e6; }
 
 /* ── Mention badge (note form) ───────────────────────────────────────────────*/
 

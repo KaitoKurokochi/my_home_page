@@ -255,6 +255,34 @@ function renderNoteUI() {
     status.className = 'note-status';
 
     const roleStr = [...selectedRoles].map(r => `[${r}]`).join('');
+    const newTitle = `[${selectedLabel}]${roleStr} ` + text.slice(0, 72) + (text.length > 72 ? '…' : '');
+
+    // ── Edit mode: PATCH existing issue ──────────────────────────────────────
+    if (window._editingIssueNumber) {
+      const editNum = window._editingIssueNumber;
+      const editItem = window._editingItem;
+      window._editingIssueNumber = null;
+      window._editingItem = null;
+      try {
+        const updated = await updateIssue(editNum, { title: newTitle, body: text });
+        document.getElementById('note-input').value = '';
+        selectedRoles.clear();
+        renderRoleBar();
+        status.textContent = 'Updated.';
+        status.className = 'note-status note-status--ok';
+        if (editItem && editItem.parentNode) editItem.replaceWith(buildNoteItem(updated));
+      } catch (err) {
+        status.textContent = `Failed: ${err.message}`;
+        status.className = 'note-status note-status--err';
+      }
+      setTimeout(() => {
+        const s = document.getElementById('note-status');
+        if (s) { s.textContent = ''; s.className = 'note-status'; }
+      }, 4000);
+      return;
+    }
+
+    // ── Create mode: POST new issue ───────────────────────────────────────────
     const refPrefix = currentMention ? (() => {
       // Strip both "(#NNN)" and "(#NNN, label_key)" suffixes from the title
       const cleanTitle = currentMention.title.replace(/\s*\(#\d+(?:,\s*[^)]+)?\)$/, '');
@@ -264,7 +292,6 @@ function renderNoteUI() {
       return `ref: ${num}${cleanTitle}${sec}\n\n`;
     })() : '';
     const body = refPrefix + text;
-    const title = `[${selectedLabel}]${roleStr} ` + text.slice(0, 72) + (text.length > 72 ? '…' : '');
 
     try {
       const res = await fetch(GITHUB_API, {
@@ -274,7 +301,7 @@ function renderNoteUI() {
           'Accept': 'application/vnd.github+json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, body, labels: ['note'] }),
+        body: JSON.stringify({ title: newTitle, body, labels: ['note'] }),
       });
 
       if (res.status === 401) {
@@ -360,9 +387,9 @@ function showDropdown(anchor, items, onSelect) {
   el.style.top  = `${rect.bottom + window.scrollY + 4}px`;
   el.style.left = `${rect.left  + window.scrollX}px`;
   el.addEventListener('click', e => e.stopPropagation());
-  items.forEach(({ label, value }) => {
+  items.forEach(({ label, value, danger }) => {
     const row = document.createElement('div');
-    row.className = 'note-edit-dropdown-item';
+    row.className = 'note-edit-dropdown-item' + (danger ? ' note-edit-dropdown-item--danger' : '');
     row.textContent = label;
     row.addEventListener('click', () => { closeDropdown(); onSelect(value); });
     el.appendChild(row);
@@ -474,6 +501,47 @@ function buildNoteItem(issue) {
   dateSpan.className = 'note-item-date';
   dateSpan.textContent = dateLabel;
   tagsDiv.appendChild(dateSpan);
+
+  // ⋮ menu button (Edit / Delete)
+  const menuBtn = document.createElement('button');
+  menuBtn.className = 'note-item-menu-btn';
+  menuBtn.textContent = '⋮';
+  menuBtn.title = 'メニュー';
+  menuBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    showDropdown(menuBtn, [
+      { label: '✏ Edit', value: 'edit' },
+      { label: '🗑 Delete', value: 'delete', danger: true },
+    ], action => {
+      if (action === 'delete') {
+        if (!confirm('このノートを削除しますか？')) return;
+        updateIssue(issue.number, { state: 'closed' })
+          .then(() => item.remove())
+          .catch(err => console.error('Delete failed:', err));
+      } else if (action === 'edit') {
+        // Load into the note form for editing
+        const textarea = document.getElementById('note-input');
+        if (!textarea) return;
+        textarea.value = bodyText || text;
+        // Select matching label
+        if (label) {
+          selectedLabel = label;
+          renderLabelBar();
+        }
+        // Select matching role
+        selectedRoles.clear();
+        roles.forEach(r => selectedRoles.add(r));
+        renderRoleBar();
+        // Set mention to track which issue to update on save
+        // Use a special edit flag so the submit handler can PATCH instead of POST
+        window._editingIssueNumber = issue.number;
+        window._editingItem = item;
+        textarea.focus();
+        textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+  tagsDiv.appendChild(menuBtn);
 
   item.appendChild(tagsDiv);
 

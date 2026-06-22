@@ -180,6 +180,49 @@ document.getElementById('shortcut-cancel').addEventListener('click', () => {
   shortcutModal.classList.add('hidden');
 });
 
+// ── URL title autocomplete ────────────────────────────────────────────────────
+
+async function fetchPageTitle(url) {
+  if (!/^https?:\/\//.test(url)) url = 'https://' + url;
+
+  // Try allorigins proxy to bypass CORS
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+  try {
+    const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) throw new Error('proxy error');
+    const json = await res.json();
+    const html = json.contents || '';
+    const match = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+    if (match) return match[1].trim();
+  } catch {
+    // fall through to domain fallback
+  }
+
+  // Fallback: use hostname
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return '';
+  }
+}
+
+shortcutUrlInput.addEventListener('blur', async () => {
+  const url = shortcutUrlInput.value.trim();
+  if (!url) return;
+  // Don't overwrite an already-filled name
+  if (shortcutNameInput.value.trim()) return;
+
+  shortcutNameInput.placeholder = '取得中...';
+  const title = await fetchPageTitle(url);
+  // Only fill if the user still hasn't typed anything
+  if (!shortcutNameInput.value.trim()) {
+    shortcutNameInput.value = title;
+  }
+  shortcutNameInput.placeholder = 'Name';
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 document.getElementById('shortcut-save').addEventListener('click', () => {
   const name = shortcutNameInput.value.trim();
   let url = shortcutUrlInput.value.trim();

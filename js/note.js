@@ -255,7 +255,7 @@ function renderNoteUI() {
     status.className = 'note-status';
 
     const roleStr = [...selectedRoles].map(r => `[${r}]`).join('');
-    const newTitle = `[${selectedLabel}]${roleStr} ` + text.slice(0, 72) + (text.length > 72 ? '…' : '');
+    const newTitle = `[${selectedLabel}]${roleStr}`;
 
     // ── Edit mode: PATCH existing issue ──────────────────────────────────────
     if (window._editingIssueNumber) {
@@ -348,9 +348,9 @@ function parseTitleParts(title) {
   return { label, roles, text };
 }
 
-function buildTitle(label, roles, text) {
+function buildTitle(label, roles) {
   const roleStr = roles.map(r => `[${r}]`).join('');
-  return `[${label}]${roleStr} ${text}`;
+  return `[${label}]${roleStr}`;
 }
 
 // ── Issue update (PATCH) ──────────────────────────────────────────────────────
@@ -413,8 +413,11 @@ function buildNoteItem(issue) {
   const dateLabel = isToday
     ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
     : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  const { label, roles, text } = parseTitleParts(issue.title);
+  const { label, roles } = parseTitleParts(issue.title);
   const roleIconMap = Object.fromEntries(getRoles().map(({ key, icon }) => [key, icon]));
+  const bodyText = issue.body || '';
+  const bodyLines = bodyText.split('\n').filter(l => l.trim() && !l.match(/^>?\s*ref:/));
+  const displayText = bodyLines.join('\n') || '';
 
   const item = document.createElement('div');
   item.className = 'note-item';
@@ -441,7 +444,7 @@ function buildNoteItem(issue) {
         .filter(l => l !== label)
         .map(l => ({ label: l, value: l }));
       showDropdown(tagSpan, options, newLabel => {
-        const newTitle = buildTitle(newLabel, roles, text);
+        const newTitle = buildTitle(newLabel, roles);
         replaceWith(newTitle);  // instant DOM update
         updateIssue(issue.number, { title: newTitle }).catch(err => {
           console.error(err);
@@ -461,7 +464,7 @@ function buildNoteItem(issue) {
     roleSpan.addEventListener('click', e => {
       e.stopPropagation();
       const newRoles = roles.filter(r => r !== roleKey);
-      const newTitle = buildTitle(label, newRoles, text);
+      const newTitle = buildTitle(label, newRoles);
       replaceWith(newTitle);
       updateIssue(issue.number, { title: newTitle }).catch(err => {
         console.error(err);
@@ -481,7 +484,7 @@ function buildNoteItem(issue) {
       e.stopPropagation();
       const options = getRoles().map(({ key, icon }) => ({ label: `${icon} ${key}`, value: key }));
       showDropdown(addRoleBtn, options, roleKey => {
-        const newTitle = buildTitle(label, [roleKey], text);
+        const newTitle = buildTitle(label, [roleKey]);
         replaceWith(newTitle);
         updateIssue(issue.number, { title: newTitle }).catch(err => {
           console.error(err);
@@ -499,7 +502,7 @@ function buildNoteItem(issue) {
   mentionBtn.title = 'このノートをメンション';
   mentionBtn.addEventListener('click', e => {
     e.stopPropagation();
-    window.setMention({ title: text, section: label, number: issue.number });
+    window.setMention({ title: displayText, section: label, number: issue.number });
   });
   tagsDiv.appendChild(mentionBtn);
 
@@ -528,7 +531,7 @@ function buildNoteItem(issue) {
         // Load into the note form for editing
         const textarea = document.getElementById('note-input');
         if (!textarea) return;
-        textarea.value = bodyText || text;
+        textarea.value = bodyText;
         // Select matching label
         if (label) {
           selectedLabel = label;
@@ -554,8 +557,6 @@ function buildNoteItem(issue) {
   // Body (collapse + edit)
   const COLLAPSE_CHARS = 100;
   const COLLAPSE_LINES = 3;
-  const bodyText = issue.body || '';
-  const displayText = bodyText || text;
   const lines = displayText.split('\n');
   const needsCollapse = displayText.length > COLLAPSE_CHARS || lines.length > COLLAPSE_LINES;
   let collapsed = needsCollapse;

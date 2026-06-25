@@ -416,7 +416,7 @@ function buildNoteItem(issue) {
   const { label, roles } = parseTitleParts(issue.title);
   const roleIconMap = Object.fromEntries(getRoles().map(({ key, icon }) => [key, icon]));
   const bodyText = issue.body || '';
-  const bodyLines = bodyText.split('\n').filter(l => l.trim() && !l.match(/^>?\s*ref:/));
+  const bodyLines = bodyText.split('\n').filter(l => l.trim());
   const displayText = bodyLines.join('\n') || '';
 
   const item = document.createElement('div');

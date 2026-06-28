@@ -54,6 +54,7 @@ async function fetchSelectedDomains() {
     const text = await githubFetch('my_home_page/selected_domains.json');
     const parsed = JSON.parse(text);
     if (Array.isArray(parsed)) return parsed;
+    if (Array.isArray(parsed.domains)) return parsed.domains;
     return [];
   } catch (_) {
     return [];

@@ -280,6 +280,7 @@ render();
 
 const WEATHER_CACHE_KEY = 'mypage_weather';
 const WEATHER_TTL = 30 * 60 * 1000; // 30 min
+const LOCATION_TTL = 60 * 60 * 1000; // 1 hour — reuse cached GPS position before asking permission again
 
 function wmoEmoji(code) {
   if (code === 0) return '☀️';
@@ -351,13 +352,42 @@ function renderWeather(data) {
   `).join('');
 }
 
+// Runs detectExpandedSections() (location_zones.js) to set window.currentZone
+// and update the #current-location display, then fires window.onLocationReady().
+async function runLocationDetect() {
+  if (typeof detectExpandedSections === 'function') {
+    await detectExpandedSections();
+  }
+  if (typeof window.onLocationReady === 'function') window.onLocationReady();
+}
+
 async function initWeather() {
   const textEl = document.getElementById('weather-text');
 
-  // Use cache if fresh and contains daily data
+  // Use weather cache if fresh and contains daily data.
+  // Even when cache hits, run location detection so that #current-location
+  // is updated and window.currentZone is set for status.js.
   const cached = JSON.parse(localStorage.getItem(WEATHER_CACHE_KEY) || 'null');
   if (cached && Date.now() - cached.ts < WEATHER_TTL && cached.data.daily) {
     renderWeather(cached.data);
+    // userLocation may already be stored from a previous GPS call — use it.
+    runLocationDetect();
+    return;
+  }
+
+  // If we have a recent cached GPS position, reuse it without asking permission.
+  // This avoids repeated location permission prompts, especially on mobile.
+  const cachedLoc = JSON.parse(localStorage.getItem('userLocation') || 'null');
+  if (cachedLoc && cachedLoc.lat && cachedLoc.lng && Date.now() - cachedLoc.ts < LOCATION_TTL) {
+    textEl.textContent = 'loading...';
+    await runLocationDetect();
+    try {
+      const data = await fetchWeatherData(cachedLoc.lat, cachedLoc.lng);
+      localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
+      renderWeather(data);
+    } catch {
+      textEl.textContent = 'unavailable';
+    }
     return;
   }
 
@@ -371,10 +401,9 @@ async function initWeather() {
   navigator.geolocation.getCurrentPosition(
     async ({ coords }) => {
       const { latitude: lat, longitude: lng } = coords;
-      console.log('[location] current:', lat, lng);
       localStorage.setItem('userLocation', JSON.stringify({ lat, lng, ts: Date.now() }));
-      // Notify status.js that fresh location is now available
-      if (typeof window.onLocationReady === 'function') window.onLocationReady();
+      // Detect zone from fresh GPS coords, then notify status.js.
+      await runLocationDetect();
       try {
         const data = await fetchWeatherData(lat, lng);
         localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));

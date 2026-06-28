@@ -1,6 +1,6 @@
 // ── Location zones — section expand/collapse control ─────────────────────────
 //
-// Config is fetched from my_notes/location_zones.json (pushed by status_report.py).
+// Config is fetched from agent/my_home_page/location_zones.json (pushed by assembler.py).
 // Each zone entry supports two matching strategies (evaluated in order):
 //
 //   address_fields: { <field>: <value>, ... }
@@ -19,18 +19,12 @@
 // sections: section keys to expand by default at this location.
 // If location is unavailable or no zone matches, ALL sections are expanded (fallback).
 
+// Depends on: js/config.js (githubFetch)
+
 async function fetchLocationZones() {
   try {
-    const headers = { 'Accept': 'application/vnd.github+json' };
-    const token = localStorage.getItem('NOTE_TOKEN') || '';
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    const res = await fetch(
-      `https://api.github.com/repos/KaitoKurokochi/my_notes/contents/location_zones.json`,
-      { headers }
-    );
-    if (!res.ok) return [];
-    const meta = await res.json();
-    return JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\n/g, '')))));
+    const text = await githubFetch('my_home_page/location_zones.json');
+    return JSON.parse(text);
   } catch {
     return [];
   }
@@ -93,8 +87,6 @@ async function detectExpandedSections() {
       addr.city,
     ].filter(Boolean);
     matchText = parts.join(' ');
-    console.log('[location] Nominatim display_name:', data.display_name);
-    console.log('[location] Nominatim address:', JSON.stringify(addr));
   } catch {
     return null;
   }
@@ -112,12 +104,11 @@ async function detectExpandedSections() {
       const label = zone.label || zone.name;
       const locEl = document.getElementById('current-location');
       if (locEl) locEl.textContent = '📍 ' + label;
-      const expanded = new Set(zone.sections || []);
-      console.log('[location] matched zone:', zone.name, '/ expanded:', [...expanded]);
-      return expanded;
+      // Expose the matched zone name globally so other modules can react.
+      window.currentZone = zone.name;
+      return new Set(zone.sections || []);
     }
   }
 
-  console.log('[location] no zone matched for:', matchText);
   return null;
 }

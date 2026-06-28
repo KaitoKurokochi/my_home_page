@@ -199,28 +199,22 @@ function renderGraph(data) {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
+// Depends on: js/config.js (githubFetch)
 
 let newsLoaded = false;
 
-const NEWS_OWNER = 'KaitoKurokochi';
-const NEWS_REPO  = 'my_notes';
-const NEWS_FILE  = 'news.json';
+const NEWS_FILE = 'my_home_page/news.json';
 
 async function fetchNewsFromMyNotes() {
-  const token = localStorage.getItem('NOTE_TOKEN') || '';
-  const headers = token
-    ? { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
-    : { 'Accept': 'application/vnd.github+json' };
-
-  const res = await fetch(
-    `https://api.github.com/repos/${NEWS_OWNER}/${NEWS_REPO}/contents/${NEWS_FILE}`,
-    { headers }
-  );
-  if (res.status === 404) throw Object.assign(new Error('not_found'), { status: 404 });
-  if (!res.ok) throw new Error(`GitHub API ${res.status}`);
-  const meta = await res.json();
-  const content = JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\n/g, '')))));
-  return content;
+  // githubFetch throws on error; we need to distinguish 404 specially.
+  try {
+    const text = await githubFetch(NEWS_FILE);
+    return JSON.parse(text);
+  } catch (e) {
+    // Re-throw with status property so initNews can detect 404
+    if (/^404 /.test(e.message)) throw Object.assign(new Error('not_found'), { status: 404 });
+    throw e;
+  }
 }
 
 async function initNews() {
@@ -254,4 +248,4 @@ async function initNews() {
   }
 }
 
-initNews();
+// initNews() is called from app.js to avoid double-invocation.

@@ -1,38 +1,11 @@
-// ── Status: calendar widget (top-bar) + report (left-col) ────────────────────
+// ── Status: report (left-col) ─────────────────────────────────────────────────
+// Calendar widget is handled by js/calendar.js.
+// Depends on: js/config.js (GITHUB_OWNER, NOTES_REPO, getToken, githubFetch, esc)
+//             js/calendar.js (renderCalWidget — sets window.todayEvents)
 
-const NOTES_OWNER = 'KaitoKurokochi';
-const NOTES_REPO  = 'my_notes';
-const AGENT_REPO  = 'agent';
-
-function notesToken() {
-  return localStorage.getItem('NOTE_TOKEN') || '';
-}
-
-async function fetchMyNotesFile(path) {
-  const token = notesToken();
-  const headers = { 'Accept': 'application/vnd.github+json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  const res = await fetch(
-    `https://api.github.com/repos/${NOTES_OWNER}/${NOTES_REPO}/contents/${path}`,
-    { headers }
-  );
-  if (!res.ok) throw new Error(`${res.status}`);
-  const meta = await res.json();
-  return decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
-}
-
-async function fetchAgentFile(path) {
-  const token = notesToken();
-  const headers = { 'Accept': 'application/vnd.github+json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  const res = await fetch(
-    `https://api.github.com/repos/${NOTES_OWNER}/${AGENT_REPO}/contents/${path}`,
-    { headers }
-  );
-  if (!res.ok) throw new Error(`${res.status} ${path}`);
-  const meta = await res.json();
-  return decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
-}
+// Thin wrappers kept for backward compatibility with callers inside this file.
+function fetchMyNotesFile(path) { return githubFetch(path); }
+function fetchAgentFile(path)   { return githubFetch(path); }
 
 // Extracts the ## Status section from a note.md string.
 // Returns lines from "## Status" up to (but not including) the next "## " heading,
@@ -71,82 +44,88 @@ const AGENT_DOMAINS = [
   ['agent_meta/note.md',    'Agent Meta',   'agent_meta'],
 ];
 
-// Default domains shown when no schedule events match any keyword.
-const DEFAULT_DOMAIN_KEYS = ['general', 'my_home_page'];
+// Domains always shown regardless of selected_domains.json or context.
+const ALWAYS_DOMAIN_KEYS = ['research', 'general', 'living'];
 
-// Keyword rules: each rule maps to one or more domain keys.
-// Checked against event.calendar (exact/substring), event.title, and event.description.
-// Rules are checked in order; a domain key is only added once even if multiple rules match.
-const DOMAIN_KEYWORD_RULES = [
-  // Lions internship
-  { keys: ['Lions_IS'],              calendars: ['Lions_IS', 'lions'],    keywords: ['lions', 'intern', 'ライオンズ'] },
-  // Research / lab
-  { keys: ['research', 'univ'],      calendars: ['lab', 'research'],       keywords: ['研究', 'lab', 'ゼミ', 'seminar', 'meeting', '輪講', '管理', 'research', 'experiment', '実験'] },
-  // University (administrative, lecture, etc.)
-  { keys: ['univ'],                  calendars: ['univ', 'university', '大学'], keywords: ['授業', '講義', '大学', 'lecture', 'univ'] },
-  // Softball
-  { keys: ['softball'],              calendars: ['softball', 'ソフト'],    keywords: ['softball', 'ソフト', 'グラウンド'] },
-  // Football / soccer
-  { keys: ['football'],              calendars: ['football', 'soccer'],    keywords: ['football', 'soccer', 'サッカー', 'フットボール'] },
-  // Baseball / NPB
-  { keys: ['baseball'],              calendars: ['baseball', 'npb'],       keywords: ['baseball', '野球', 'npb'] },
-  // Books
-  { keys: ['books'],                 calendars: ['books', 'reading'],      keywords: ['本', '読書', 'book', 'reading'] },
-  // Video content
-  { keys: ['video_content'],         calendars: ['video', 'youtube'],      keywords: ['動画', 'video', '映像'] },
-  // Living
-  { keys: ['living'],                calendars: ['living'],                 keywords: ['引越', '住', '家具', '家電', 'living', '賃貸'] },
-  // General (always included when matched)
-  { keys: ['general'],               calendars: ['general', 'personal'],   keywords: [] },
-];
+// Fetches selected_domains.json from GitHub (agent repo).
+// Returns an array of domain keys, or [] on failure.
+async function fetchSelectedDomains() {
+  try {
+    const text = await githubFetch('my_home_page/selected_domains.json');
+    const parsed = JSON.parse(text);
+    if (Array.isArray(parsed)) return parsed;
+    if (Array.isArray(parsed.domains)) return parsed.domains;
+    return [];
+  } catch (_) {
+    return [];
+  }
+}
 
-// Derive the set of domain keys to fetch based on today's calendar events.
-// Returns an array of AGENT_DOMAINS entries (i.e. [path, name, key] tuples).
-function selectDomainsFromEvents(events) {
-  const matched = new Set();
+// Computes the set of domain keys to display based on:
+//   1. always set (ALWAYS_DOMAIN_KEYS)
+//   2. selected_domains.json contents
+//   3. context rules (window.currentZone, day of week)
+//   4. schedule-based rules (window.todayEvents[].calendar)
+// Also computes which domain keys should be auto-expanded.
+// Returns { domainKeys: Set<string>, autoExpandKeys: Set<string> }
+async function computeDomainSelection() {
+  const domainKeys   = new Set(ALWAYS_DOMAIN_KEYS);
+  const autoExpand   = new Set();
 
-  if (!events || events.length === 0) {
-    DEFAULT_DOMAIN_KEYS.forEach(k => matched.add(k));
-    return AGENT_DOMAINS.filter(([,, k]) => matched.has(k));
+  // Build a lookup set of valid domain keys for fast membership check
+  const validDomainKeys = new Set(AGENT_DOMAINS.map(([,, k]) => k));
+
+  // Merge selected_domains.json
+  const selected = await fetchSelectedDomains();
+  for (const k of selected) domainKeys.add(k);
+
+  // Context-based rules — evaluated with current window.currentZone
+  const zone = window.currentZone;  // may be undefined if GPS not yet ready
+  const dow  = new Date().getDay(); // 0 = Sunday
+
+  if (zone === 'home') {
+    autoExpand.add('living');
+  }
+  if (zone === 'univ') {
+    autoExpand.add('research');
+  }
+  if (zone === 'lions_is') {
+    domainKeys.add('Lions_IS');
+    autoExpand.add('Lions_IS');
+  }
+  if (dow === 0) {
+    domainKeys.add('my_home_page');
+    autoExpand.add('my_home_page');
   }
 
+  // Schedule-based rules — add and auto-expand domains that appear in today's events
+  const events = Array.isArray(window.todayEvents) ? window.todayEvents : [];
   for (const ev of events) {
-    const calendarRaw = (ev.calendar || '').toLowerCase();
-    const titleRaw    = (ev.title       || '').toLowerCase();
-    const descRaw     = (ev.description || '').toLowerCase();
-    const searchText  = titleRaw + ' ' + descRaw;
-
-    for (const rule of DOMAIN_KEYWORD_RULES) {
-      // Check calendar field (exact or substring match)
-      const calMatch = rule.calendars.some(c => calendarRaw === c.toLowerCase() || calendarRaw.includes(c.toLowerCase()));
-      // Check title / description keywords
-      const kwMatch  = rule.keywords.some(kw => searchText.includes(kw.toLowerCase()));
-
-      if (calMatch || kwMatch) {
-        rule.keys.forEach(k => matched.add(k));
-      }
+    const cal = ev.calendar;
+    if (cal && validDomainKeys.has(cal)) {
+      domainKeys.add(cal);
+      autoExpand.add(cal);
     }
   }
 
-  // Always include my_home_page
-  matched.add('my_home_page');
-
-  // Fallback: if nothing matched (only my_home_page), add defaults
-  if (matched.size <= 1) {
-    DEFAULT_DOMAIN_KEYS.forEach(k => matched.add(k));
-  }
-
-  // Return in AGENT_DOMAINS order (preserves display order)
-  return AGENT_DOMAINS.filter(([,, k]) => matched.has(k));
+  return { domainKeys, autoExpand };
 }
 
-// Fetches domain note.md files selected by today's schedule events in parallel
-// and assembles a combined markdown with # {DisplayName} headers followed by
-// each domain's ## Status content.
+// Returns the display name for a domain key (looks up AGENT_DOMAINS).
+function domainName(key) {
+  const entry = AGENT_DOMAINS.find(([,, k]) => k === key);
+  return entry ? entry[1] : key;
+}
+
+// Fetches domain note.md files for the resolved domain set and assembles a
+// combined markdown string with # {DisplayName} headers.
+// Returns { md: string, autoExpand: Set<string> (display names) }
 async function fetchAgentStatusReport() {
-  // Wait for window.todayEvents (set by renderCalWidget); fall back to [] if not ready.
-  const events = window.todayEvents || [];
-  const domains = selectDomainsFromEvents(events);
+  const { domainKeys, autoExpand } = await computeDomainSelection();
+
+  // Resolve ordered list of [filePath, displayName, domainKey] tuples,
+  // preserving the canonical order defined in AGENT_DOMAINS.
+  const domains = AGENT_DOMAINS.filter(([,, k]) => domainKeys.has(k));
 
   const results = await Promise.all(
     domains.map(async ([path, name]) => {
@@ -160,187 +139,20 @@ async function fetchAgentStatusReport() {
       }
     })
   );
-  return results.filter(Boolean).join('\n\n');
-}
 
-function esc(str) {
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  // Convert autoExpand from domain keys to display names for section matching
+  const autoExpandNames = new Set();
+  for (const k of autoExpand) {
+    autoExpandNames.add(domainName(k));
+  }
+
+  return { md: results.filter(Boolean).join('\n\n'), autoExpand: autoExpandNames };
 }
 
 // Returns a stable key for an item: issue number if present, otherwise full text.
 function itemKey(text) {
   const m = text.match(/\(#(\d+)(?:,\s*[^)]+)?\)/);
   return m ? '#' + m[1] : text;
-}
-
-// ── Calendar widget (top-bar) ─────────────────────────────────────────────────
-
-async function renderCalWidget() {
-  const widget = document.getElementById('cal-widget');
-  if (!widget) return;
-
-  const today = new Date();
-  const dateLabel = today.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' });
-
-  const todayStr = [
-    today.getFullYear(),
-    String(today.getMonth() + 1).padStart(2, '0'),
-    String(today.getDate()).padStart(2, '0'),
-  ].join('-');
-
-  let events = [];
-  try {
-    const raw = await fetchMyNotesFile('schedule.json');
-    const sched = JSON.parse(raw);
-    if (sched.date !== todayStr) {
-      widget.innerHTML = `<button class="cal-summary">📅 ${dateLabel} <span class="cal-err">未取得</span></button>`;
-      window.todayEvents = [];
-      return;
-    }
-    events = sched.events || [];
-    window.todayEvents = events;  // expose for meeting_note.js
-  } catch (e) {
-    widget.innerHTML = `<button class="cal-summary">📅 ${dateLabel} <span class="cal-err">–</span></button>`;
-    window.todayEvents = [];
-    return;
-  }
-
-  // ── Summary (pill) ──────────────────────────────────────────────────────────
-  // Always render exactly 2 preview rows and 1 more-row so widget height is constant.
-  const buildRow = (ev) =>
-    `<span class="cal-preview-row"><span class="cal-preview-time">${esc(ev.allDay ? '終日' : ev.start)}</span><span class="cal-preview-title">${esc(ev.title)}</span></span>`;
-
-  let row0, row1;
-  if (events.length === 0) {
-    row0 = `<span class="cal-preview-row"><span class="cal-preview-time"></span><span class="cal-preview-title">予定なし</span></span>`;
-    row1 = `<span class="cal-preview-row" style="visibility:hidden"><span class="cal-preview-time"></span><span class="cal-preview-title">–</span></span>`;
-  } else if (events.length === 1) {
-    row0 = buildRow(events[0]);
-    row1 = `<span class="cal-preview-row" style="visibility:hidden">${buildRow(events[0])}</span>`;
-  } else {
-    row0 = buildRow(events[0]);
-    row1 = buildRow(events[1]);
-  }
-
-  const previewRows = row0 + row1;
-  const more = events.length > 2
-    ? `<span class="cal-more">+${events.length - 2}件</span>`
-    : `<span class="cal-more" style="visibility:hidden">+0件</span>`;
-
-  // ── List panel rows ─────────────────────────────────────────────────────────
-  const detailRows = events.map((ev, i) => {
-    const timeRange = ev.allDay ? '終日' : `${ev.start} – ${ev.end}`;
-    return `<div class="cal-panel-event" data-event-index="${i}">
-      <div class="cal-panel-time">${esc(timeRange)}</div>
-      <div class="cal-panel-title">${esc(ev.title)}</div>
-    </div>`;
-  }).join('');
-
-  const noEvents = !events.length ? '<div class="cal-panel-empty">今日の予定はありません</div>' : '';
-
-  widget.innerHTML = `
-    <button class="cal-summary" id="cal-summary">
-      <span class="cal-date-label">${dateLabel}</span>
-      <span class="cal-previews">${previewRows}${more}</span>
-    </button>
-    <div class="cal-panel hidden" id="cal-panel">
-      <div class="cal-panel-header">${dateLabel}</div>
-      ${detailRows}${noEvents}
-    </div>
-    <div class="cal-detail-panel hidden" id="cal-detail-panel">
-      <button class="cal-detail-close" id="cal-detail-close" title="閉じる">✕</button>
-      <div class="cal-detail-title" id="cal-detail-title"></div>
-      <div class="cal-detail-time" id="cal-detail-time"></div>
-      <div class="cal-detail-description" id="cal-detail-description"></div>
-      <div class="cal-detail-location" id="cal-detail-location"></div>
-    </div>`;
-
-  // toggle list panel on summary click
-  const btn        = document.getElementById('cal-summary');
-  const panel      = document.getElementById('cal-panel');
-  const detailPanel = document.getElementById('cal-detail-panel');
-
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    panel.classList.toggle('hidden');
-    // close detail panel when list panel closes
-    if (panel.classList.contains('hidden')) {
-      detailPanel.classList.add('hidden');
-      panel.querySelectorAll('.cal-panel-event--active').forEach(el => el.classList.remove('cal-panel-event--active'));
-    }
-  });
-
-  // Close both panels when clicking outside the widget
-  document.addEventListener('click', (e) => {
-    if (!widget.contains(e.target)) {
-      panel.classList.add('hidden');
-      detailPanel.classList.add('hidden');
-      panel.querySelectorAll('.cal-panel-event--active').forEach(el => el.classList.remove('cal-panel-event--active'));
-    }
-  });
-
-  // Close detail panel via close button
-  document.getElementById('cal-detail-close').addEventListener('click', (e) => {
-    e.stopPropagation();
-    detailPanel.classList.add('hidden');
-    panel.querySelectorAll('.cal-panel-event--active').forEach(el => el.classList.remove('cal-panel-event--active'));
-  });
-
-  // Event item click → show detail panel
-  panel.querySelectorAll('.cal-panel-event[data-event-index]').forEach(row => {
-    row.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const idx = Number(row.dataset.eventIndex);
-      const ev = events[idx];
-      if (!ev) return;
-
-      // Highlight selected row
-      panel.querySelectorAll('.cal-panel-event--active').forEach(el => el.classList.remove('cal-panel-event--active'));
-      row.classList.add('cal-panel-event--active');
-
-      // Populate detail panel
-      const timeRange = ev.allDay ? '終日' : `${ev.start} – ${ev.end}`;
-      document.getElementById('cal-detail-title').textContent = ev.title || '';
-      document.getElementById('cal-detail-time').textContent  = timeRange;
-
-      const descEl = document.getElementById('cal-detail-description');
-      if (ev.description) {
-        descEl.textContent = ev.description;
-        descEl.style.display = '';
-      } else {
-        descEl.textContent = '';
-        descEl.style.display = 'none';
-      }
-
-      const locEl = document.getElementById('cal-detail-location');
-      if (ev.location) {
-        locEl.textContent = ev.location;
-        locEl.style.display = '';
-      } else {
-        locEl.textContent = '';
-        locEl.style.display = 'none';
-      }
-
-      // Position: to the right of the list panel; fall back to left if not enough space
-      const panelRect  = panel.getBoundingClientRect();
-      const widgetRect = widget.getBoundingClientRect();
-      const spaceRight = window.innerWidth - panelRect.right;
-      const detailW    = 300 + 8; // max-width + gap
-
-      detailPanel.classList.remove('hidden');
-
-      if (spaceRight >= detailW) {
-        // Enough space on the right
-        detailPanel.style.left = `${panel.offsetLeft + panel.offsetWidth + 8}px`;
-        detailPanel.style.right = 'auto';
-      } else {
-        // Not enough space → show to the left of the list panel
-        detailPanel.style.right = `${widget.offsetWidth - panel.offsetLeft + 8}px`;
-        detailPanel.style.left = 'auto';
-      }
-      detailPanel.style.top = `${panel.offsetTop}px`;
-    });
-  });
 }
 
 // ── Report (left-col, above news) ─────────────────────────────────────────────
@@ -350,8 +162,10 @@ let mentionItems = [];  // shared with note.js via window
 // Wraps each ## section (h2.mr-cat + its following sibling nodes up to the
 // next h2) in a <div class="sr-section" data-key="KEY">.
 // Adds a toggle arrow to the h2 and wires click-to-collapse behaviour.
-// expandedKeys: Set of section keys to expand by default, or null = expand all.
-function wrapSections(bodyEl, expandedKeys) {
+// autoExpandKeys: Set of display names to auto-expand on load.
+//                 All other sections start collapsed.
+//                 Pass an empty Set (not null) to collapse everything by default.
+function wrapSections(bodyEl, autoExpandKeys) {
   const children = Array.from(bodyEl.childNodes);
   let currentWrapper = null;
 
@@ -372,8 +186,10 @@ function wrapSections(bodyEl, expandedKeys) {
       arrow.textContent = '▼';
       node.appendChild(arrow);
 
-      // Determine default state
-      const shouldExpand = expandedKeys === null || expandedKeys.has(key);
+      // Default: collapsed. Expand only if key matches autoExpandKeys.
+      const shouldExpand = autoExpandKeys !== null && autoExpandKeys.size > 0
+        ? [...autoExpandKeys].some(k => key === k || key.includes(k) || k.includes(key))
+        : false;
       if (!shouldExpand) {
         currentWrapper.classList.add('collapsed');
       }
@@ -395,31 +211,23 @@ function wrapSections(bodyEl, expandedKeys) {
   }
 }
 
-// Applies location-based default expand/collapse state to sections.
-// Calls detectExpandedSections() (async, from location_zones.js) and then
-// re-applies the collapsed class to each sr-section wrapper.
-async function applyLocationFilter(bodyEl) {
-  if (typeof detectExpandedSections !== 'function') return;
-
-  const expandedKeys = await detectExpandedSections();
-  if (expandedKeys === null) return;  // fallback: all already expanded
+// Re-applies auto-expand state to already-rendered .sr-section wrappers
+// based on the current window.currentZone and day of week.
+// Called after initial render and again when GPS zone becomes available.
+async function reapplyAutoExpand(bodyEl) {
+  const { autoExpand } = await computeDomainSelection();
+  const autoExpandNames = new Set();
+  for (const k of autoExpand) autoExpandNames.add(domainName(k));
 
   bodyEl.querySelectorAll('.sr-section').forEach(wrapper => {
     const key = wrapper.dataset.key || '';
-
-    // Match: exact or substring
-    let shouldExpand = false;
-    for (const k of expandedKeys) {
-      if (key === k || key.includes(k) || k.includes(key)) {
-        shouldExpand = true;
-        break;
-      }
-    }
-    if (!shouldExpand) {
-      wrapper.classList.add('collapsed');
-    } else {
+    const shouldExpand = autoExpandNames.size > 0
+      ? [...autoExpandNames].some(k => key === k || key.includes(k) || k.includes(key))
+      : false;
+    if (shouldExpand) {
       wrapper.classList.remove('collapsed');
     }
+    // Never auto-collapse a section that the user has manually expanded.
   });
 }
 
@@ -428,23 +236,31 @@ async function renderReport() {
   if (!el) return;
 
   try {
-    const md = await fetchAgentStatusReport();
+    const { md, autoExpand } = await fetchAgentStatusReport();
     mentionItems = [];
     const bodyEl = document.createElement('div');
     bodyEl.className = 'mr-body';
     bodyEl.innerHTML = markdownToHtml(md);
     el.innerHTML = '';
     el.appendChild(bodyEl);
-    // Pass null initially (expand all); applyLocationFilter will re-collapse as needed.
-    wrapSections(bodyEl, null);
+    // Pass autoExpand directly: sections not in the set start collapsed.
+    wrapSections(bodyEl, autoExpand);
     window.mentionItems = mentionItems;
     attachMentionButtons(el);
     attachRoutineItems(el);
     attachBulletToggles(el);
-    // Apply location-based collapse asynchronously after render.
-    // Also register a callback so app.js can re-trigger after fresh GPS fix.
-    applyLocationFilter(bodyEl);
-    window.onLocationReady = () => applyLocationFilter(bodyEl);
+    // Register callback for when GPS zone becomes available later.
+    // Chain with any previously registered onLocationReady callbacks.
+    const _prevLocationReady = window.onLocationReady;
+    window.onLocationReady = function () {
+      reapplyAutoExpand(bodyEl);
+      if (typeof _prevLocationReady === 'function') _prevLocationReady();
+    };
+    // If zone detection already completed before renderReport() finished,
+    // apply auto-expand immediately (no need to wait for the callback).
+    if (window.currentZone) {
+      reapplyAutoExpand(bodyEl);
+    }
   } catch (e) {
     el.innerHTML = `<p class="mr-error">report: ${e.message}</p>`;
   }

@@ -1,11 +1,10 @@
 // ── Config ────────────────────────────────────────────────────────────────────
+// Depends on: js/config.js (GITHUB_OWNER, NOTES_REPO, getToken, esc)
 // Token is stored in localStorage (never in the codebase).
 // To set it, open DevTools console and run:
 //   localStorage.setItem('NOTE_TOKEN', 'ghp_xxxxxxxxxxxx')
 
-const NOTE_OWNER = 'KaitoKurokochi';
-const NOTE_REPO  = 'my_notes';
-const GITHUB_API = `https://api.github.com/repos/${NOTE_OWNER}/${NOTE_REPO}/issues`;
+const GITHUB_API = `https://api.github.com/repos/${GITHUB_OWNER}/${NOTES_REPO}/issues`;
 
 const NOTE_TOKEN_KEY  = 'NOTE_TOKEN';
 const NOTE_LABELS_KEY = 'note_labels';
@@ -20,7 +19,7 @@ const DEFAULT_ROLES   = [
   { key: 'Done',        icon: '✅' },
 ];
 
-function getToken()  { return localStorage.getItem(NOTE_TOKEN_KEY) || ''; }
+// getToken() is defined in js/config.js
 function getLabels() { return JSON.parse(localStorage.getItem(NOTE_LABELS_KEY) || JSON.stringify(DEFAULT_LABELS)); }
 function getRoles()  { return JSON.parse(localStorage.getItem(NOTE_ROLES_KEY)  || JSON.stringify(DEFAULT_ROLES)); }
 function saveLabels(labels) {
@@ -234,8 +233,8 @@ function renderNoteUI() {
     <div id="note-list" class="note-list"></div>
   `;
 
-  // Default selection: Research
-  if (!selectedLabel) selectedLabel = 'Research';
+  // Default selection: determined by location zone; fall back to 'general'.
+  if (!selectedLabel) selectedLabel = defaultLabelForZone(window.currentZone);
   renderLabelBar();
   renderRoleBar();
 
@@ -256,6 +255,34 @@ function renderNoteUI() {
     status.className = 'note-status';
 
     const roleStr = [...selectedRoles].map(r => `[${r}]`).join('');
+    const newTitle = `[${selectedLabel}]${roleStr}`;
+
+    // ── Edit mode: PATCH existing issue ──────────────────────────────────────
+    if (window._editingIssueNumber) {
+      const editNum = window._editingIssueNumber;
+      const editItem = window._editingItem;
+      window._editingIssueNumber = null;
+      window._editingItem = null;
+      try {
+        const updated = await updateIssue(editNum, { title: newTitle, body: text });
+        document.getElementById('note-input').value = '';
+        selectedRoles.clear();
+        renderRoleBar();
+        status.textContent = 'Updated.';
+        status.className = 'note-status note-status--ok';
+        if (editItem && editItem.parentNode) editItem.replaceWith(buildNoteItem(updated));
+      } catch (err) {
+        status.textContent = `Failed: ${err.message}`;
+        status.className = 'note-status note-status--err';
+      }
+      setTimeout(() => {
+        const s = document.getElementById('note-status');
+        if (s) { s.textContent = ''; s.className = 'note-status'; }
+      }, 4000);
+      return;
+    }
+
+    // ── Create mode: POST new issue ───────────────────────────────────────────
     const refPrefix = currentMention ? (() => {
       // Strip both "(#NNN)" and "(#NNN, label_key)" suffixes from the title
       const cleanTitle = currentMention.title.replace(/\s*\(#\d+(?:,\s*[^)]+)?\)$/, '');
@@ -265,7 +292,6 @@ function renderNoteUI() {
       return `ref: ${num}${cleanTitle}${sec}\n\n`;
     })() : '';
     const body = refPrefix + text;
-    const title = `[${selectedLabel}]${roleStr} ` + text.slice(0, 72) + (text.length > 72 ? '…' : '');
 
     try {
       const res = await fetch(GITHUB_API, {
@@ -275,7 +301,7 @@ function renderNoteUI() {
           'Accept': 'application/vnd.github+json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, body, labels: ['note'] }),
+        body: JSON.stringify({ title: newTitle, body, labels: ['note'] }),
       });
 
       if (res.status === 401) {
@@ -322,9 +348,9 @@ function parseTitleParts(title) {
   return { label, roles, text };
 }
 
-function buildTitle(label, roles, text) {
+function buildTitle(label, roles) {
   const roleStr = roles.map(r => `[${r}]`).join('');
-  return `[${label}]${roleStr} ${text}`;
+  return `[${label}]${roleStr}`;
 }
 
 // ── Issue update (PATCH) ──────────────────────────────────────────────────────
@@ -358,17 +384,23 @@ function showDropdown(anchor, items, onSelect) {
   const rect = anchor.getBoundingClientRect();
   const el = document.createElement('div');
   el.className = 'note-edit-dropdown';
-  el.style.top  = `${rect.bottom + window.scrollY + 4}px`;
-  el.style.left = `${rect.left  + window.scrollX}px`;
+  el.style.top = `${rect.bottom + window.scrollY + 4}px`;
   el.addEventListener('click', e => e.stopPropagation());
-  items.forEach(({ label, value }) => {
+  items.forEach(({ label, value, danger }) => {
     const row = document.createElement('div');
-    row.className = 'note-edit-dropdown-item';
+    row.className = 'note-edit-dropdown-item' + (danger ? ' note-edit-dropdown-item--danger' : '');
     row.textContent = label;
     row.addEventListener('click', () => { closeDropdown(); onSelect(value); });
     el.appendChild(row);
   });
   document.body.appendChild(el);
+  // Adjust horizontal position: align left edge to anchor, but clamp so the
+  // dropdown does not overflow the right edge of the viewport.
+  const elWidth = el.getBoundingClientRect().width;
+  const viewportWidth = document.documentElement.clientWidth;
+  const preferredLeft = rect.left + window.scrollX;
+  const maxLeft = viewportWidth + window.scrollX - elWidth - 4;
+  el.style.left = `${Math.min(preferredLeft, maxLeft)}px`;
   _activeDropdown = el;
 }
 
@@ -381,8 +413,11 @@ function buildNoteItem(issue) {
   const dateLabel = isToday
     ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
     : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  const { label, roles, text } = parseTitleParts(issue.title);
+  const { label, roles } = parseTitleParts(issue.title);
   const roleIconMap = Object.fromEntries(getRoles().map(({ key, icon }) => [key, icon]));
+  const bodyText = issue.body || '';
+  const bodyLines = bodyText.split('\n').filter(l => l.trim());
+  const displayText = bodyLines.join('\n') || '';
 
   const item = document.createElement('div');
   item.className = 'note-item';
@@ -409,7 +444,7 @@ function buildNoteItem(issue) {
         .filter(l => l !== label)
         .map(l => ({ label: l, value: l }));
       showDropdown(tagSpan, options, newLabel => {
-        const newTitle = buildTitle(newLabel, roles, text);
+        const newTitle = buildTitle(newLabel, roles);
         replaceWith(newTitle);  // instant DOM update
         updateIssue(issue.number, { title: newTitle }).catch(err => {
           console.error(err);
@@ -429,7 +464,7 @@ function buildNoteItem(issue) {
     roleSpan.addEventListener('click', e => {
       e.stopPropagation();
       const newRoles = roles.filter(r => r !== roleKey);
-      const newTitle = buildTitle(label, newRoles, text);
+      const newTitle = buildTitle(label, newRoles);
       replaceWith(newTitle);
       updateIssue(issue.number, { title: newTitle }).catch(err => {
         console.error(err);
@@ -449,7 +484,7 @@ function buildNoteItem(issue) {
       e.stopPropagation();
       const options = getRoles().map(({ key, icon }) => ({ label: `${icon} ${key}`, value: key }));
       showDropdown(addRoleBtn, options, roleKey => {
-        const newTitle = buildTitle(label, [roleKey], text);
+        const newTitle = buildTitle(label, [roleKey]);
         replaceWith(newTitle);
         updateIssue(issue.number, { title: newTitle }).catch(err => {
           console.error(err);
@@ -467,7 +502,7 @@ function buildNoteItem(issue) {
   mentionBtn.title = 'このノートをメンション';
   mentionBtn.addEventListener('click', e => {
     e.stopPropagation();
-    window.setMention({ title: text, section: label, number: issue.number });
+    window.setMention({ title: displayText, section: label, number: issue.number });
   });
   tagsDiv.appendChild(mentionBtn);
 
@@ -476,13 +511,52 @@ function buildNoteItem(issue) {
   dateSpan.textContent = dateLabel;
   tagsDiv.appendChild(dateSpan);
 
+  // ⋮ menu button (Edit / Delete)
+  const menuBtn = document.createElement('button');
+  menuBtn.className = 'note-item-menu-btn';
+  menuBtn.textContent = '⋮';
+  menuBtn.title = 'メニュー';
+  menuBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    showDropdown(menuBtn, [
+      { label: '✏ Edit', value: 'edit' },
+      { label: '🗑 Delete', value: 'delete', danger: true },
+    ], action => {
+      if (action === 'delete') {
+        if (!confirm('このノートを削除しますか？')) return;
+        updateIssue(issue.number, { state: 'closed' })
+          .then(() => item.remove())
+          .catch(err => console.error('Delete failed:', err));
+      } else if (action === 'edit') {
+        // Load into the note form for editing
+        const textarea = document.getElementById('note-input');
+        if (!textarea) return;
+        textarea.value = bodyText;
+        // Select matching label
+        if (label) {
+          selectedLabel = label;
+          renderLabelBar();
+        }
+        // Select matching role
+        selectedRoles.clear();
+        roles.forEach(r => selectedRoles.add(r));
+        renderRoleBar();
+        // Set mention to track which issue to update on save
+        // Use a special edit flag so the submit handler can PATCH instead of POST
+        window._editingIssueNumber = issue.number;
+        window._editingItem = item;
+        textarea.focus();
+        textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+  tagsDiv.appendChild(menuBtn);
+
   item.appendChild(tagsDiv);
 
   // Body (collapse + edit)
   const COLLAPSE_CHARS = 100;
   const COLLAPSE_LINES = 3;
-  const bodyText = issue.body || '';
-  const displayText = bodyText || text;
   const lines = displayText.split('\n');
   const needsCollapse = displayText.length > COLLAPSE_CHARS || lines.length > COLLAPSE_LINES;
   let collapsed = needsCollapse;
@@ -504,42 +578,7 @@ function buildNoteItem(issue) {
   }
   setBodyText();
 
-  // Edit button
-  const editBtn = document.createElement('button');
-  editBtn.className = 'note-item-edit-btn';
-  editBtn.title = 'Edit';
-  editBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
-
-  editBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    const ta = document.createElement('textarea');
-    ta.className = 'note-item-edit-textarea';
-    ta.value = bodyText;
-    ta.rows = Math.max(3, lines.length + 1);
-    bodyWrap.replaceChild(ta, body);
-    editBtn.style.display = 'none';
-    ta.focus();
-
-    function save() {
-      const newBody = ta.value;
-      bodyWrap.replaceChild(body, ta);
-      editBtn.style.display = '';
-      if (newBody === bodyText) return;
-      body.textContent = newBody;
-      updateIssue(issue.number, { body: newBody })
-        .then(updated => item.replaceWith(buildNoteItem(updated)))
-        .catch(err => { console.error(err); setBodyText(); });
-    }
-
-    ta.addEventListener('blur', save);
-    ta.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { bodyWrap.replaceChild(body, ta); editBtn.style.display = ''; }
-      else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { ta.blur(); }
-    });
-  });
-
   bodyWrap.appendChild(body);
-  bodyWrap.appendChild(editBtn);
   item.appendChild(bodyWrap);
 
   if (needsCollapse) {
@@ -597,12 +636,28 @@ async function loadNotes() {
   }
 }
 
-function escapeHtml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/\n/g, '<br>');
+// ── Location-based default label ─────────────────────────────────────────────
+
+// Maps location zone name → default note label.
+// Zone names come from location_zones.json (zone.name field).
+const ZONE_DEFAULT_LABEL = {
+  univ:     'Research',
+  home:     'living',
+  lions_is: 'Lions_IS',
+};
+
+// Returns the default label for the given zone name.
+// Returns null when zoneName is unknown (location not yet resolved) so no label
+// is pre-selected until GPS zone is confirmed via window.onLocationReady().
+function defaultLabelForZone(zoneName) {
+  if (!zoneName) return null;
+  const labels = getLabels();
+  const candidate = ZONE_DEFAULT_LABEL[zoneName];
+  if (!candidate) return null;
+  const matched = labels.find(l => l.toLowerCase() === candidate.toLowerCase());
+  if (matched) return matched;
+  const general = labels.find(l => l.toLowerCase() === 'general');
+  return general || null;
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
@@ -621,5 +676,26 @@ function initNote() {
 }
 
 initNote();
+
+// Register location-ready hook to update default label when GPS zone is confirmed.
+// Wraps any previously registered window.onLocationReady (e.g. from status.js)
+// so both callbacks fire.
+(function registerLocationHook() {
+  const prev = window.onLocationReady;
+  window.onLocationReady = function () {
+    // Update default label only if user has not manually selected one this session.
+    // selectedLabel may already be set by user interaction; we only override the
+    // initial default (i.e. when it equals the old fallback or a previous zone default).
+    const autoDefaults = new Set(Object.values(ZONE_DEFAULT_LABEL).concat(['general']));
+    if (selectedLabel === null || autoDefaults.has(selectedLabel)) {
+      const newDefault = defaultLabelForZone(window.currentZone);
+      if (newDefault && newDefault !== selectedLabel) {
+        selectedLabel = newDefault;
+        renderLabelBar();
+      }
+    }
+    if (typeof prev === 'function') prev();
+  };
+})();
 
 setInterval(() => { if (getToken()) loadNotes(); }, 10 * 60 * 1000);

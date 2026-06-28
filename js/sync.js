@@ -1,21 +1,16 @@
-// ── Sync: persist groups + labels to my_notes/sync.json via GitHub Contents API ──
+// ── Sync: persist groups + labels to agent/my_home_page/sync.json via GitHub Contents API ──
+// Depends on: js/config.js (GITHUB_OWNER, NOTES_REPO, getToken)
 //
 // Uses the same NOTE_TOKEN already stored in localStorage by note.js.
 // All failures are silent — sync is best-effort and never blocks the UI.
 
-const SYNC_OWNER   = 'KaitoKurokochi';
-const SYNC_REPO    = 'my_notes';
-const SYNC_FILE    = 'sync.json';
-const SYNC_API     = `https://api.github.com/repos/${SYNC_OWNER}/${SYNC_REPO}/contents/${SYNC_FILE}`;
+const SYNC_FILE    = 'my_home_page/sync.json';
+const SYNC_API     = `https://api.github.com/repos/${GITHUB_OWNER}/${NOTES_REPO}/contents/${SYNC_FILE}`;
 const SYNC_SHA_KEY = 'mypage_sync_sha';
-
-function _syncToken() {
-  return localStorage.getItem('NOTE_TOKEN') || '';
-}
 
 function _syncHeaders() {
   return {
-    'Authorization': `Bearer ${_syncToken()}`,
+    'Authorization': `Bearer ${getToken()}`,
     'Accept': 'application/vnd.github+json',
     'Content-Type': 'application/json',
   };
@@ -23,7 +18,7 @@ function _syncHeaders() {
 
 // Pull remote → localStorage, then re-render
 async function pullSync() {
-  if (!_syncToken()) return;
+  if (!getToken()) return;
   try {
     const res = await fetch(SYNC_API, { headers: _syncHeaders() });
     if (!res.ok) return; // 404 on first use — will be created on first push
@@ -40,20 +35,38 @@ async function pullSync() {
   } catch (_) { /* silent */ }
 }
 
-// Push localStorage → remote
+// Push localStorage → remote (retries once on 409 Conflict with refreshed sha)
 async function pushSync() {
-  if (!_syncToken()) return;
+  if (!getToken()) return;
   const groups   = JSON.parse(localStorage.getItem('mypage_groups') || '[]');
   const labels   = JSON.parse(localStorage.getItem('note_labels')   || '[]');
   const rolesRaw = localStorage.getItem('note_roles');
   const payload  = { groups, labels };
   if (rolesRaw !== null) payload.roles = JSON.parse(rolesRaw);
   const encoded  = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
-  const sha     = localStorage.getItem(SYNC_SHA_KEY);
-  const body    = { message: 'sync', content: encoded };
-  if (sha) body.sha = sha;
-  try {
+
+  async function attempt(sha) {
+    const body = { message: 'sync', content: encoded };
+    if (sha) body.sha = sha;
     const res = await fetch(SYNC_API, { method: 'PUT', headers: _syncHeaders(), body: JSON.stringify(body) });
+    return res;
+  }
+
+  try {
+    let sha = localStorage.getItem(SYNC_SHA_KEY);
+    let res = await attempt(sha);
+
+    // 409 Conflict means our sha is stale — fetch the latest sha and retry once
+    if (res.status === 409) {
+      const latest = await fetch(SYNC_API, { headers: _syncHeaders() });
+      if (latest.ok) {
+        const data = await latest.json();
+        sha = data.sha;
+        localStorage.setItem(SYNC_SHA_KEY, sha);
+        res = await attempt(sha);
+      }
+    }
+
     if (res.ok) {
       const data = await res.json();
       localStorage.setItem(SYNC_SHA_KEY, data.content.sha);

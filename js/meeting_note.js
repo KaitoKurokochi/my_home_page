@@ -1,17 +1,11 @@
 // ── Meeting Note: Research Meeting detection ──────────────────────────────────
 // When today's calendar events include a title containing "Research Meeting"
 // (case-insensitive), show a button in .meeting-note-wrap.
-// Clicking the button opens meeting_note.html if the note exists in my_notes,
+// Clicking the button opens pages/meeting_note.html if the note exists in agent repo,
 // or shows a message if it has not been created yet.
+// Depends on: js/config.js (GITHUB_OWNER, NOTES_REPO, getToken)
 
 (function () {
-  const MN_OWNER = 'KaitoKurokochi';
-  const MN_REPO  = 'my_notes';
-
-  function mnToken() {
-    return localStorage.getItem('NOTE_TOKEN') || '';
-  }
-
   // ── Research Meeting detection ────────────────────────────────────────────
 
   function isResearchMeeting(title) {
@@ -21,11 +15,11 @@
   // ── GitHub Contents API helpers ───────────────────────────────────────────
 
   async function getFileMeta(path) {
-    const token = mnToken();
+    const token = getToken();
     const headers = { 'Accept': 'application/vnd.github+json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
     const res = await fetch(
-      `https://api.github.com/repos/${MN_OWNER}/${MN_REPO}/contents/${path}`,
+      `https://api.github.com/repos/${GITHUB_OWNER}/${NOTES_REPO}/contents/${path}`,
       { headers }
     );
     if (res.status === 404) return null;
@@ -47,8 +41,8 @@
         return;
       }
 
-      // Open meeting_note.html passing the compact date as query param
-      const url = `meeting_note.html?date=${encodeURIComponent(dateCompact)}`;
+      // Open pages/meeting_note.html passing the compact date as query param
+      const url = `pages/meeting_note.html?date=${encodeURIComponent(dateCompact)}`;
       window.open(url, '_blank');
     } catch (e) {
       alert(`meeting note error: ${e.message}`);

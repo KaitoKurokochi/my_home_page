@@ -713,127 +713,82 @@ body {
 
 /* ── News graph ──────────────────────────────────────────────────────────────*/
 
+/* ── News card grid ──────────────────────────────────────────────────────────*/
+
 .news-graph {
   width: 100%;
-  background: #fafafa;
-  border-radius: 12px;
-  border: 1px solid #e8eaed;
-  overflow: hidden;
   margin-bottom: 8px;
-  cursor: grab;
 }
 
-.news-graph:active {
-  cursor: grabbing;
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
 }
 
-.news-graph svg {
+.news-card {
   display: block;
-}
-
-/* Edges */
-.graph-link {
-  fill: none;
-  stroke-linecap: round;
-}
-
-.topic-link {
-  stroke: #dadce0;
-  stroke-width: 1.8;
-}
-
-.article-link {
-  stroke: #e8eaed;
-  stroke-width: 1;
-  stroke-dasharray: 4 3;
-}
-
-.graph-link.dimmed {
-  opacity: 0.1;
-}
-
-/* Nodes */
-.graph-node circle {
-  stroke: #fff;
-  stroke-width: 2;
-  transition: opacity 0.2s;
-}
-
-.graph-node--topic circle {
-  fill: #e94560;
-  filter: drop-shadow(0 2px 6px rgba(233, 69, 96, 0.35));
-}
-
-.graph-node--article circle {
-  fill: #4285f4;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.graph-node--article:hover circle {
-  fill: #1a73e8;
-}
-
-.graph-node.dimmed circle {
-  opacity: 0.15;
-}
-
-.graph-node.dimmed text {
-  opacity: 0.1;
-}
-
-/* Topic labels */
-.topic-label {
-  font-size: 0.62rem;
-  font-weight: 700;
-  fill: #fff;
-  pointer-events: none;
-  user-select: none;
-}
-
-/* Tooltip */
-.graph-tooltip {
-  position: fixed;
-  z-index: 300;
-  background: #202124;
-  color: #fff;
+  padding: 10px 12px;
+  background: #fafafa;
+  border: 1px solid #e8eaed;
   border-radius: 10px;
-  padding: 10px 14px;
-  max-width: 260px;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 0.15s, transform 0.15s;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s, border-color 0.15s;
 }
 
-.graph-tooltip.visible {
-  opacity: 1;
-  transform: translateY(0);
+.news-card:hover {
+  background: #f1f3f4;
+  border-color: #dadce0;
 }
 
-.gt-headline {
-  font-size: 0.82rem;
+.news-card-topic {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #e94560;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.news-card-title {
+  font-size: 0.78rem;
   font-weight: 600;
   line-height: 1.4;
+  color: #202124;
   margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.gt-desc {
-  font-size: 0.75rem;
-  color: #bdc1c6;
-  line-height: 1.5;
-  margin-bottom: 4px;
+.news-card-desc {
+  font-size: 0.71rem;
+  color: #5f6368;
+  line-height: 1.4;
 }
 
-.gt-time {
-  font-size: 0.68rem;
-  color: #80868b;
+.news-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.nikkei-logo {
+  height: 48px;
+  width: auto;
+  border-radius: 4px;
+  transition: opacity 0.15s;
+}
+
+.nikkei-logo:hover {
+  opacity: 0.8;
 }
 
 .paper-link {
   display: inline-block;
-  margin-bottom: 12px;
   padding: 8px 16px;
   background: #e94560;
   color: #fff;

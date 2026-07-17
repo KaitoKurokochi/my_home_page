@@ -115,12 +115,15 @@
       <section id="due-today" class="due-today-section" style="display:none"></section>
       <section id="status-report" class="status-report-section"></section>
       <section id="news">
-        <a id="nikkei-paper-link" class="paper-link" href="#">
-          日経新聞 朝刊を読む →
-        </a>
+        <div class="news-header">
+          <a href="https://www.nikkei.com/" target="_blank" rel="noopener">
+            <img src="images/nikkei_logo.jpg" alt="日経" class="nikkei-logo">
+          </a>
+          <a id="nikkei-paper-link" class="paper-link" href="#">
+            日経新聞 朝刊を読む →
+          </a>
+        </div>
         <div id="news-graph" class="news-graph"></div>
-        <!-- Graph tooltip (shared) -->
-        <div id="graph-tooltip" class="graph-tooltip"></div>
         <p class="news-meta" id="news-meta"></p>
       </section>
       <section id="sports">
@@ -138,8 +141,7 @@
   </main>
 
   <script src="js/config.js?v=20260617"></script>
-  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-  <script src="js/news.js?v=20260617"></script>
+  <script src="js/news.js?v=20260718"></script>
   <script src="js/location_zones.js?v=20260617"></script>
   <script src="js/app.js?v=20260617"></script>
   <script src="js/note.js?v=20260617"></script>

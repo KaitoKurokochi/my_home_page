@@ -1,7 +1,7 @@
 // ── Tasks Due Today (left-col, above status-report) ──────────────────────────
 // Depends on: js/config.js (githubFetch, esc)
 //
-// Fetches my_home_page/due_today.json from the agent repository via
+// Fetches my_home_page/runtime/due_today.json from the agent repository via
 // GitHub Contents API and renders it as a collapsible section styled
 // identically to the status report (mr-body / mr-list / mr-item classes).
 //
@@ -10,7 +10,7 @@
 // window.setMention() from note.js to open the mention + Done flow.
 
 (function () {
-  const DT_PATH = 'my_home_page/due_today.json';
+  const DT_PATH = 'my_home_page/runtime/due_today.json';
 
   async function fetchDueToday() {
     const text = await githubFetch(DT_PATH);

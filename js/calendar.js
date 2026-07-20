@@ -1,5 +1,5 @@
 // ── Calendar widget (top-bar) ─────────────────────────────────────────────────
-// Fetches today's schedule from agent/my_home_page/schedule.json and renders
+// Fetches today's schedule from agent/my_home_page/runtime/schedule.json and renders
 // the mini calendar widget in #cal-widget.
 // Sets window.todayEvents for use by status.js, meeting_note.js, etc.
 // Depends on: js/config.js (githubFetch, esc)
@@ -19,7 +19,7 @@ async function renderCalWidget() {
 
   let events = [];
   try {
-    const raw = await githubFetch('my_home_page/schedule.json');
+    const raw = await githubFetch('my_home_page/runtime/schedule.json');
     const sched = JSON.parse(raw);
     if (sched.date !== todayStr) {
       widget.innerHTML = `<button class="cal-summary">📅 ${dateLabel} <span class="cal-err">未取得</span></button>`;

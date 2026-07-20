@@ -1,10 +1,10 @@
-// ── Sync: persist groups + labels to agent/my_home_page/sync.json via GitHub Contents API ──
+// ── Sync: persist groups + labels to agent/my_home_page/runtime/sync.json via GitHub Contents API ──
 // Depends on: js/config.js (GITHUB_OWNER, NOTES_REPO, getToken)
 //
 // Uses the same NOTE_TOKEN already stored in localStorage by note.js.
 // All failures are silent — sync is best-effort and never blocks the UI.
 
-const SYNC_FILE    = 'my_home_page/sync.json';
+const SYNC_FILE    = 'my_home_page/runtime/sync.json';
 const SYNC_API     = `https://api.github.com/repos/${GITHUB_OWNER}/${NOTES_REPO}/contents/${SYNC_FILE}`;
 const SYNC_SHA_KEY = 'mypage_sync_sha';
 

@@ -18,7 +18,7 @@ function getToken() {
 // ── GitHub Contents API fetch ─────────────────────────────────────────────────
 //
 // Fetches a file from the GitHub Contents API and returns the decoded text.
-// path: e.g. 'my_home_page/news.json'
+// path: e.g. 'my_home_page/runtime/news.json'
 // options.repo: override repo (default: NOTES_REPO)
 // options.returnMeta: if true, returns { text, sha } instead of just text
 //

@@ -51,7 +51,7 @@ const ALWAYS_DOMAIN_KEYS = ['research', 'general', 'living'];
 // Returns an array of domain keys, or [] on failure.
 async function fetchSelectedDomains() {
   try {
-    const text = await githubFetch('my_home_page/selected_domains.json');
+    const text = await githubFetch('my_home_page/runtime/selected_domains.json');
     const parsed = JSON.parse(text);
     if (Array.isArray(parsed)) return parsed;
     if (Array.isArray(parsed.domains)) return parsed.domains;

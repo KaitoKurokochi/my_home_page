@@ -1,6 +1,6 @@
 // ── Location zones — section expand/collapse control ─────────────────────────
 //
-// Config is fetched from agent/my_home_page/location_zones.json (pushed by assembler.py).
+// Config is fetched from agent/my_home_page/runtime/location_zones.json (pushed by assembler.py).
 // Each zone entry supports two matching strategies (evaluated in order):
 //
 //   address_fields: { <field>: <value>, ... }
@@ -23,7 +23,7 @@
 
 async function fetchLocationZones() {
   try {
-    const text = await githubFetch('my_home_page/location_zones.json');
+    const text = await githubFetch('my_home_page/runtime/location_zones.json');
     return JSON.parse(text);
   } catch {
     return [];

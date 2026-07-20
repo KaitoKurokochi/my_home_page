@@ -77,7 +77,7 @@ function renderNewsGrid(data) {
 
 let newsLoaded = false;
 
-const NEWS_FILE = 'my_home_page/news.json';
+const NEWS_FILE = 'my_home_page/runtime/news.json';
 
 async function fetchNewsFromMyNotes() {
   try {

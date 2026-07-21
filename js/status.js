@@ -77,6 +77,7 @@ async function computeDomainSelection() {
 
   // Merge selected_domains.json
   const selected = await fetchSelectedDomains();
+  console.log('[status] selected_domains:', JSON.stringify(selected));
   for (const k of selected) domainKeys.add(k);
 
   // Context-based rules — evaluated with current window.currentZone
@@ -100,6 +101,7 @@ async function computeDomainSelection() {
 
   // Schedule-based rules — add and auto-expand domains that appear in today's events
   const events = Array.isArray(window.todayEvents) ? window.todayEvents : [];
+  console.log('[status] todayEvents:', JSON.stringify(events));
   for (const ev of events) {
     const cal = ev.calendar;
     if (cal && validDomainKeys.has(cal)) {
@@ -108,6 +110,7 @@ async function computeDomainSelection() {
     }
   }
 
+  console.log('[status] domainKeys:', JSON.stringify([...domainKeys]));
   return { domainKeys, autoExpand };
 }
 

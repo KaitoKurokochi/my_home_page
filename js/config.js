@@ -32,7 +32,7 @@ async function githubFetch(path, options = {}) {
 
   const res = await fetch(
     `https://api.github.com/repos/${GITHUB_OWNER}/${repo}/contents/${path}`,
-    { headers }
+    { headers, cache: 'no-store' }
   );
   if (!res.ok) throw new Error(`${res.status} ${path}`);
 

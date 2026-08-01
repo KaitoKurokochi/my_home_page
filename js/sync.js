@@ -25,11 +25,9 @@ async function pullSync() {
     const data = await res.json();
     const content = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
     localStorage.setItem(SYNC_SHA_KEY, data.sha);
-    if (content.groups !== undefined) localStorage.setItem('mypage_groups',  JSON.stringify(content.groups));
     if (content.labels !== undefined) localStorage.setItem('note_labels',    JSON.stringify(content.labels));
     if (content.roles  !== undefined) localStorage.setItem('note_roles',     JSON.stringify(content.roles));
     // Re-render with synced data
-    if (typeof render         === 'function') render();
     if (typeof renderLabelBar === 'function' && document.getElementById('note-label-bar')) renderLabelBar();
     if (typeof renderRoleBar  === 'function' && document.getElementById('note-role-bar'))  renderRoleBar();
   } catch (_) { /* silent */ }
@@ -38,10 +36,9 @@ async function pullSync() {
 // Push localStorage → remote (retries once on 409 Conflict with refreshed sha)
 async function pushSync() {
   if (!getToken()) return;
-  const groups   = JSON.parse(localStorage.getItem('mypage_groups') || '[]');
   const labels   = JSON.parse(localStorage.getItem('note_labels')   || '[]');
   const rolesRaw = localStorage.getItem('note_roles');
-  const payload  = { groups, labels };
+  const payload  = { labels };
   if (rolesRaw !== null) payload.roles = JSON.parse(rolesRaw);
   const encoded  = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
 

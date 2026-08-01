@@ -56,8 +56,8 @@ function renderWeather(data) {
 
   const p24 = points[4];
   const tomorrowRainStr = tomorrowRain ? ' ☂☂☂' : '';
-  document.getElementById('weather-text').textContent =
-    `${points[0].emoji} ${points[0].temp}°C → ${p24.emoji} ${p24.temp}°C 💧${p24.precip}%${tomorrowRainStr}`;
+  document.getElementById('weather-text').innerHTML =
+    `${points[0].emoji} ${points[0].temp}°C → ${p24.emoji} ${p24.temp}°C<br>💧${p24.precip}%${tomorrowRainStr}`;
 
   document.getElementById('weather-panel').innerHTML = points.map(p => `
     <div class="forecast-col">

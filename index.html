@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Page</title>
-  <link rel="stylesheet" href="css/style.css?v=20260617" />
+  <link rel="stylesheet" href="css/style.css?v=20260823" />
 </head>
 <body>
 
@@ -37,28 +37,29 @@
         <div id="news-graph" class="news-graph"></div>
         <p class="news-meta" id="news-meta"></p>
       </section>
-      <section id="sports">
-        <h2>Sports</h2>
-        <!-- NPB -->
-        <div class="sports-subsection" id="sports-npb">
-          <h3 class="sports-sub-title">プロ野球</h3>
-          <div id="sports-npb-content"><p class="sports-loading">Loading...</p></div>
+      <!-- NPB -->
+      <section class="sports-subsection" id="sports-npb">
+        <div class="sports-section-header">
+          <a href="https://npb.jp/" target="_blank" rel="noopener">
+            <img src="images/npb_logo.svg" alt="NPB" class="npb-logo">
+          </a>
         </div>
-        <!-- MLB -->
-        <div class="sports-subsection sports-placeholder" id="sports-mlb">
-          <h3 class="sports-sub-title">MLB</h3>
-          <p class="sports-coming-soon">Coming soon</p>
-        </div>
-        <!-- 海外サッカー -->
-        <div class="sports-subsection sports-placeholder" id="sports-soccer">
-          <h3 class="sports-sub-title">海外サッカー</h3>
-          <p class="sports-coming-soon">Coming soon</p>
-        </div>
-        <!-- その他 -->
-        <div class="sports-subsection sports-placeholder" id="sports-other">
-          <h3 class="sports-sub-title">その他</h3>
-          <p class="sports-coming-soon">Coming soon</p>
-        </div>
+        <div id="sports-npb-content"><p class="sports-loading">Loading...</p></div>
+      </section>
+      <!-- MLB -->
+      <section class="sports-subsection sports-placeholder" id="sports-mlb">
+        <h3 class="sports-sub-title">MLB</h3>
+        <p class="sports-coming-soon">Coming soon</p>
+      </section>
+      <!-- 海外サッカー -->
+      <section class="sports-subsection sports-placeholder" id="sports-soccer">
+        <h3 class="sports-sub-title">海外サッカー</h3>
+        <p class="sports-coming-soon">Coming soon</p>
+      </section>
+      <!-- その他 -->
+      <section class="sports-subsection sports-placeholder" id="sports-other">
+        <h3 class="sports-sub-title">その他</h3>
+        <p class="sports-coming-soon">Coming soon</p>
       </section>
     </div>
 
@@ -104,7 +105,7 @@
   </main>
 
   <script src="js/config.js?v=20260721"></script>
-  <script src="js/sports.js?v=20260817"></script>
+  <script src="js/sports.js?v=20260823"></script>
   <script src="js/news.js?v=20260718"></script>
   <script src="js/location_zones.js?v=20260617"></script>
   <script src="js/app.js?v=20260617"></script>

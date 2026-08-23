@@ -813,9 +813,19 @@ body {
   border-top: 1px solid #e8eaed;
 }
 
-.sports-subsection:first-of-type {
-  border-top: none;
-  padding-top: 0;
+.sports-section-header {
+  margin-bottom: 10px;
+}
+
+.npb-logo {
+  height: 36px;
+  width: auto;
+  display: block;
+  transition: opacity 0.15s;
+}
+
+.npb-logo:hover {
+  opacity: 0.8;
 }
 
 .sports-sub-title {
@@ -1012,6 +1022,25 @@ body {
   font-size: 0.875rem;
   color: #9aa0a6;
   padding: 4px 0;
+}
+
+.sports-highlights {
+  margin-top: 12px;
+}
+
+.sports-highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: start;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.sports-highlight-iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: none;
+  border-radius: 6px;
 }
 
 .sports-loading {

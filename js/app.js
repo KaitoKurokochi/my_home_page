@@ -54,10 +54,16 @@ function renderWeather(data) {
     ? (daily.precipitation_probability_max[1] ?? 0) >= 40
     : false;
 
+  const todayDate = localStr.slice(0, 10);
+  const todayRain = hourly.time.some((t, i) =>
+    i >= idx && t.startsWith(todayDate) && (hourly.precipitation_probability[i] ?? 0) >= 50
+  );
+
   const p24 = points[4];
+  const todayRainStr   = todayRain   ? ' ☂'   : '';
   const tomorrowRainStr = tomorrowRain ? ' ☂☂☂' : '';
   document.getElementById('weather-text').innerHTML =
-    `${points[0].emoji} ${points[0].temp}°C → ${p24.emoji} ${p24.temp}°C<br>💧${p24.precip}%${tomorrowRainStr}`;
+    `${points[0].emoji} ${points[0].temp}°C → ${p24.emoji} ${p24.temp}°C<br>💧${p24.precip}%${todayRainStr}${tomorrowRainStr}`;
 
   document.getElementById('weather-panel').innerHTML = points.map(p => `
     <div class="forecast-col">

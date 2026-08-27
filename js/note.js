@@ -74,8 +74,8 @@ function guessLabel(section) {
 window.setMention = function(item) {
   currentMention = item;
   renderMentionBadge();
-  // sourceLabel (from "(#NNN, label_key)" in Others section) takes priority over section name
-  const labelCandidate = item.sourceLabel || item.section;
+  // sourceLabel > domainKey > section name (domainKey fixes display-name/label mismatches like "University" vs "univ")
+  const labelCandidate = item.sourceLabel || item.domainKey || item.section;
   const matched = guessLabel(labelCandidate);
   if (matched) {
     selectedLabel = matched;

@@ -47,6 +47,9 @@ const AGENT_DOMAINS = [
 // Domains always shown regardless of selected_domains.json or context.
 const ALWAYS_DOMAIN_KEYS = ['research', 'general', 'living'];
 
+// Reverse map: display name → domain key (e.g. "University" → "univ")
+const DISPLAY_NAME_TO_KEY = Object.fromEntries(AGENT_DOMAINS.map(([, name, key]) => [name, key]));
+
 // Fetches selected_domains.json from GitHub (agent repo).
 // Returns an array of domain keys, or [] on failure.
 async function fetchSelectedDomains() {
@@ -343,6 +346,7 @@ function markdownToHtml(md) {
   // ── Pass 3: render ────────────────────────────────────────────────────────
   let html = '';
   let currentLabel = '';         // current h2 label (Research, Lions_IS, etc.)
+  let currentDomainKey = '';     // domain key for currentLabel (e.g. "univ" for "University")
   let currentSection = '';      // current h3 sub-section text (Phase:, Questions, etc.)
   let itemIndex = 0;
   let inRoutine = false;
@@ -361,7 +365,7 @@ function markdownToHtml(md) {
     const number = numMatch ? parseInt(numMatch[1]) : null;
     // sourceLabel: explicit label from "(#NNN, label)" takes priority over section
     const sourceLabel = (numMatch && numMatch[2]) ? numMatch[2].trim() : null;
-    mentionItems.push({ title: t.text, section, number, sourceLabel });
+    mentionItems.push({ title: t.text, section, number, sourceLabel, domainKey: currentDomainKey || null });
     const idx = itemIndex++;
     if (t.type === 'check') {
       return `<li class="mr-item${t.checked ? ' mr-item-done' : ''}" data-mention-index="${idx}"><span class="mr-bullet" data-item-key="${esc(itemKey(t.text))}">-</span>${esc(t.text)}</li>`;
@@ -404,6 +408,7 @@ function markdownToHtml(md) {
       html += isPhase ? `<h2 class="mr-phase">${esc(t.text)}</h2>` : `<h2 class="mr-section">${esc(t.text)}</h2>`;
     } else if (t.type === 'h1') {
       currentLabel = t.text;
+      currentDomainKey = DISPLAY_NAME_TO_KEY[t.text] || '';
       currentSection = '';
       inRoutine = t.text.includes('ルーティンタスク');
       html += `<h2 class="mr-cat">${esc(t.text)}</h2>`;

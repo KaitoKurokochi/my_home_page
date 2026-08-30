@@ -60,9 +60,19 @@ let selectedLabel = null;
 const selectedRoles = new Set();
 let currentMention = null;  // { title, section, number }
 
+// Explicit overrides for cases where domainKey doesn't match the label name by norm().
+const DOMAIN_LABEL_OVERRIDE = {
+  agent_meta: 'agent',
+};
+
 function guessLabel(section) {
   if (!section) return null;
   const labels = getLabels();
+  if (DOMAIN_LABEL_OVERRIDE[section]) {
+    const override = DOMAIN_LABEL_OVERRIDE[section];
+    const found = labels.find(l => l === override);
+    if (found) return found;
+  }
   if (labels.includes(section)) return section;
   // Strip non-alphanumeric chars (emoji, spaces, underscores) and compare case-insensitively.
   // e.g. "🔬 Research"→"research", "🦁 Lions IS"→"lionsis", "Lions_IS"→"lionsis" all match.
@@ -74,8 +84,8 @@ function guessLabel(section) {
 window.setMention = function(item) {
   currentMention = item;
   renderMentionBadge();
-  // sourceLabel (from "(#NNN, label_key)" in Others section) takes priority over section name
-  const labelCandidate = item.sourceLabel || item.section;
+  // sourceLabel > domainKey > section name (domainKey fixes display-name/label mismatches like "University" vs "univ")
+  const labelCandidate = item.sourceLabel || item.domainKey || item.section;
   const matched = guessLabel(labelCandidate);
   if (matched) {
     selectedLabel = matched;

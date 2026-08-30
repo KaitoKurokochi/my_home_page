@@ -252,6 +252,38 @@ function renderNpbNews(articles) {
   return wrap;
 }
 
+// ── Highlights (YouTube embeds) ───────────────────────────────────────────────
+
+function renderNpbHighlights(highlights) {
+  if (!highlights || !highlights.length) return null;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'sports-highlights';
+
+  const label = document.createElement('div');
+  label.className = 'sports-section-label';
+  label.textContent = '試合ハイライト';
+  wrap.appendChild(label);
+
+  const grid = document.createElement('div');
+  grid.className = 'sports-highlights-grid';
+
+  for (const h of highlights) {
+    const iframe = document.createElement('iframe');
+    iframe.className = 'sports-highlight-iframe';
+    iframe.src = `https://www.youtube.com/embed/${h.video_id}`;
+    iframe.title = h.title;
+    iframe.setAttribute('frameborder', '0');
+    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+    iframe.setAttribute('allowfullscreen', '');
+    iframe.loading = 'lazy';
+    grid.appendChild(iframe);
+  }
+
+  wrap.appendChild(grid);
+  return wrap;
+}
+
 // ── Main render ───────────────────────────────────────────────────────────────
 
 function renderNpb(data) {
@@ -278,6 +310,12 @@ function renderNpb(data) {
   if (data.news && data.news.length) {
     const newsEl = renderNpbNews(data.news);
     if (newsEl) container.appendChild(newsEl);
+  }
+
+  // 4. Highlights
+  if (data.highlights && data.highlights.length) {
+    const hlEl = renderNpbHighlights(data.highlights);
+    if (hlEl) container.appendChild(hlEl);
   }
 
   // Updated timestamp

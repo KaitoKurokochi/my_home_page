@@ -244,7 +244,7 @@ function isVideoLabel(label) {
   return !!(label && (label.toLowerCase().includes('video') || label.toLowerCase().includes('entertainment')));
 }
 
-const VIDEO_DONE_TEMPLATE = 'タイトル: \n制作/監督: \nジャンル: \n視聴日: \n評価: \n感想: \n';
+const VIDEO_DONE_TEMPLATE = 'タイトル: \n制作/監督: \nジャンル: \n評価: \n感想: \n';
 const VIDEO_TODO_TEMPLATE  = 'タイトル: \nメモ: \n';
 const VIDEO_TEMPLATES = [VIDEO_DONE_TEMPLATE, VIDEO_TODO_TEMPLATE];
 

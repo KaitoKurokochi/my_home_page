@@ -65,6 +65,11 @@ const DOMAIN_LABEL_OVERRIDE = {
   agent_meta: 'agent',
 };
 
+// Returns true when the given label name refers to the books domain.
+function isBookLabel(label) {
+  return !!(label && label.toLowerCase().includes('book'));
+}
+
 function guessLabel(section) {
   if (!section) return null;
   const labels = getLabels();
@@ -167,6 +172,7 @@ function renderLabelBar() {
     startLabelEdit(pills[newIndex], newIndex, newName);
   });
   bar.appendChild(addBtn);
+  updateBookTemplate();
 }
 
 function startLabelEdit(pill, index, currentName) {
@@ -218,6 +224,41 @@ function renderRoleBar() {
     });
     bar.appendChild(pill);
   });
+  updateBookTemplate();
+}
+
+// ── Books template ────────────────────────────────────────────────────────────
+
+// Template for a book already read ([books][Done])
+const BOOKS_DONE_TEMPLATE = 'タイトル: \n著者: \n評価: \nジャンル: \n感想: \n';
+// Template for a book to read ([books][Todo] / [books][Want to do])
+const BOOKS_TODO_TEMPLATE = 'タイトル: \n著者: \nメモ: \n';
+const BOOKS_TEMPLATES = [BOOKS_DONE_TEMPLATE, BOOKS_TODO_TEMPLATE];
+
+// Returns the appropriate template based on the currently selected role.
+function getBookTemplate() {
+  if (selectedRoles.has('Todo') || selectedRoles.has('Want to do')) {
+    return BOOKS_TODO_TEMPLATE;
+  }
+  return BOOKS_DONE_TEMPLATE;
+}
+
+// Inserts or swaps the books template in the textarea based on the current
+// label and role selection.  Only acts when the textarea is empty or still
+// holds an unmodified books template (user hasn't typed yet).
+function updateBookTemplate() {
+  const textarea = document.getElementById('note-input');
+  if (!textarea) return;
+  if (isBookLabel(selectedLabel)) {
+    const template = getBookTemplate();
+    if (!textarea.value.trim() || BOOKS_TEMPLATES.includes(textarea.value)) {
+      textarea.value = template;
+    }
+  } else {
+    if (BOOKS_TEMPLATES.includes(textarea.value)) {
+      textarea.value = '';
+    }
+  }
 }
 
 // ── Note UI ───────────────────────────────────────────────────────────────────

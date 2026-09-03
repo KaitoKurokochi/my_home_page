@@ -9,7 +9,7 @@ const GITHUB_API = `https://api.github.com/repos/${GITHUB_OWNER}/${NOTES_REPO}/i
 const NOTE_TOKEN_KEY  = 'NOTE_TOKEN';
 const NOTE_LABELS_KEY = 'note_labels';
 const NOTE_ROLES_KEY  = 'note_roles';
-const DEFAULT_LABELS  = ['Lions_IS', 'Entertainment', 'Research', 'living'];
+const DEFAULT_LABELS  = ['Lions_IS', 'Entertainment', 'Research', 'living', 'health'];
 const DEFAULT_ROLES   = [
   { key: 'Memo',        icon: '📝' },
   { key: 'Todo',        icon: '🔔' },

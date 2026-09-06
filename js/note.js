@@ -14,7 +14,7 @@ const DEFAULT_ROLES   = [
   { key: 'Memo',        icon: '📝' },
   { key: 'Todo',        icon: '🔔' },
   { key: 'Idea',        icon: '💡' },
-  { key: 'Want to do',  icon: '⭐' },
+  { key: 'Journal',     icon: '📓' },
   { key: 'Question',    icon: '❓' },
   { key: 'Done',        icon: '✅' },
 ];
@@ -235,7 +235,7 @@ const BOOKS_TODO_TEMPLATE  = 'タイトル: \n著者: \nメモ: \n';
 const BOOKS_TEMPLATES = [BOOKS_DONE_TEMPLATE, BOOKS_TODO_TEMPLATE];
 
 function getBookTemplate() {
-  return (selectedRoles.has('Todo') || selectedRoles.has('Want to do'))
+  return (selectedRoles.has('Todo'))
     ? BOOKS_TODO_TEMPLATE : BOOKS_DONE_TEMPLATE;
 }
 
@@ -249,7 +249,7 @@ const VIDEO_TODO_TEMPLATE  = 'タイトル: \nメモ: \n';
 const VIDEO_TEMPLATES = [VIDEO_DONE_TEMPLATE, VIDEO_TODO_TEMPLATE];
 
 function getVideoTemplate() {
-  return (selectedRoles.has('Todo') || selectedRoles.has('Want to do'))
+  return (selectedRoles.has('Todo'))
     ? VIDEO_TODO_TEMPLATE : VIDEO_DONE_TEMPLATE;
 }
 

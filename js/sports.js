@@ -284,6 +284,106 @@ function renderNpbHighlights(highlights) {
   return wrap;
 }
 
+// ── MLB: Japanese Players Section ────────────────────────────────────────────
+
+function buildMlbGameItem(g) {
+  const li = document.createElement('li');
+  li.className = 'sports-result-chip sports-result-chip--highlight';
+
+  // away @ home
+  const away = document.createElement('span');
+  away.className = 'mlb-team-name';
+  away.textContent = g.away;
+  li.appendChild(away);
+
+  const sep = document.createElement('span');
+  sep.className = 'mlb-at';
+  sep.textContent = '@';
+  li.appendChild(sep);
+
+  const home = document.createElement('span');
+  home.className = 'mlb-team-name';
+  home.textContent = g.home;
+  li.appendChild(home);
+
+  // Score or status
+  if (g.status === 'final' && g.away_score != null) {
+    const scoreText = `${g.away_score}-${g.home_score}`;
+    if (g.game_url) {
+      const a = document.createElement('a');
+      a.href = g.game_url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.className = 'sports-result-score sports-result-score--link';
+      a.textContent = scoreText;
+      li.appendChild(a);
+    } else {
+      const scoreSpan = document.createElement('span');
+      scoreSpan.className = 'sports-result-score';
+      scoreSpan.textContent = scoreText;
+      li.appendChild(scoreSpan);
+    }
+  } else {
+    const scoreSpan = document.createElement('span');
+    scoreSpan.className = 'sports-result-score';
+    scoreSpan.textContent = g.status === 'live' ? 'LIVE' : '予定';
+    li.appendChild(scoreSpan);
+  }
+
+  // Japanese player stat lines
+  if (g.japanese_players && g.japanese_players.length) {
+    const playerList = document.createElement('ul');
+    playerList.className = 'mlb-players-list';
+    for (const p of g.japanese_players) {
+      const pi = document.createElement('li');
+      pi.className = 'mlb-player-item';
+      pi.textContent = p.stats
+        ? `${p.name} [${p.role}]  ${p.stats}`
+        : `${p.name} [${p.role}]`;
+      playerList.appendChild(pi);
+    }
+    li.appendChild(playerList);
+  }
+
+  return li;
+}
+
+function renderMlb(data) {
+  const container = document.getElementById('sports-mlb-content');
+  if (!container || !data.mlb) return;
+  container.innerHTML = '';
+
+  const mlb = data.mlb;
+
+  if (mlb.date_label) {
+    const dh = document.createElement('div');
+    dh.className = 'sports-results-date';
+    dh.textContent = `▽${mlb.date_label}`;
+    container.appendChild(dh);
+  }
+
+  const games = mlb.games || [];
+  if (games.length) {
+    const ul = document.createElement('ul');
+    ul.className = 'sports-results-vlist';
+    for (const g of games) {
+      ul.appendChild(buildMlbGameItem(g));
+    }
+    container.appendChild(ul);
+  } else {
+    const p = document.createElement('p');
+    p.className = 'sports-empty';
+    p.textContent = '日本人選手の出場試合なし';
+    container.appendChild(p);
+  }
+
+  // Reuse NPB highlight renderer
+  if (mlb.highlights && mlb.highlights.length) {
+    const hlEl = renderNpbHighlights(mlb.highlights);
+    if (hlEl) container.appendChild(hlEl);
+  }
+}
+
 // ── Main render ───────────────────────────────────────────────────────────────
 
 function renderNpb(data) {
@@ -334,20 +434,25 @@ let sportsLoaded = false;
 async function initSports() {
   if (sportsLoaded) return;
 
-  const container = document.getElementById('sports-npb-content');
-  if (!container) return;
+  const npbContainer = document.getElementById('sports-npb-content');
+  const mlbContainer = document.getElementById('sports-mlb-content');
+  if (!npbContainer) return;
 
   try {
     const text = await githubFetch(SPORTS_FILE);
     const data = JSON.parse(text);
     renderNpb(data);
+    if (mlbContainer) renderMlb(data);
     sportsLoaded = true;
   } catch (e) {
-    if (!container) return;
+    const errMsg404 = '<p class="sports-empty">データ未取得（main_routine 待ち）</p>';
+    const errMsgGen = `<p class="sports-empty">Could not load sports data.<br><small>${e}</small></p>`;
     if (/^404 /.test(e.message)) {
-      container.innerHTML = '<p class="sports-empty">データ未取得（main_routine 待ち）</p>';
+      npbContainer.innerHTML = errMsg404;
+      if (mlbContainer) mlbContainer.innerHTML = errMsg404;
     } else {
-      container.innerHTML = `<p class="sports-empty">Could not load sports data.<br><small>${e}</small></p>`;
+      npbContainer.innerHTML = errMsgGen;
+      if (mlbContainer) mlbContainer.innerHTML = '';
     }
   }
 }

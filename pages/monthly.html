@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weekly Report</title>
+  <title>Monthly Report</title>
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body class="page-body">
@@ -13,12 +13,12 @@
 
   <script src="../js/config.js"></script>
   <script>
-    async function fetchWeeklyReportMd() {
-      const text = await githubFetch('my_home_page/reports/weekly_report.md');
+    async function fetchMonthlyReportMd() {
+      const text = await githubFetch('my_home_page/reports/monthly_report.md');
       return text;
     }
 
-    function weeklyMdToHtml(md) {
+    function monthlyMdToHtml(md) {
       const lines = md.split('\n');
       let html = '';
 
@@ -50,10 +50,10 @@
       el.innerHTML = '<p class="state-msg">読み込み中...</p>';
 
       try {
-        const md = await fetchWeeklyReportMd();
-        el.innerHTML = `<div class="wr-body">${weeklyMdToHtml(md)}</div>`;
+        const md = await fetchMonthlyReportMd();
+        el.innerHTML = `<div class="wr-body">${monthlyMdToHtml(md)}</div>`;
       } catch (e) {
-        el.innerHTML = `<p class="state-msg error">weekly_report.md の取得に失敗しました: ${e.message}</p>`;
+        el.innerHTML = `<p class="state-msg error">monthly_report.md の取得に失敗しました: ${e.message}</p>`;
       }
     }
 

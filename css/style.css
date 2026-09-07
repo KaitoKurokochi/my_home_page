@@ -1065,6 +1065,67 @@ body {
   text-overflow: ellipsis;
 }
 
+/* ── MLB Tabs & Stats Tables ────────────────────────────────────────────────*/
+
+.mlb-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.mlb-tab-btn {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  border: 1px solid #e8eaed;
+  border-radius: 4px;
+  background: #f8f9fa;
+  color: #5f6368;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.mlb-tab-btn--active {
+  background: #e8f0fe;
+  border-color: #1a73e8;
+  color: #1a73e8;
+  font-weight: 600;
+}
+
+.mlb-tab-panel.hidden {
+  display: none;
+}
+
+.mlb-stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.mlb-stats-table th {
+  text-align: right;
+  padding: 4px 8px;
+  color: #9aa0a6;
+  font-weight: 500;
+  border-bottom: 1px solid #e8eaed;
+}
+
+.mlb-stats-table th:first-child,
+.mlb-stats-table th:nth-child(2) {
+  text-align: left;
+}
+
+.mlb-stats-table td {
+  text-align: right;
+  padding: 4px 8px;
+  color: #202124;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.mlb-stats-table td:first-child,
+.mlb-stats-table td:nth-child(2) {
+  text-align: left;
+}
+
 /* ── My Note ─────────────────────────────────────────────────────────────────*/
 
 .note-form {

@@ -333,56 +333,66 @@ function buildMlbGameItem(g) {
   return li;
 }
 
-// ── MLB: Stats tables ─────────────────────────────────────────────────────────
+// ── MLB: Stats columns ────────────────────────────────────────────────────────
 
-function renderMlbBattersTable(batters) {
-  if (!batters || !batters.length) {
-    const p = document.createElement('p');
-    p.className = 'sports-empty';
-    p.textContent = '野手成績なし';
-    return p;
+function buildMlbBatterList(batters) {
+  const ul = document.createElement('ul');
+  ul.className = 'mlb-stats-list';
+  for (const p of batters) {
+    const li = document.createElement('li');
+    li.className = 'mlb-stats-item';
+
+    const name = document.createElement('span');
+    name.className = 'mlb-stats-name';
+    name.textContent = p.name;
+
+    const stat = document.createElement('span');
+    stat.className = 'mlb-stats-line';
+    let s = `${p.h}/${p.ab}`;
+    if (p.hr)  s += ` ${p.hr}HR`;
+    if (p.rbi) s += ` ${p.rbi}打点`;
+    if (p.bb)  s += ` ${p.bb}四球`;
+    stat.textContent = s;
+
+    const opp = document.createElement('span');
+    opp.className = 'mlb-stats-opp';
+    opp.textContent = `vs ${p.opp}`;
+
+    li.appendChild(name);
+    li.appendChild(stat);
+    li.appendChild(opp);
+    ul.appendChild(li);
   }
-
-  const table = document.createElement('table');
-  table.className = 'mlb-stats-table';
-
-  const thead = document.createElement('thead');
-  thead.innerHTML = '<tr><th>選手</th><th>対戦相手</th><th>PA</th><th>H-AB</th><th>HR</th><th>打点</th><th>BB</th></tr>';
-  table.appendChild(thead);
-
-  const tbody = document.createElement('tbody');
-  for (const b of batters) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${b.name}</td><td>${b.opp}</td><td>${b.pa}</td><td>${b.h}-${b.ab}</td><td>${b.hr}</td><td>${b.rbi}</td><td>${b.bb}</td>`;
-    tbody.appendChild(tr);
-  }
-  table.appendChild(tbody);
-  return table;
+  return ul;
 }
 
-function renderMlbPitchersTable(pitchers) {
-  if (!pitchers || !pitchers.length) {
-    const p = document.createElement('p');
-    p.className = 'sports-empty';
-    p.textContent = '投手成績なし';
-    return p;
-  }
-
-  const table = document.createElement('table');
-  table.className = 'mlb-stats-table';
-
-  const thead = document.createElement('thead');
-  thead.innerHTML = '<tr><th>選手</th><th>対戦相手</th><th>回</th><th>被安打</th><th>自責</th><th>K</th><th>BB</th></tr>';
-  table.appendChild(thead);
-
-  const tbody = document.createElement('tbody');
+function buildMlbPitcherList(pitchers) {
+  const ul = document.createElement('ul');
+  ul.className = 'mlb-stats-list';
   for (const p of pitchers) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${p.name}</td><td>${p.opp}</td><td>${p.ip}</td><td>${p.h}</td><td>${p.er}</td><td>${p.k}</td><td>${p.bb}</td>`;
-    tbody.appendChild(tr);
+    const li = document.createElement('li');
+    li.className = 'mlb-stats-item';
+
+    const name = document.createElement('span');
+    name.className = 'mlb-stats-name';
+    name.textContent = p.name;
+
+    const stat = document.createElement('span');
+    stat.className = 'mlb-stats-line';
+    let s = `${p.ip}IP ${p.h}H ${p.er}ER ${p.k}K`;
+    if (p.bb) s += ` ${p.bb}BB`;
+    stat.textContent = s;
+
+    const opp = document.createElement('span');
+    opp.className = 'mlb-stats-opp';
+    opp.textContent = `vs ${p.opp}`;
+
+    li.appendChild(name);
+    li.appendChild(stat);
+    li.appendChild(opp);
+    ul.appendChild(li);
   }
-  table.appendChild(tbody);
-  return table;
+  return ul;
 }
 
 function renderMlb(data) {
@@ -399,76 +409,58 @@ function renderMlb(data) {
     container.appendChild(dh);
   }
 
-  // Tab definitions
-  const tabDefs = [
-    { key: 'games',    label: '試合結果' },
-    { key: 'batters',  label: '野手成績' },
-    { key: 'pitchers', label: '投手成績' },
-  ];
+  const grid = document.createElement('div');
+  grid.className = 'sports-three-col';
 
-  const tabBar = document.createElement('div');
-  tabBar.className = 'mlb-tabs';
-
-  const panels = {};
-
-  for (const { key, label } of tabDefs) {
-    const btn = document.createElement('button');
-    btn.className = 'mlb-tab-btn';
-    btn.textContent = label;
-    btn.dataset.tab = key;
-    tabBar.appendChild(btn);
-
-    const panel = document.createElement('div');
-    panel.className = 'mlb-tab-panel';
-    panel.dataset.tab = key;
-    panels[key] = panel;
-  }
-
-  container.appendChild(tabBar);
-
-  // Games panel
+  // Column 1: Game results
+  const gamesCol = document.createElement('div');
+  gamesCol.className = 'sports-col';
+  gamesCol.appendChild(makeSublabel('試合結果'));
   const games = mlb.games || [];
   if (games.length) {
     const ul = document.createElement('ul');
     ul.className = 'sports-results-vlist';
-    for (const g of games) {
-      ul.appendChild(buildMlbGameItem(g));
-    }
-    panels.games.appendChild(ul);
+    for (const g of games) ul.appendChild(buildMlbGameItem(g));
+    gamesCol.appendChild(ul);
   } else {
     const p = document.createElement('p');
     p.className = 'sports-empty';
     p.textContent = '日本人選手の出場試合なし';
-    panels.games.appendChild(p);
+    gamesCol.appendChild(p);
   }
+  grid.appendChild(gamesCol);
 
-  // Batters panel
-  panels.batters.appendChild(renderMlbBattersTable(mlb.batters));
-
-  // Pitchers panel
-  panels.pitchers.appendChild(renderMlbPitchersTable(mlb.pitchers));
-
-  // Append panels
-  for (const { key } of tabDefs) {
-    container.appendChild(panels[key]);
+  // Column 2: Batter stats
+  const battersCol = document.createElement('div');
+  battersCol.className = 'sports-col';
+  battersCol.appendChild(makeSublabel('野手成績'));
+  const batters = mlb.batters || [];
+  if (batters.length) {
+    battersCol.appendChild(buildMlbBatterList(batters));
+  } else {
+    const p = document.createElement('p');
+    p.className = 'sports-empty';
+    p.textContent = 'データなし';
+    battersCol.appendChild(p);
   }
+  grid.appendChild(battersCol);
 
-  // Tab switching
-  function activateTab(activeKey) {
-    tabBar.querySelectorAll('.mlb-tab-btn').forEach(btn => {
-      btn.classList.toggle('mlb-tab-btn--active', btn.dataset.tab === activeKey);
-    });
-    for (const { key } of tabDefs) {
-      panels[key].classList.toggle('hidden', key !== activeKey);
-    }
+  // Column 3: Pitcher stats
+  const pitchersCol = document.createElement('div');
+  pitchersCol.className = 'sports-col';
+  pitchersCol.appendChild(makeSublabel('投手成績'));
+  const pitchers = mlb.pitchers || [];
+  if (pitchers.length) {
+    pitchersCol.appendChild(buildMlbPitcherList(pitchers));
+  } else {
+    const p = document.createElement('p');
+    p.className = 'sports-empty';
+    p.textContent = 'データなし';
+    pitchersCol.appendChild(p);
   }
+  grid.appendChild(pitchersCol);
 
-  tabBar.addEventListener('click', e => {
-    const btn = e.target.closest('.mlb-tab-btn');
-    if (btn) activateTab(btn.dataset.tab);
-  });
-
-  activateTab('games');
+  container.appendChild(grid);
 
   // Highlights
   if (mlb.highlights && mlb.highlights.length) {

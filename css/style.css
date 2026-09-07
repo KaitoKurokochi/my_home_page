@@ -1065,65 +1065,48 @@ body {
   text-overflow: ellipsis;
 }
 
-/* ── MLB Tabs & Stats Tables ────────────────────────────────────────────────*/
+/* ── MLB 3-column layout & stats lists ──────────────────────────────────────*/
 
-.mlb-tabs {
+.sports-three-col {
   display: flex;
-  gap: 4px;
-  margin-bottom: 8px;
-}
-
-.mlb-tab-btn {
-  padding: 4px 10px;
-  font-size: 0.8rem;
-  border: 1px solid #e8eaed;
-  border-radius: 4px;
-  background: #f8f9fa;
-  color: #5f6368;
-  cursor: pointer;
-  line-height: 1.4;
-}
-
-.mlb-tab-btn--active {
-  background: #e8f0fe;
-  border-color: #1a73e8;
-  color: #1a73e8;
-  font-weight: 600;
-}
-
-.mlb-tab-panel.hidden {
-  display: none;
-}
-
-.mlb-stats-table {
+  gap: 16px;
+  align-items: flex-start;
   width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
 }
 
-.mlb-stats-table th {
-  text-align: right;
-  padding: 4px 8px;
-  color: #9aa0a6;
-  font-weight: 500;
-  border-bottom: 1px solid #e8eaed;
+.mlb-stats-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.mlb-stats-table th:first-child,
-.mlb-stats-table th:nth-child(2) {
-  text-align: left;
-}
-
-.mlb-stats-table td {
-  text-align: right;
-  padding: 4px 8px;
-  color: #202124;
+.mlb-stats-item {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
   border-bottom: 1px solid #f1f3f4;
 }
 
-.mlb-stats-table td:first-child,
-.mlb-stats-table td:nth-child(2) {
-  text-align: left;
+.mlb-stats-item:last-child {
+  border-bottom: none;
+}
+
+.mlb-stats-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #202124;
+}
+
+.mlb-stats-line {
+  font-size: 0.8rem;
+  color: #1a73e8;
+  margin-top: 2px;
+}
+
+.mlb-stats-opp {
+  font-size: 0.72rem;
+  color: #9aa0a6;
+  margin-top: 1px;
 }
 
 /* ── My Note ─────────────────────────────────────────────────────────────────*/

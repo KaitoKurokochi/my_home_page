@@ -1082,9 +1082,13 @@ body {
 
 .mlb-stats-item {
   display: flex;
-  flex-direction: column;
-  padding: 6px 0;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 5px;
+  padding: 4px 0;
   border-bottom: 1px solid #f1f3f4;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .mlb-stats-item:last-child {
@@ -1092,21 +1096,23 @@ body {
 }
 
 .mlb-stats-name {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: #202124;
+  flex-shrink: 0;
 }
 
 .mlb-stats-line {
   font-size: 0.8rem;
   color: #1a73e8;
-  margin-top: 2px;
+  flex-shrink: 0;
 }
 
 .mlb-stats-opp {
   font-size: 0.72rem;
   color: #9aa0a6;
-  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ── My Note ─────────────────────────────────────────────────────────────────*/

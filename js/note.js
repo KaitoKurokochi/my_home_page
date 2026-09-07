@@ -65,6 +65,11 @@ const DOMAIN_LABEL_OVERRIDE = {
   agent_meta: 'agent',
 };
 
+// Returns true when the given label name refers to the books domain.
+function isBookLabel(label) {
+  return !!(label && label.toLowerCase().includes('book'));
+}
+
 function guessLabel(section) {
   if (!section) return null;
   const labels = getLabels();
@@ -167,6 +172,7 @@ function renderLabelBar() {
     startLabelEdit(pills[newIndex], newIndex, newName);
   });
   bar.appendChild(addBtn);
+  updateNoteTemplate();
 }
 
 function startLabelEdit(pill, index, currentName) {
@@ -218,6 +224,53 @@ function renderRoleBar() {
     });
     bar.appendChild(pill);
   });
+  updateNoteTemplate();
+}
+
+// ── Label-specific templates ──────────────────────────────────────────────────
+
+// Books
+const BOOKS_DONE_TEMPLATE = 'タイトル: \n著者: \n評価: \nジャンル: \n感想: \n';
+const BOOKS_TODO_TEMPLATE  = 'タイトル: \n著者: \nメモ: \n';
+const BOOKS_TEMPLATES = [BOOKS_DONE_TEMPLATE, BOOKS_TODO_TEMPLATE];
+
+function getBookTemplate() {
+  return (selectedRoles.has('Todo') || selectedRoles.has('Want to do'))
+    ? BOOKS_TODO_TEMPLATE : BOOKS_DONE_TEMPLATE;
+}
+
+// Video content
+function isVideoLabel(label) {
+  return !!(label && (label.toLowerCase().includes('video') || label.toLowerCase().includes('entertainment')));
+}
+
+const VIDEO_DONE_TEMPLATE = 'タイトル: \n制作/監督: \nジャンル: \n評価: \n感想: \n';
+const VIDEO_TODO_TEMPLATE  = 'タイトル: \nメモ: \n';
+const VIDEO_TEMPLATES = [VIDEO_DONE_TEMPLATE, VIDEO_TODO_TEMPLATE];
+
+function getVideoTemplate() {
+  return (selectedRoles.has('Todo') || selectedRoles.has('Want to do'))
+    ? VIDEO_TODO_TEMPLATE : VIDEO_DONE_TEMPLATE;
+}
+
+// All known templates (used to detect unmodified state across label switches)
+const ALL_TEMPLATES = [...BOOKS_TEMPLATES, ...VIDEO_TEMPLATES];
+
+// Inserts or swaps the appropriate template in the textarea based on the
+// current label and role.  Only acts when the textarea is empty or still holds
+// an unmodified template (i.e. the user hasn't started typing yet).
+function updateNoteTemplate() {
+  const textarea = document.getElementById('note-input');
+  if (!textarea) return;
+  if (isBookLabel(selectedLabel)) {
+    const tpl = getBookTemplate();
+    if (!textarea.value.trim() || ALL_TEMPLATES.includes(textarea.value)) textarea.value = tpl;
+  } else if (isVideoLabel(selectedLabel)) {
+    const tpl = getVideoTemplate();
+    if (!textarea.value.trim() || ALL_TEMPLATES.includes(textarea.value)) textarea.value = tpl;
+  } else {
+    if (ALL_TEMPLATES.includes(textarea.value)) textarea.value = '';
+  }
 }
 
 // ── Note UI ───────────────────────────────────────────────────────────────────

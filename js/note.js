@@ -312,7 +312,7 @@ function renderNoteUI() {
       setTimeout(() => { status.textContent = ''; status.className = 'note-status'; }, 3000);
       return;
     }
-    if (!text) return;
+    if (!text && !selectedRoles.has('Done')) return;
 
     status.textContent = 'Saving...';
     status.className = 'note-status';

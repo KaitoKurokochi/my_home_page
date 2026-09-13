@@ -58,12 +58,16 @@ function buildGameLine(g) {
   let score = '';
   if (g.status === 'final') {
     score = `${g.home_score}-${g.away_score}`;
+  } else if (g.status === 'live') {
+    score = (g.home_score != null && g.away_score != null)
+      ? `${g.home_score}-${g.away_score}` : 'LIVE';
   } else if (g.status === 'canceled' || g.status === 'postponed') {
     score = '中止';
   } else {
     score = g.time ? g.time : '予定';
   }
-  return { homeInitial: g.home_initial, awayInitial: g.away_initial, score, lions: g.home_initial === 'L' || g.away_initial === 'L' };
+  const isLive = g.status === 'live';
+  return { homeInitial: g.home_initial, awayInitial: g.away_initial, score, lions: g.home_initial === 'L' || g.away_initial === 'L', isLive };
 }
 
 function makeSublabel(text) {
@@ -80,9 +84,11 @@ function makeGameList(games) {
   const ul = document.createElement('ul');
   ul.className = 'sports-results-vlist';
   for (const g of games) {
-    const { homeInitial, awayInitial, score, lions } = buildGameLine(g);
+    const { homeInitial, awayInitial, score, lions, isLive } = buildGameLine(g);
     const li = document.createElement('li');
-    li.className = lions ? 'sports-result-chip sports-result-chip--highlight' : 'sports-result-chip';
+    let chipClass = lions ? 'sports-result-chip sports-result-chip--highlight' : 'sports-result-chip';
+    if (isLive) chipClass += ' sports-result-chip--live';
+    li.className = chipClass;
     li.appendChild(makeTeamLogo(homeInitial));
     if (g.game_url) {
       const a = document.createElement('a');
@@ -120,6 +126,12 @@ function renderResultsGrid(results, dateLabel) {
     const dh = document.createElement('div');
     dh.className = 'sports-results-date';
     dh.textContent = `▽${dateLabel}`;
+    if (results && results.is_live) {
+      const badge = document.createElement('span');
+      badge.className = 'sports-live-badge';
+      badge.textContent = '● LIVE';
+      dh.appendChild(badge);
+    }
     wrap.appendChild(dh);
   }
 

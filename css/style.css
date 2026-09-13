@@ -894,6 +894,25 @@ body {
   margin-bottom: 8px;
 }
 
+.sports-live-badge {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ea4335;
+  animation: sports-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes sports-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+.sports-result-chip--live .sports-result-score {
+  color: #ea4335;
+  font-weight: 700;
+}
+
 /* Sublabel: [1軍] [2軍] [パリーグ] [セリーグ] */
 
 .sports-sublabel {

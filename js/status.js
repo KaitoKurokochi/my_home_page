@@ -41,7 +41,7 @@ const AGENT_DOMAINS = [
   ['video_content/note.md', 'Video Content','video_content'],
   ['general/note.md',       'General',      'general'],
   ['living/note.md',        'Living',       'living'],
-  ['HQ/note.md',            'HQ',           'HQ'],
+  ['agent_meta/note.md',    'HQ',           'HQ'],
 ];
 
 // Domains always shown regardless of selected_domains.json or context.

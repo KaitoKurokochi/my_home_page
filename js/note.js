@@ -61,9 +61,7 @@ const selectedRoles = new Set();
 let currentMention = null;  // { title, section, number }
 
 // Explicit overrides for cases where domainKey doesn't match the label name by norm().
-const DOMAIN_LABEL_OVERRIDE = {
-  agent_meta: 'agent',
-};
+const DOMAIN_LABEL_OVERRIDE = {};
 
 // Returns true when the given label name refers to the books domain.
 function isBookLabel(label) {

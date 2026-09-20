@@ -845,6 +845,21 @@ body {
   padding: 2px 0 4px;
 }
 
+.sports-section-header {
+  margin-bottom: 10px;
+}
+
+.mlb-logo {
+  height: 36px;
+  width: auto;
+  display: block;
+  transition: opacity 0.15s;
+}
+
+.mlb-logo:hover {
+  opacity: 0.8;
+}
+
 .sports-section-label {
   font-size: 0.72rem;
   font-weight: 600;
@@ -1066,6 +1081,86 @@ body {
   font-size: 0.875rem;
   color: #9aa0a6;
   padding: 8px 0;
+}
+
+/* ── MLB Japanese Players ────────────────────────────────────────────────────*/
+
+.mlb-team-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #202124;
+}
+
+.mlb-at {
+  padding: 0 4px;
+  font-size: 0.75rem;
+  color: #9aa0a6;
+}
+
+.mlb-players-list {
+  list-style: none;
+  margin: 5px 0 0;
+  padding: 0;
+  width: 100%;
+}
+
+.mlb-player-item {
+  font-size: 0.75rem;
+  color: #5f6368;
+  padding: 1px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── MLB 3-column layout & stats lists ──────────────────────────────────────*/
+
+.sports-three-col {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.mlb-stats-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mlb-stats-item {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 5px;
+  padding: 4px 0;
+  border-bottom: 1px solid #f1f3f4;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.mlb-stats-item:last-child {
+  border-bottom: none;
+}
+
+.mlb-stats-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #202124;
+  flex-shrink: 0;
+}
+
+.mlb-stats-line {
+  font-size: 0.8rem;
+  color: #1a73e8;
+  flex-shrink: 0;
+}
+
+.mlb-stats-opp {
+  font-size: 0.72rem;
+  color: #9aa0a6;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ── My Note ─────────────────────────────────────────────────────────────────*/

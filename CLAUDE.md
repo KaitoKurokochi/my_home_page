@@ -71,7 +71,7 @@ Note: `$AGENT_DIR/my_home_page/` is the agent notes directory (`~/agent/my_home_
 
 ## Note system
 
-- Backend: GitHub Issues on `KaitoKurokochi/my_notes` (label: `note`)
+- Backend: GitHub Issues on `KaitoKurokochi/agent` (label: `note`) — Issues are the note/task tracker, kept separate from the `vault` data-store repo (JSON/note.md/report files read via `js/config.js`'s `NOTES_REPO`)
 - Token stored in localStorage as `NOTE_TOKEN`
 - Labels stored in localStorage; label → domain key mapping in `sync_notes.py` `_LABEL_ALIASES`
 - Roles: Memo, Todo, Idea, Journal, Question, Done

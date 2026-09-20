@@ -1,10 +1,10 @@
 // ── Config ────────────────────────────────────────────────────────────────────
-// Depends on: js/config.js (GITHUB_OWNER, NOTES_REPO, getToken, esc)
+// Depends on: js/config.js (GITHUB_OWNER, ISSUES_REPO, getToken, esc)
 // Token is stored in localStorage (never in the codebase).
 // To set it, open DevTools console and run:
 //   localStorage.setItem('NOTE_TOKEN', 'ghp_xxxxxxxxxxxx')
 
-const GITHUB_API = `https://api.github.com/repos/${GITHUB_OWNER}/${NOTES_REPO}/issues`;
+const GITHUB_API = `https://api.github.com/repos/${GITHUB_OWNER}/${ISSUES_REPO}/issues`;
 
 const NOTE_TOKEN_KEY  = 'NOTE_TOKEN';
 const NOTE_LABELS_KEY = 'note_labels';

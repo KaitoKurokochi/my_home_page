@@ -7,7 +7,8 @@
 // To set it: localStorage.setItem('NOTE_TOKEN', 'ghp_xxxxxxxxxxxx')
 
 const GITHUB_OWNER = 'KaitoKurokochi';
-const NOTES_REPO   = 'agent';
+const NOTES_REPO   = 'vault';   // data store (JSON/note.md/report files)
+const ISSUES_REPO  = 'agent';   // GitHub Issues (note CRUD backend)
 
 // ── Token ─────────────────────────────────────────────────────────────────────
 

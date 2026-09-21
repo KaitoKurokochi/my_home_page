@@ -3,45 +3,40 @@
 // Depends on: js/config.js (GITHUB_OWNER, NOTES_REPO, getToken, githubFetch, esc)
 //             js/calendar.js (renderCalWidget — sets window.todayEvents)
 
-// Thin wrappers kept for backward compatibility with callers inside this file.
-function fetchMyNotesFile(path) { return githubFetch(path); }
-function fetchAgentFile(path)   { return githubFetch(path); }
+function fetchAgentFile(path) { return githubFetch(path); }
 
-// Extracts the ## Status section from a note.md string.
-// Returns lines from "## Status" up to (but not including) the next "## " heading,
-// with the "## Status" line itself stripped.
-function extractStatusSection(md) {
+// Extracts the displayable body from a status.md string: drops the leading
+// "# ..." title line and any preamble text before the first "## " section,
+// so only the actual Todo/Ideas/etc. sections remain.
+function extractStatusBody(md) {
   const lines = md.split('\n');
-  let inStatus = false;
-  const result = [];
-  for (const line of lines) {
-    if (/^## Status\s*$/.test(line)) {
-      inStatus = true;
-      continue;
-    }
-    if (inStatus && /^## /.test(line)) break;
-    if (inStatus) result.push(line);
+  let start = 0;
+  if (lines.length && /^# /.test(lines[0])) start = 1;
+  let firstH2 = -1;
+  for (let i = start; i < lines.length; i++) {
+    if (/^## /.test(lines[i])) { firstH2 = i; break; }
   }
-  // Trim leading/trailing blank lines
-  while (result.length && result[0].trim() === '') result.shift();
-  while (result.length && result[result.length - 1].trim() === '') result.pop();
-  return result.join('\n');
+  const body = firstH2 >= 0 ? lines.slice(firstH2) : lines.slice(start);
+  while (body.length && body[0].trim() === '') body.shift();
+  while (body.length && body[body.length - 1].trim() === '') body.pop();
+  return body.join('\n');
 }
 
 // All available domains: [filePath, displayName, domainKey]
+// "My Home Page" was merged into HQ (2026-09-17) and has no status.md of its
+// own anymore — its todos live under HQ/status.md's "### My Home Page" heading.
 const AGENT_DOMAINS = [
-  ['research/note.md',      'Research',     'research'],
-  ['Lions_IS/note.md',      'Lions IS',     'Lions_IS'],
-  ['baseball/note.md',      'Baseball',     'baseball'],
-  ['my_home_page/note.md',  'My Home Page', 'my_home_page'],
-  ['football/note.md',      'Football',     'football'],
-  ['books/note.md',         'Books',        'books'],
-  ['softball/note.md',      'Softball',     'softball'],
-  ['univ/note.md',          'University',   'univ'],
-  ['video_content/note.md', 'Video Content','video_content'],
-  ['general/note.md',       'General',      'general'],
-  ['living/note.md',        'Living',       'living'],
-  ['HQ/note.md',            'HQ',           'HQ'],
+  ['research/status.md',      'Research',     'research'],
+  ['Lions_IS/status.md',      'Lions IS',     'Lions_IS'],
+  ['baseball/status.md',      'Baseball',     'baseball'],
+  ['football/status.md',      'Football',     'football'],
+  ['books/status.md',         'Books',        'books'],
+  ['softball/status.md',      'Softball',     'softball'],
+  ['univ/status.md',          'University',   'univ'],
+  ['video_content/status.md', 'Video Content','video_content'],
+  ['general/status.md',       'General',      'general'],
+  ['living/status.md',        'Living',       'living'],
+  ['HQ/status.md',            'HQ',           'HQ'],
 ];
 
 // Domains always shown regardless of selected_domains.json or context.
@@ -97,8 +92,8 @@ async function computeDomainSelection() {
     autoExpand.add('Lions_IS');
   }
   if (dow === 0) {
-    domainKeys.add('my_home_page');
-    autoExpand.add('my_home_page');
+    domainKeys.add('HQ');
+    autoExpand.add('HQ');
   }
 
   // Schedule-based rules — add and auto-expand domains that appear in today's events
@@ -134,7 +129,7 @@ async function fetchAgentStatusReport() {
     domains.map(async ([path, name]) => {
       try {
         const md = await fetchAgentFile(path);
-        const status = extractStatusSection(md);
+        const status = extractStatusBody(md);
         if (!status) return null;
         return `# ${name}\n\n${status}`;
       } catch (_) {

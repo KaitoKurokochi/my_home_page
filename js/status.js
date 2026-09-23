@@ -322,18 +322,24 @@ function markdownToHtml(md) {
   }
 
   // ── Pass 2: skip heading tokens whose section has no content ─────────────
-  // A heading (h2/h3) is "empty" if the next non-blank token is another heading or end-of-stream.
+  // A heading is "empty" if there's no content token before the next heading
+  // of the same or shallower level. Deeper headings nested inside it (e.g. an
+  // "### " subsection under "## TODO") are content-bearing containers, not
+  // section boundaries, so they're skipped over rather than stopping the scan.
   const HEADING_TYPES = new Set(['h1', 'h2', 'h3', 'h4']);
+  const HEADING_LEVEL = { h1: 1, h2: 2, h3: 3, h4: 4 };
   const CONTENT_TYPES = new Set(['summary', 'check', 'item', 'subhead', 'detail', 'since', 'paragraph']);
   const skipIdx = new Set();
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i];
     if (t.type !== 'h2' && t.type !== 'h3' && t.type !== 'h4') continue;
-    // look ahead for content before the next heading
+    const level = HEADING_LEVEL[t.type];
+    // look ahead for content before the next heading at this level or shallower
     let hasContent = false;
     for (let j = i + 1; j < tokens.length; j++) {
-      if (HEADING_TYPES.has(tokens[j].type)) break;
-      if (CONTENT_TYPES.has(tokens[j].type)) { hasContent = true; break; }
+      const tj = tokens[j];
+      if (HEADING_TYPES.has(tj.type) && HEADING_LEVEL[tj.type] <= level) break;
+      if (CONTENT_TYPES.has(tj.type)) { hasContent = true; break; }
     }
     if (!hasContent) skipIdx.add(i);
   }

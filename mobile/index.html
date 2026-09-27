@@ -45,21 +45,10 @@
       <div id="report-container">
         <p class="placeholder">Loading...</p>
       </div>
-      <p class="desktop-link-wrap"><a href="#" id="desktop-link">デスクトップ版を見る</a></p>
     </section>
 
   </main>
 
-  <script>
-    // Escape hatch for index.html's phone→mobile/ auto-redirect: remembers
-    // the choice for this browser tab session only (not localStorage), so a
-    // fresh visit later redirects again as normal.
-    document.getElementById('desktop-link').addEventListener('click', function (e) {
-      e.preventDefault();
-      try { sessionStorage.setItem('mypage_prefer_desktop', '1'); } catch (_) {}
-      location.href = '../';
-    });
-  </script>
   <script src="../shared/github-client.js"></script>
   <script src="../shared/notes-api.js"></script>
   <script src="../shared/note-labels.js"></script>

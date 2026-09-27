@@ -3,13 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <script>
-    // Redirect phones to mobile/ (not tablets — iPad's wider screen suits this
-    // desktop layout fine). Skipped when the user explicitly chose "desktop
-    // version" from the mobile page this session (see mobile/app.js).
+    // Redirect phones to mobile/ (not tablets — iPad's wider screen suits
+    // this desktop layout fine).
     (function () {
-      try {
-        if (sessionStorage.getItem('mypage_prefer_desktop') === '1') return;
-      } catch (_) { /* sessionStorage unavailable — fall through to redirect */ }
       if (/Android|iPhone|iPod|IEMobile|BlackBerry|Opera Mini/i.test(navigator.userAgent)) {
         location.replace('mobile/' + location.search);
       }

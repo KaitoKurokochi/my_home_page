@@ -34,22 +34,10 @@
     return keywords.some(kw => matchText.includes(kw));
   }
 
+  // githubFetch() comes from ../shared/github-client.js
   async function fetchLocationZones() {
     try {
-      const res = await fetch(
-        `https://api.github.com/repos/KaitoKurokochi/vault/contents/my_home_page/runtime/location_zones.json`,
-        {
-          headers: {
-            'Accept': 'application/vnd.github+json',
-            ...(localStorage.getItem('NOTE_TOKEN')
-              ? { 'Authorization': `Bearer ${localStorage.getItem('NOTE_TOKEN')}` }
-              : {}),
-          },
-        }
-      );
-      if (!res.ok) return [];
-      const meta = await res.json();
-      const text = decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
+      const text = await githubFetch('my_home_page/runtime/location_zones.json');
       return JSON.parse(text);
     } catch (_) {
       return [];

@@ -1,10 +1,10 @@
 // ── Config ────────────────────────────────────────────────────────────────────
-// Depends on: js/config.js (GITHUB_OWNER, ISSUES_REPO, getToken, esc)
+// Depends on: shared/github-client.js (GITHUB_OWNER, NOTES_REPO, getToken, esc)
 // Token is stored in localStorage (never in the codebase).
 // To set it, open DevTools console and run:
 //   localStorage.setItem('NOTE_TOKEN', 'ghp_xxxxxxxxxxxx')
 
-const GITHUB_API = `https://api.github.com/repos/${GITHUB_OWNER}/${ISSUES_REPO}/issues`;
+const GITHUB_API = `https://api.github.com/repos/${GITHUB_OWNER}/${NOTES_REPO}/issues`;
 
 const NOTE_TOKEN_KEY  = 'NOTE_TOKEN';
 const NOTE_LABELS_KEY = 'note_labels';
@@ -19,7 +19,7 @@ const DEFAULT_ROLES   = [
   { key: 'Done',        icon: '✅' },
 ];
 
-// getToken() is defined in js/config.js
+// getToken() is defined in shared/github-client.js
 function getLabels() { return JSON.parse(localStorage.getItem(NOTE_LABELS_KEY) || JSON.stringify(DEFAULT_LABELS)); }
 function getRoles()  { return JSON.parse(localStorage.getItem(NOTE_ROLES_KEY)  || JSON.stringify(DEFAULT_ROLES)); }
 function saveLabels(labels) {

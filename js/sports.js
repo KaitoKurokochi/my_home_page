@@ -1,6 +1,6 @@
 // ── Sports Section ────────────────────────────────────────────────────────────
 // Reads sports.json and renders NPB results, standings, and news.
-// Depends on: js/config.js (githubFetch)
+// Depends on: shared/github-client.js (githubFetch)
 
 const SPORTS_FILE = 'my_home_page/runtime/sports.json';
 

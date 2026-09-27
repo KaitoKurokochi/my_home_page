@@ -73,7 +73,7 @@ function renderNewsGrid(data) {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-// Depends on: js/config.js (githubFetch)
+// Depends on: shared/github-client.js (githubFetch)
 
 let newsLoaded = false;
 

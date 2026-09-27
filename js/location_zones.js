@@ -19,7 +19,7 @@
 // sections: section keys to expand by default at this location.
 // If location is unavailable or no zone matches, ALL sections are expanded (fallback).
 
-// Depends on: js/config.js (githubFetch)
+// Depends on: shared/github-client.js (githubFetch)
 
 async function fetchLocationZones() {
   try {

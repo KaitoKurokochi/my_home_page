@@ -1,11 +1,9 @@
 // ── Sync: pull labels/roles from agent/my_home_page/runtime/sync.json ────────
+// Depends on: ../shared/github-client.js (GITHUB_OWNER, NOTES_REPO, getToken)
 
-const SYNC_OWNER = 'KaitoKurokochi';
-const SYNC_REPO  = 'vault';
 const SYNC_FILE  = 'my_home_page/runtime/sync.json';
-const SYNC_API   = `https://api.github.com/repos/${SYNC_OWNER}/${SYNC_REPO}/contents/${SYNC_FILE}`;
+const SYNC_API   = `https://api.github.com/repos/${GITHUB_OWNER}/${NOTES_REPO}/contents/${SYNC_FILE}`;
 
-const TOKEN_KEY     = 'NOTE_TOKEN';
 const LABELS_KEY    = 'note_labels';
 const ROLES_KEY     = 'note_roles';
 const SYNC_SHA_KEY  = 'mypage_sync_sha';
@@ -23,7 +21,6 @@ const DEFAULT_ROLES  = [
   { key: 'Done',       icon: '✅' },
 ];
 
-function getToken()  { return localStorage.getItem(TOKEN_KEY) || ''; }
 function getLabels() { return JSON.parse(localStorage.getItem(LABELS_KEY) || JSON.stringify(DEFAULT_LABELS)); }
 function getRoles()  { return JSON.parse(localStorage.getItem(ROLES_KEY)  || JSON.stringify(DEFAULT_ROLES)); }
 

@@ -1,5 +1,5 @@
 // ── Sync: persist groups + labels to agent/my_home_page/runtime/sync.json via GitHub Contents API ──
-// Depends on: js/config.js (GITHUB_OWNER, NOTES_REPO, getToken)
+// Depends on: shared/github-client.js (GITHUB_OWNER, NOTES_REPO, getToken)
 //
 // Uses the same NOTE_TOKEN already stored in localStorage by note.js.
 // All failures are silent — sync is best-effort and never blocks the UI.

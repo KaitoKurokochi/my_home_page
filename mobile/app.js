@@ -1,8 +1,7 @@
 // ── Config ────────────────────────────────────────────────────────────────────
+// Depends on: ../shared/github-client.js (GITHUB_OWNER, NOTES_REPO, getToken, esc)
 
-const NOTE_OWNER = 'KaitoKurokochi';
-const NOTE_REPO  = 'vault';
-const GITHUB_API = `https://api.github.com/repos/${NOTE_OWNER}/${NOTE_REPO}/issues`;
+const GITHUB_API = `https://api.github.com/repos/${GITHUB_OWNER}/${NOTES_REPO}/issues`;
 
 // ── Tab navigation ────────────────────────────────────────────────────────────
 
@@ -174,7 +173,7 @@ function renderTokenSetup() {
   document.getElementById('token-save').addEventListener('click', () => {
     const val = document.getElementById('token-input').value.trim();
     if (!val) return;
-    localStorage.setItem(TOKEN_KEY, val);
+    localStorage.setItem('NOTE_TOKEN', val);
     init();
   });
 }
@@ -448,7 +447,7 @@ function renderForm() {
         },
         body: JSON.stringify({ title, body, labels: ['note'] }),
       });
-      if (res.status === 401) { localStorage.removeItem(TOKEN_KEY); renderTokenSetup(); return; }
+      if (res.status === 401) { localStorage.removeItem('NOTE_TOKEN'); renderTokenSetup(); return; }
       if (!res.ok) throw new Error(`${res.status}`);
 
       document.getElementById('note-input').value = '';
@@ -471,10 +470,10 @@ function renderForm() {
 
 // ── Notes list ────────────────────────────────────────────────────────────────
 
+// esc() (HTML-escape only) comes from ../shared/github-client.js; this adds the
+// newline→<br> conversion needed when rendering an issue body as HTML.
 function esc2(str) {
-  return String(str)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/\n/g, '<br>');
+  return esc(str).replace(/\n/g, '<br>');
 }
 
 function parseTitleParts(title) {

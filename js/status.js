@@ -1,6 +1,6 @@
 // ── Status: report (left-col) ─────────────────────────────────────────────────
 // Calendar widget is handled by js/calendar.js.
-// Depends on: js/config.js (GITHUB_OWNER, NOTES_REPO, getToken, githubFetch, esc)
+// Depends on: shared/github-client.js (GITHUB_OWNER, NOTES_REPO, getToken, githubFetch, esc)
 //             js/calendar.js (renderCalWidget — sets window.todayEvents)
 
 function fetchAgentFile(path) { return githubFetch(path); }

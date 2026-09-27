@@ -2,7 +2,7 @@
 // Fetches today's schedule from agent/my_home_page/runtime/schedule.json and renders
 // the mini calendar widget in #cal-widget.
 // Sets window.todayEvents for use by status.js, meeting_note.js, etc.
-// Depends on: js/config.js (githubFetch, esc)
+// Depends on: shared/github-client.js (githubFetch, esc)
 
 async function renderCalWidget() {
   const widget = document.getElementById('cal-widget');

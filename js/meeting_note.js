@@ -3,7 +3,7 @@
 // (case-insensitive), show a button in .meeting-note-wrap.
 // Clicking the button opens pages/meeting_note.html if the note exists in agent repo,
 // or shows a message if it has not been created yet.
-// Depends on: js/config.js (GITHUB_OWNER, NOTES_REPO, getToken)
+// Depends on: shared/github-client.js (GITHUB_OWNER, NOTES_REPO, getToken)
 
 (function () {
   // ── Research Meeting detection ────────────────────────────────────────────

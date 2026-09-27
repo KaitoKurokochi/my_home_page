@@ -1,23 +1,7 @@
 // ── Report: fetch Due Today and Status Report from agent repo ─────────────────
-
-const REPORT_OWNER = 'KaitoKurokochi';
-const REPORT_REPO  = 'vault';
-
+// Depends on: ../shared/github-client.js (githubFetch)
 
 let reportMentionItems = [];
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-// Fetch a file from the agent repository via GitHub Contents API.
-async function fetchAgentFile(path) {
-  const res = await fetch(
-    `https://api.github.com/repos/${REPORT_OWNER}/${REPORT_REPO}/contents/${path}`,
-    { headers: syncHeaders() }
-  );
-  if (!res.ok) throw Object.assign(new Error(`${res.status}`), { status: res.status });
-  const meta = await res.json();
-  return decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
-}
 
 // Extracts the ## Status section from a note.md string.
 function extractStatusSection(md) {
@@ -46,7 +30,7 @@ async function renderDueToday(container) {
   section.appendChild(heading);
 
   try {
-    const text = await fetchAgentFile('my_home_page/runtime/due_today.json');
+    const text = await githubFetch('my_home_page/runtime/due_today.json');
     const data = JSON.parse(text);
 
     const today = new Date().toISOString().slice(0, 10);
@@ -108,7 +92,7 @@ const REPORT_DOMAINS = [
 
 async function fetchSelectedDomains() {
   try {
-    const text = await fetchAgentFile('my_home_page/runtime/selected_domains.json');
+    const text = await githubFetch('my_home_page/runtime/selected_domains.json');
     const data = JSON.parse(text);
     // Format: { date: "YYYY-MM-DD", domains: ["research", "general", ...] }
     return Array.isArray(data.domains) ? data.domains : null;
@@ -230,7 +214,7 @@ async function renderStatusReport(container) {
     const results = await Promise.all(
       domains.map(async ([path, name]) => {
         try {
-          const md = await fetchAgentFile(path);
+          const md = await githubFetch(path);
           const status = extractStatusSection(md);
           if (!status) return null;
           return { name, status, domainKey: path.split('/')[0] };

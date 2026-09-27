@@ -1,5 +1,5 @@
 // ── Tasks Due Today (left-col, above status-report) ──────────────────────────
-// Depends on: js/config.js (githubFetch, esc)
+// Depends on: shared/github-client.js (githubFetch, esc)
 //
 // Fetches my_home_page/runtime/due_today.json from the agent repository via
 // GitHub Contents API and renders it as a collapsible section styled

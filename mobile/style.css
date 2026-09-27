@@ -552,6 +552,29 @@ body {
   border-left: 2px solid #d1d1d6;
 }
 
+.mr-subsubcat {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #aeaeb2;
+  margin-top: 6px;
+  margin-bottom: 2px;
+  padding-left: 18px;
+}
+
+.mr-subhead {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #636366;
+  margin: 4px 0 2px;
+}
+
+.mr-para {
+  font-size: 0.85rem;
+  color: #3c3c43;
+  margin: 3px 0 6px;
+  line-height: 1.5;
+}
+
 .mr-item {
   background: #fff;
   border-radius: 10px;

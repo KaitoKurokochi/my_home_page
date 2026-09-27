@@ -207,9 +207,13 @@ function markdownToHtml(md, domainKey) {
   const lines = md.split('\n');
 
   // ── Pass 1: parse into token objects ───────────────────────────────────────
+  // Mirrors js/status.js's tokenizer (desktop) — kept in sync by hand since
+  // the two renderers map onto genuinely different heading levels/markup.
   const tokens = [];
   for (const line of lines) {
-    if (line.startsWith('### ')) {
+    if (line.startsWith('#### ')) {
+      tokens.push({ type: 'h4', text: line.slice(5).trim() });
+    } else if (line.startsWith('### ')) {
       tokens.push({ type: 'h3', text: line.slice(4).trim() });
     } else if (line.startsWith('## ')) {
       tokens.push({ type: 'h2', text: line.slice(3).trim() });
@@ -221,26 +225,39 @@ function markdownToHtml(md, domainKey) {
       tokens.push({ type: 'check', text: line.slice(6).trim(), checked: line.startsWith('- [x] ') });
     } else if (line.startsWith('- ')) {
       tokens.push({ type: 'item', text: line.slice(2).trim() });
+    } else if (line.startsWith('・')) {
+      tokens.push({ type: 'item', text: line.slice(1).trim() });
+    } else if (line.startsWith('**') && line.endsWith('**')) {
+      tokens.push({ type: 'subhead', text: line.replace(/\*\*/g, '').trim() });
     } else if (line.startsWith('  *')) {
       tokens.push({ type: 'detail', text: line.trim().replace(/\*/g, '') });
     } else if (line.startsWith('  `')) {
       tokens.push({ type: 'since', text: line.trim().replace(/`/g, '') });
-    } else {
+    } else if (line.trim() === '') {
       tokens.push({ type: 'blank' });
+    } else {
+      tokens.push({ type: 'paragraph', text: line.trim() });
     }
   }
 
-  // ── Pass 2: skip h2/h3 headings whose section has no content ──────────────
-  const HEADING_TYPES = new Set(['h1', 'h2', 'h3']);
-  const CONTENT_TYPES = new Set(['summary', 'check', 'item', 'detail', 'since']);
+  // ── Pass 2: skip headings whose section has no content ────────────────────
+  // A heading is "empty" if there's no content token before the next heading
+  // of the same or shallower level — a deeper heading nested inside it (e.g.
+  // "#### " under "## ") is a content-bearing container, not a section
+  // boundary, so it's skipped over rather than stopping the scan.
+  const HEADING_TYPES = new Set(['h1', 'h2', 'h3', 'h4']);
+  const HEADING_LEVEL = { h1: 1, h2: 2, h3: 3, h4: 4 };
+  const CONTENT_TYPES = new Set(['summary', 'check', 'item', 'subhead', 'detail', 'since', 'paragraph']);
   const skipIdx = new Set();
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i];
-    if (t.type !== 'h2' && t.type !== 'h3') continue;
+    if (!HEADING_TYPES.has(t.type)) continue;
+    const level = HEADING_LEVEL[t.type];
     let hasContent = false;
     for (let j = i + 1; j < tokens.length; j++) {
-      if (HEADING_TYPES.has(tokens[j].type)) break;
-      if (CONTENT_TYPES.has(tokens[j].type)) { hasContent = true; break; }
+      const tj = tokens[j];
+      if (HEADING_TYPES.has(tj.type) && HEADING_LEVEL[tj.type] <= level) break;
+      if (CONTENT_TYPES.has(tj.type)) { hasContent = true; break; }
     }
     if (!hasContent) skipIdx.add(i);
   }
@@ -282,9 +299,18 @@ function markdownToHtml(md, domainKey) {
     } else if (t.type === 'h3') {
       closeItem();
       html += `<h4 class="mr-subcat">${esc(t.text)}</h4>`;
+    } else if (t.type === 'h4') {
+      closeItem();
+      html += `<h5 class="mr-subsubcat">${esc(t.text)}</h5>`;
     } else if (t.type === 'summary') {
       closeItem();
       html += `<p class="mr-summary">${esc(t.text)}</p>`;
+    } else if (t.type === 'subhead') {
+      closeItem();
+      html += `<p class="mr-subhead">${esc(t.text)}</p>`;
+    } else if (t.type === 'paragraph') {
+      closeItem();
+      html += `<p class="mr-para">${esc(t.text)}</p>`;
     } else if (t.type === 'check') {
       closeItem();
       const checkSourceLabel = extractSourceLabel(t.text);

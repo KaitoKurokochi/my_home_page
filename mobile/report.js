@@ -1,22 +1,9 @@
 // ── Report: fetch Due Today and Status Report from agent repo ─────────────────
-// Depends on: ../shared/github-client.js (githubFetch)
+// Depends on: ../shared/github-client.js (githubFetch),
+//             ../shared/status-report-data.js (computeDomainSelection,
+//             domainName, fetchStatusReportData)
 
 let reportMentionItems = [];
-
-// Extracts the ## Status section from a note.md string.
-function extractStatusSection(md) {
-  const lines = md.split('\n');
-  let inStatus = false;
-  const result = [];
-  for (const line of lines) {
-    if (/^## Status\s*$/.test(line)) { inStatus = true; continue; }
-    if (inStatus && /^## /.test(line)) break;
-    if (inStatus) result.push(line);
-  }
-  while (result.length && result[0].trim() === '') result.shift();
-  while (result.length && result[result.length - 1].trim() === '') result.pop();
-  return result.join('\n');
-}
 
 // ── Tasks Due Today ───────────────────────────────────────────────────────────
 
@@ -74,64 +61,14 @@ async function renderDueToday(container) {
 
 // ── Status Report ─────────────────────────────────────────────────────────────
 
-// All agent domains: [filePath, displayName]
-const REPORT_DOMAINS = [
-  ['research/note.md',      'Research'],
-  ['Lions_IS/note.md',      'Lions IS'],
-  ['baseball/note.md',      'Baseball'],
-  ['my_home_page/note.md',  'My Home Page'],
-  ['football/note.md',      'Football'],
-  ['books/note.md',         'Books'],
-  ['softball/note.md',      'Softball'],
-  ['univ/note.md',          'University'],
-  ['video_content/note.md', 'Video Content'],
-  ['general/note.md',       'General'],
-  ['living/note.md',        'Living'],
-  ['HQ/note.md',            'HQ'],
-];
-
-async function fetchSelectedDomains() {
-  try {
-    const text = await githubFetch('my_home_page/runtime/selected_domains.json');
-    const data = JSON.parse(text);
-    // Format: { date: "YYYY-MM-DD", domains: ["research", "general", ...] }
-    return Array.isArray(data.domains) ? data.domains : null;
-  } catch (_) {
-    return null;
-  }
-}
-
-// Compute which domain display names should be auto-expanded.
-// Logic mirrors status.js computeDomainSelection() but for mobile.
-// Zone info from window.currentZone (set by location.js after GPS resolves).
-function computeAutoExpandNames() {
-  const autoExpand = new Set();
-  const zone = window.currentZone;
-  const dow  = new Date().getDay(); // 0 = Sunday
-
-  if (zone === 'home') {
-    autoExpand.add('Living');
-  }
-  if (zone === 'univ') {
-    autoExpand.add('Research');
-  }
-  if (zone === 'lions_is') {
-    autoExpand.add('Lions IS');
-  }
-  if (dow === 0) {
-    autoExpand.add('My Home Page');
-  }
-
-  return autoExpand;
-}
-
 // Re-applies auto-expand to already-rendered mobile-rd-section wrappers.
 // Called by location.js when GPS zone becomes available after initial render.
 // Never auto-collapses manually expanded sections.
-function reapplyReportAutoExpand() {
+async function reapplyReportAutoExpand() {
   const section = document.querySelector('.report-section[data-report="status"]');
   if (!section) return;
-  const autoExpandNames = computeAutoExpandNames();
+  const { autoExpand } = await computeDomainSelection();
+  const autoExpandNames = new Set([...autoExpand].map(domainName));
   section.querySelectorAll('.mobile-rd-section').forEach(wrapper => {
     const name = wrapper.dataset.name || '';
     const shouldExpand = [...autoExpandNames].some(n =>
@@ -197,41 +134,15 @@ async function renderStatusReport(container) {
   section.appendChild(heading);
 
   try {
-    // Determine which domains to show
-    const selectedKeys = await fetchSelectedDomains();
-    window._reportSelectedKeys = selectedKeys;
-    const ALWAYS_KEYS = ['research', 'general', 'living'];
-    const activeKeys = (selectedKeys && selectedKeys.length > 0) ? selectedKeys : ALWAYS_KEYS;
-    const domains = REPORT_DOMAINS.filter(([path]) => {
-      const key = path.split('/')[0];
-      return activeKeys.includes(key);
-    });
+    const { domains, autoExpandNames } = await fetchStatusReportData();
 
-    // Compute auto-expand set now (GPS may not be ready yet)
-    const autoExpandNames = computeAutoExpandNames();
-
-    // Fetch all note.md files in parallel
-    const results = await Promise.all(
-      domains.map(async ([path, name]) => {
-        try {
-          const md = await githubFetch(path);
-          const status = extractStatusSection(md);
-          if (!status) return null;
-          return { name, status, domainKey: path.split('/')[0] };
-        } catch (_) {
-          return null;
-        }
-      })
-    );
-
-    const valid = results.filter(Boolean);
-    if (valid.length === 0) {
+    if (domains.length === 0) {
       const empty = document.createElement('p');
       empty.className = 'placeholder';
       empty.textContent = 'No status report available';
       section.appendChild(empty);
     } else {
-      valid.forEach(({ name, status, domainKey }) => {
+      domains.forEach(({ name, status, domainKey }) => {
         const { wrapper, body } = buildDomainCard(name, status, autoExpandNames);
 
         const idxOffset = reportMentionItems.length;

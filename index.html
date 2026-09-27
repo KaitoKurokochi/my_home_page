@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>My Note</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="My Note" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Tab bar -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="form">Form</button>
+    <button class="tab-btn" data-tab="notes">Notes</button>
+    <button class="tab-btn" data-tab="report">Report</button>
+  </nav>
+
+  <!-- Panels -->
+  <main class="panels">
+
+    <!-- Form -->
+    <section class="panel active" id="panel-form">
+      <div id="form-container"></div>
+    </section>
+
+    <!-- Notes -->
+    <section class="panel" id="panel-notes">
+      <div class="notes-panel-header">
+        <span class="notes-panel-title">Notes</span>
+        <button class="notes-refresh-btn" id="notes-refresh-btn" title="Refresh">↻</button>
+      </div>
+      <div id="notes-container">
+        <p class="placeholder">Loading...</p>
+      </div>
+    </section>
+
+    <!-- Report -->
+    <section class="panel" id="panel-report">
+      <div id="report-container">
+        <p class="placeholder">Loading...</p>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="sync.js"></script>
+  <script src="report.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

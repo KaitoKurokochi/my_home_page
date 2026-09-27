@@ -1,7 +1,7 @@
 {
   "name": "My Note",
   "short_name": "My Note",
-  "start_url": "/mobile-note/",
+  "start_url": "/my_home_page/mobile/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",

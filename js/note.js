@@ -1,10 +1,11 @@
 // ── Config ────────────────────────────────────────────────────────────────────
-// Depends on: shared/github-client.js (GITHUB_OWNER, NOTES_REPO, getToken, esc)
+// Depends on: shared/github-client.js (getToken, esc), shared/notes-api.js
+// (GITHUB_API, parseTitleParts, buildTitle, updateIssue, fetchRecentNotes),
+// shared/note-labels.js (guessLabel, isBookLabel, isVideoLabel, templates),
+// shared/sync-api.js (pullSync, pushSync)
 // Token is stored in localStorage (never in the codebase).
 // To set it, open DevTools console and run:
 //   localStorage.setItem('NOTE_TOKEN', 'ghp_xxxxxxxxxxxx')
-
-const GITHUB_API = `https://api.github.com/repos/${GITHUB_OWNER}/${NOTES_REPO}/issues`;
 
 const NOTE_TOKEN_KEY  = 'NOTE_TOKEN';
 const NOTE_LABELS_KEY = 'note_labels';
@@ -59,29 +60,6 @@ function renderTokenSetup() {
 let selectedLabel = null;
 const selectedRoles = new Set();
 let currentMention = null;  // { title, section, number }
-
-// Explicit overrides for cases where domainKey doesn't match the label name by norm().
-const DOMAIN_LABEL_OVERRIDE = {};
-
-// Returns true when the given label name refers to the books domain.
-function isBookLabel(label) {
-  return !!(label && label.toLowerCase().includes('book'));
-}
-
-function guessLabel(section) {
-  if (!section) return null;
-  const labels = getLabels();
-  if (DOMAIN_LABEL_OVERRIDE[section]) {
-    const override = DOMAIN_LABEL_OVERRIDE[section];
-    const found = labels.find(l => l === override);
-    if (found) return found;
-  }
-  if (labels.includes(section)) return section;
-  // Strip non-alphanumeric chars (emoji, spaces, underscores) and compare case-insensitively.
-  // e.g. "🔬 Research"→"research", "🦁 Lions IS"→"lionsis", "Lions_IS"→"lionsis" all match.
-  const norm = s => s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-  return labels.find(l => norm(l) === norm(section)) || null;
-}
 
 // Called from status.js or note list when user clicks [@] on an item
 window.setMention = function(item) {
@@ -226,33 +204,20 @@ function renderRoleBar() {
 }
 
 // ── Label-specific templates ──────────────────────────────────────────────────
-
-// Books
-const BOOKS_DONE_TEMPLATE = 'タイトル: \n著者: \n評価: \nジャンル: \n感想: \n';
-const BOOKS_TODO_TEMPLATE  = 'タイトル: \n著者: \nメモ: \n';
-const BOOKS_TEMPLATES = [BOOKS_DONE_TEMPLATE, BOOKS_TODO_TEMPLATE];
+// isBookLabel/isVideoLabel/BOOKS_*/VIDEO_*/ALL_TEMPLATES come from
+// shared/note-labels.js. getBookTemplate/getVideoTemplate stay local since
+// mobile's version also treats the Journal role as a Todo-template trigger
+// and desktop's doesn't — not merged since it's unclear which is intended.
 
 function getBookTemplate() {
   return (selectedRoles.has('Todo'))
     ? BOOKS_TODO_TEMPLATE : BOOKS_DONE_TEMPLATE;
 }
 
-// Video content
-function isVideoLabel(label) {
-  return !!(label && (label.toLowerCase().includes('video') || label.toLowerCase().includes('entertainment')));
-}
-
-const VIDEO_DONE_TEMPLATE = 'タイトル: \n制作/監督: \nジャンル: \n評価: \n感想: \n';
-const VIDEO_TODO_TEMPLATE  = 'タイトル: \nメモ: \n';
-const VIDEO_TEMPLATES = [VIDEO_DONE_TEMPLATE, VIDEO_TODO_TEMPLATE];
-
 function getVideoTemplate() {
   return (selectedRoles.has('Todo'))
     ? VIDEO_TODO_TEMPLATE : VIDEO_DONE_TEMPLATE;
 }
-
-// All known templates (used to detect unmodified state across label switches)
-const ALL_TEMPLATES = [...BOOKS_TEMPLATES, ...VIDEO_TEMPLATES];
 
 // Inserts or swaps the appropriate template in the textarea based on the
 // current label and role.  Only acts when the textarea is empty or still holds
@@ -399,36 +364,7 @@ function renderNoteUI() {
   });
 }
 
-// ── Issue title parsing / building ────────────────────────────────────────────
-
-function parseTitleParts(title) {
-  const brackets = [...title.matchAll(/\[(.+?)\]/g)].map(m => m[1]);
-  const label = brackets[0] || '';
-  const roles = brackets.slice(1);
-  const text  = title.replace(/^(\[[^\]]+\])+\s*/, '');
-  return { label, roles, text };
-}
-
-function buildTitle(label, roles) {
-  const roleStr = roles.map(r => `[${r}]`).join('');
-  return `[${label}]${roleStr}`;
-}
-
-// ── Issue update (PATCH) ──────────────────────────────────────────────────────
-
-async function updateIssue(number, patch) {
-  const res = await fetch(`${GITHUB_API}/${number}`, {
-    method: 'PATCH',
-    headers: {
-      'Authorization': `Bearer ${getToken()}`,
-      'Accept': 'application/vnd.github+json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(patch),
-  });
-  if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
-  return res.json();
-}
+// parseTitleParts/buildTitle/updateIssue come from shared/notes-api.js
 
 // ── Edit dropdown ─────────────────────────────────────────────────────────────
 
@@ -668,22 +604,7 @@ async function loadNotes() {
   list.innerHTML = '<p class="note-list-loading">Loading...</p>';
 
   try {
-    const res = await fetch(
-      `${GITHUB_API}?labels=note&state=all&per_page=20&sort=created&direction=desc`,
-      {
-        headers: {
-          'Authorization': `Bearer ${getToken()}`,
-          'Accept': 'application/vnd.github+json',
-        },
-      }
-    );
-    if (!res.ok) throw new Error(`${res.status}`);
-    const allIssues = await res.json();
-
-    const cutoff = Date.now() - 5 * 60 * 60 * 1000;
-    const issues = allIssues
-      .filter(i => new Date(i.created_at).getTime() >= cutoff)
-      .slice(0, 10);
+    const issues = await fetchRecentNotes();
 
     if (!issues.length) {
       list.innerHTML = '<p class="note-list-empty">No notes yet.</p>';

@@ -1,7 +1,8 @@
 // ── Config ────────────────────────────────────────────────────────────────────
-// Depends on: ../shared/github-client.js (GITHUB_OWNER, NOTES_REPO, getToken, esc)
-
-const GITHUB_API = `https://api.github.com/repos/${GITHUB_OWNER}/${NOTES_REPO}/issues`;
+// Depends on: ../shared/github-client.js (getToken, esc), ../shared/notes-api.js
+// (GITHUB_API, parseTitleParts, buildTitle, updateIssue, fetchRecentNotes),
+// ../shared/note-labels.js (guessLabel, isBookLabel, isVideoLabel, templates),
+// ../shared/sync-api.js (pullSync, pushSync)
 
 // ── Tab navigation ────────────────────────────────────────────────────────────
 
@@ -56,46 +57,12 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 
 let currentMention = null;
 
-// Explicit overrides for domain keys that don't match label names even after normalisation.
-const DOMAIN_LABEL_OVERRIDE = {};
-
-// Match a section name to a label in localStorage (case-insensitive, ignoring emoji/symbols)
-function guessLabel(section) {
-  if (!section) return null;
-  const labels = getLabels();
-  // Check explicit overrides first
-  if (DOMAIN_LABEL_OVERRIDE[section]) {
-    const found = labels.find(l => l === DOMAIN_LABEL_OVERRIDE[section]);
-    if (found) return found;
-  }
-  // Exact match
-  if (labels.includes(section)) return section;
-  // Normalise: strip non-alphanumeric characters (emoji, spaces, underscores, symbols)
-  // and lowercase so that "🔬 Research"→"research", "🦁 Lions IS"→"lionsis",
-  // "Lions_IS"→"lionsis" all match each other.
-  const norm = s => s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-  return labels.find(l => norm(l) === norm(section)) || null;
-}
+// guessLabel/isBookLabel/isVideoLabel/BOOKS_*/VIDEO_*/ALL_TEMPLATES come from
+// ../shared/note-labels.js. getBookTemplate/getVideoTemplate stay local since
+// this side also treats the Journal role as a Todo-template trigger and
+// desktop's doesn't — not merged since it's unclear which is intended.
 
 // ── Label-specific templates ──────────────────────────────────────────────────
-
-function isBookLabel(label) {
-  return !!(label && label.toLowerCase().includes('book'));
-}
-
-function isVideoLabel(label) {
-  return !!(label && (label.toLowerCase().includes('video') || label.toLowerCase().includes('entertainment')));
-}
-
-const BOOKS_DONE_TEMPLATE = 'タイトル: \n著者: \n評価: \nジャンル: \n感想: \n';
-const BOOKS_TODO_TEMPLATE  = 'タイトル: \n著者: \nメモ: \n';
-const BOOKS_TEMPLATES = [BOOKS_DONE_TEMPLATE, BOOKS_TODO_TEMPLATE];
-
-const VIDEO_DONE_TEMPLATE = 'タイトル: \n制作/監督: \nジャンル: \n評価: \n感想: \n';
-const VIDEO_TODO_TEMPLATE  = 'タイトル: \nメモ: \n';
-const VIDEO_TEMPLATES = [VIDEO_DONE_TEMPLATE, VIDEO_TODO_TEMPLATE];
-
-const ALL_TEMPLATES = [...BOOKS_TEMPLATES, ...VIDEO_TEMPLATES];
 
 function getBookTemplate() {
   return (selectedRoles.has('Todo') || selectedRoles.has('Journal'))
@@ -476,27 +443,7 @@ function esc2(str) {
   return esc(str).replace(/\n/g, '<br>');
 }
 
-function parseTitleParts(title) {
-  const brackets = [...title.matchAll(/\[(.+?)\]/g)].map(m => m[1]);
-  return { label: brackets[0] || '', roles: brackets.slice(1), text: title.replace(/^(\[[^\]]+\])+\s*/, '') };
-}
-
-function buildTitle(label, roles, text) {
-  return `[${label}]${roles.map(r => `[${r}]`).join('')} ${text}`;
-}
-
-async function updateIssue(number, patch) {
-  const res = await fetch(`${GITHUB_API}/${number}`, {
-    method: 'PATCH',
-    headers: {
-      'Authorization': `Bearer ${getToken()}`,
-      'Accept': 'application/vnd.github+json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(patch),
-  });
-  if (!res.ok) throw new Error(`${res.status}`);
-}
+// parseTitleParts/buildTitle/updateIssue come from ../shared/notes-api.js
 
 let _dropdown = null;
 function closeDropdown() { if (_dropdown) { _dropdown.remove(); _dropdown = null; } }
@@ -526,7 +473,7 @@ function buildNoteItem(issue) {
   const date = new Date(issue.created_at).toLocaleDateString('ja-JP', {
     month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
   });
-  const { label, roles, text } = parseTitleParts(issue.title);
+  const { label, roles } = parseTitleParts(issue.title);
   const roleIconMap = Object.fromEntries(getRoles().map(({ key, icon }) => [key, icon]));
 
   const item = document.createElement('div');
@@ -547,7 +494,7 @@ function buildNoteItem(issue) {
       e.stopPropagation();
       const opts = getLabels().filter(l => l !== label).map(l => ({ label: l, value: l }));
       showDropdown(tag, opts, newLabel => {
-        const t = buildTitle(newLabel, roles, text);
+        const t = buildTitle(newLabel, roles);
         replaceWith(t);
         updateIssue(issue.number, { title: t }).catch(() => replaceWith(issue.title));
       });
@@ -562,7 +509,7 @@ function buildNoteItem(issue) {
     span.title = roleKey;
     span.addEventListener('click', e => {
       e.stopPropagation();
-      const t = buildTitle(label, roles.filter(r => r !== roleKey), text);
+      const t = buildTitle(label, roles.filter(r => r !== roleKey));
       replaceWith(t);
       updateIssue(issue.number, { title: t }).catch(() => replaceWith(issue.title));
     });
@@ -579,7 +526,7 @@ function buildNoteItem(issue) {
       e.stopPropagation();
       const options = getRoles().map(({ key, icon }) => ({ label: `${icon} ${key}`, value: key }));
       showDropdown(addRoleBtn, options, roleKey => {
-        const t = buildTitle(label, [roleKey], text);
+        const t = buildTitle(label, [roleKey]);
         replaceWith(t);
         updateIssue(issue.number, { title: t }).catch(() => replaceWith(issue.title));
       });
@@ -641,16 +588,7 @@ async function loadNotes() {
   if (!hasCached) c.innerHTML = '<p class="placeholder">Loading...</p>';
 
   try {
-    const res = await fetch(
-      `${GITHUB_API}?labels=note&state=all&per_page=20&sort=created&direction=desc`,
-      { headers: { 'Authorization': `Bearer ${getToken()}`, 'Accept': 'application/vnd.github+json' } }
-    );
-    if (!res.ok) throw new Error(`${res.status}`);
-    const allIssues = await res.json();
-    const cutoff = Date.now() - 5 * 60 * 60 * 1000;
-    const issues = allIssues
-      .filter(i => new Date(i.created_at).getTime() >= cutoff)
-      .slice(0, 10);
+    const issues = await fetchRecentNotes();
     localStorage.setItem(NOTES_CACHE_KEY, JSON.stringify({ ts: Date.now(), items: issues }));
     renderNoteItems(c, issues);
     notesLoaded  = true;

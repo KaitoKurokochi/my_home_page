@@ -284,12 +284,7 @@ async function loadReport() {
   await renderStatusReport(container);
 }
 
-function esc(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
+// esc() comes from ../shared/github-client.js
 
 // Extract label_key from "(#NNN, label_key)" suffix, e.g. "Task text (#42, my_home_page)" → "my_home_page"
 function extractSourceLabel(text) {

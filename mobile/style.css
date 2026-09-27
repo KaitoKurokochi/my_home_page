@@ -743,3 +743,14 @@ body {
   border-radius: 4px;
   padding: 1px 5px;
 }
+
+.desktop-link-wrap {
+  text-align: center;
+  padding: 16px 0 8px;
+}
+
+.desktop-link-wrap a {
+  font-size: 0.85rem;
+  color: #007aff;
+  text-decoration: none;
+}

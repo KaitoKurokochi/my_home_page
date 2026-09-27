@@ -2,6 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script>
+    // Redirect phones to mobile/ (not tablets — iPad's wider screen suits this
+    // desktop layout fine). Skipped when the user explicitly chose "desktop
+    // version" from the mobile page this session (see mobile/app.js).
+    (function () {
+      try {
+        if (sessionStorage.getItem('mypage_prefer_desktop') === '1') return;
+      } catch (_) { /* sessionStorage unavailable — fall through to redirect */ }
+      if (/Android|iPhone|iPod|IEMobile|BlackBerry|Opera Mini/i.test(navigator.userAgent)) {
+        location.replace('mobile/' + location.search);
+      }
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Page</title>
   <link rel="stylesheet" href="css/style.css?v=20260823" />

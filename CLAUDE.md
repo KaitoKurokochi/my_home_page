@@ -61,7 +61,7 @@ Vanilla HTML/CSS/JS single page. Two-column layout below the top bar.
 
 | File | Role |
 |------|------|
-| `config.toml` | Domain key/label, sync instructions, recurring tasks, status_report prompt |
+| `config.toml` | Department key/label, sync instructions, recurring tasks, status_report prompt |
 | `page_config/location_zones.toml` | Zone definitions; run `assembler.py` after edits to regenerate `location_zones.json` |
 | `page_config/weekly_report.toml` | Weekly report generation prompt (used by `section_report.py`) |
 | `page_config/fetch_news.toml` | News fetch prompt (used by `fetch_news.py`) |
@@ -73,13 +73,13 @@ Note: `$AGENT_DIR/my_home_page/` is the agent notes directory (`~/agent/my_home_
 
 - Backend: GitHub Issues on `KaitoKurokochi/vault` (label: `note`) — same repo as the data store (JSON/note.md/report files read via `js/config.js`'s `NOTES_REPO`); the `KaitoKurokochi/agent` repo is retired and no longer used anywhere (2026-09-20)
 - Token stored in localStorage as `NOTE_TOKEN`
-- Labels stored in localStorage; label → domain key mapping in `sync_notes.py` `_LABEL_ALIASES`
+- Labels stored in localStorage; label → department key mapping in `sync_notes.py` `_LABEL_ALIASES`
 - Roles: Memo, Todo, Idea, Journal, Question, Done
 - my_home_page issues are routed by Gemini: Bug/Backlog → status_report.md, others → note.md Temporal section
 
 ## Routines
 
-- `morning_routine.sh` (05:55, once): Step 1 = flush_temporal.py, then calendar/tasks/domains/meeting-note/reminders
+- `morning_routine.sh` (05:55, once): Step 1 = flush_temporal.py, then calendar/tasks/departments/meeting-note/reminders
 - `main_routine.sh` (06:30–22:30, every 30 min): sync_notes → assembler → section_report → fetch_news
 
 ## Version management

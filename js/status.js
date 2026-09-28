@@ -1,8 +1,8 @@
 // ── Status: report (left-col) ─────────────────────────────────────────────────
 // Calendar widget is handled by js/calendar.js.
 // Depends on: shared/github-client.js (getToken, esc),
-//             shared/status-report-data.js (AGENT_DOMAINS, DISPLAY_NAME_TO_KEY,
-//             computeDomainSelection, fetchStatusReportData)
+//             shared/status-report-data.js (AGENT_DEPARTMENTS, DISPLAY_NAME_TO_KEY,
+//             computeDepartmentSelection, fetchStatusReportData)
 //             js/calendar.js (renderCalWidget — sets window.todayEvents)
 
 // Returns a stable key for an item: issue number if present, otherwise full text.
@@ -71,9 +71,9 @@ function wrapSections(bodyEl, autoExpandKeys) {
 // based on the current window.currentZone and day of week.
 // Called after initial render and again when GPS zone becomes available.
 async function reapplyAutoExpand(bodyEl) {
-  const { autoExpand } = await computeDomainSelection();
+  const { autoExpand } = await computeDepartmentSelection();
   const autoExpandNames = new Set();
-  for (const k of autoExpand) autoExpandNames.add(domainName(k));
+  for (const k of autoExpand) autoExpandNames.add(departmentName(k));
 
   bodyEl.querySelectorAll('.sr-section').forEach(wrapper => {
     const key = wrapper.dataset.key || '';
@@ -92,8 +92,8 @@ async function renderReport() {
   if (!el) return;
 
   try {
-    const { domains, autoExpandNames } = await fetchStatusReportData();
-    const md = domains.map(d => `# ${d.name}\n\n${d.status}`).join('\n\n');
+    const { departments, autoExpandNames } = await fetchStatusReportData();
+    const md = departments.map(d => `# ${d.name}\n\n${d.status}`).join('\n\n');
     mentionItems = [];
     const bodyEl = document.createElement('div');
     bodyEl.className = 'mr-body';
@@ -206,7 +206,7 @@ function markdownToHtml(md) {
   // ── Pass 3: render ────────────────────────────────────────────────────────
   let html = '';
   let currentLabel = '';         // current h2 label (Research, Lions_IS, etc.)
-  let currentDomainKey = '';     // domain key for currentLabel (e.g. "univ" for "University")
+  let currentDepartmentKey = '';     // department key for currentLabel (e.g. "univ" for "University")
   let currentSection = '';      // current h3 sub-section text (Phase:, Questions, etc.)
   let itemIndex = 0;
   let inRoutine = false;
@@ -225,7 +225,7 @@ function markdownToHtml(md) {
     const number = numMatch ? parseInt(numMatch[1]) : null;
     // sourceLabel: explicit label from "(#NNN, label)" takes priority over section
     const sourceLabel = (numMatch && numMatch[2]) ? numMatch[2].trim() : null;
-    mentionItems.push({ title: t.text, section, number, sourceLabel, domainKey: currentDomainKey || null });
+    mentionItems.push({ title: t.text, section, number, sourceLabel, departmentKey: currentDepartmentKey || null });
     const idx = itemIndex++;
     if (t.type === 'check') {
       return `<li class="mr-item${t.checked ? ' mr-item-done' : ''}" data-mention-index="${idx}"><span class="mr-bullet" data-item-key="${esc(itemKey(t.text))}">-</span>${esc(t.text)}</li>`;
@@ -268,7 +268,7 @@ function markdownToHtml(md) {
       html += isPhase ? `<h2 class="mr-phase">${esc(t.text)}</h2>` : `<h2 class="mr-section">${esc(t.text)}</h2>`;
     } else if (t.type === 'h1') {
       currentLabel = t.text;
-      currentDomainKey = DISPLAY_NAME_TO_KEY[t.text] || '';
+      currentDepartmentKey = DISPLAY_NAME_TO_KEY[t.text] || '';
       currentSection = '';
       inRoutine = t.text.includes('ルーティンタスク');
       html += `<h2 class="mr-cat">${esc(t.text)}</h2>`;
@@ -405,5 +405,5 @@ function attachBulletToggles(el) {
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 // renderReport() depends on window.todayEvents which is populated by renderCalWidget(),
-// so we must await the calendar before fetching domain files.
+// so we must await the calendar before fetching department files.
 renderCalWidget().then(() => renderReport());

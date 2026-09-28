@@ -65,8 +65,8 @@ let currentMention = null;  // { title, section, number }
 window.setMention = function(item) {
   currentMention = item;
   renderMentionBadge();
-  // sourceLabel > domainKey > section name (domainKey fixes display-name/label mismatches like "University" vs "univ")
-  const labelCandidate = item.sourceLabel || item.domainKey || item.section;
+  // sourceLabel > departmentKey > section name (departmentKey fixes display-name/label mismatches like "University" vs "univ")
+  const labelCandidate = item.sourceLabel || item.departmentKey || item.section;
   const matched = guessLabel(labelCandidate);
   if (matched) {
     selectedLabel = matched;

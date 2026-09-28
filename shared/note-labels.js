@@ -5,15 +5,15 @@
 
 // Explicit overrides for cases where a mention's section name doesn't match
 // the label name by norm() below.
-const DOMAIN_LABEL_OVERRIDE = {};
+const DEPARTMENT_LABEL_OVERRIDE = {};
 
-// Match a section/domain name to an existing label (case-insensitive, ignoring
+// Match a section/department name to an existing label (case-insensitive, ignoring
 // emoji/symbols).
 function guessLabel(section) {
   if (!section) return null;
   const labels = getLabels();
-  if (DOMAIN_LABEL_OVERRIDE[section]) {
-    const override = DOMAIN_LABEL_OVERRIDE[section];
+  if (DEPARTMENT_LABEL_OVERRIDE[section]) {
+    const override = DEPARTMENT_LABEL_OVERRIDE[section];
     const found = labels.find(l => l === override);
     if (found) return found;
   }
@@ -24,12 +24,12 @@ function guessLabel(section) {
   return labels.find(l => norm(l) === norm(section)) || null;
 }
 
-// Returns true when the given label name refers to the books domain.
+// Returns true when the given label name refers to the books department.
 function isBookLabel(label) {
   return !!(label && label.toLowerCase().includes('book'));
 }
 
-// Returns true when the given label name refers to the video content domain.
+// Returns true when the given label name refers to the video content department.
 function isVideoLabel(label) {
   return !!(label && (label.toLowerCase().includes('video') || label.toLowerCase().includes('entertainment')));
 }

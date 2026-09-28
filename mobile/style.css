@@ -667,24 +667,7 @@ body {
   margin-bottom: 8px;
 }
 
-.report-domain {
-  margin-bottom: 12px;
-}
-
-.report-domain-heading {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #1c1c1e;
-  margin-bottom: 4px;
-  padding-left: 8px;
-  border-left: 3px solid #007aff;
-}
-
-.report-domain-body {
-  padding-left: 4px;
-}
-
-/* ── Collapsible domain cards in mobile Report ───────────────────────────────*/
+/* ── Collapsible department cards in mobile Report ───────────────────────────*/
 
 .mobile-rd-section {
   margin-bottom: 10px;

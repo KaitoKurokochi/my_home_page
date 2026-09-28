@@ -104,8 +104,8 @@ function selectLabelPill(name) {
 function setMention(item) {
   currentMention = item;
   renderMentionBadge();
-  // sourceLabel > domainKey > section name (domainKey maps report domain to its label)
-  const labelCandidate = item.sourceLabel || item.domainKey || item.section;
+  // sourceLabel > departmentKey > section name (departmentKey maps report department to its label)
+  const labelCandidate = item.sourceLabel || item.departmentKey || item.section;
   const matched = guessLabel(labelCandidate);
   if (matched) {
     selectLabelPill(matched);

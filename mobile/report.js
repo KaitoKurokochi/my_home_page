@@ -1,7 +1,7 @@
 // ── Report: fetch Due Today and Status Report from agent repo ─────────────────
 // Depends on: ../shared/github-client.js (githubFetch),
-//             ../shared/status-report-data.js (computeDomainSelection,
-//             domainName, fetchStatusReportData)
+//             ../shared/status-report-data.js (computeDepartmentSelection,
+//             departmentName, fetchStatusReportData)
 
 let reportMentionItems = [];
 
@@ -67,8 +67,8 @@ async function renderDueToday(container) {
 async function reapplyReportAutoExpand() {
   const section = document.querySelector('.report-section[data-report="status"]');
   if (!section) return;
-  const { autoExpand } = await computeDomainSelection();
-  const autoExpandNames = new Set([...autoExpand].map(domainName));
+  const { autoExpand } = await computeDepartmentSelection();
+  const autoExpandNames = new Set([...autoExpand].map(departmentName));
   section.querySelectorAll('.mobile-rd-section').forEach(wrapper => {
     const name = wrapper.dataset.name || '';
     const shouldExpand = [...autoExpandNames].some(n =>
@@ -80,8 +80,8 @@ async function reapplyReportAutoExpand() {
   });
 }
 
-// Build one collapsible domain card inside the Status Report section.
-function buildDomainCard(name, status, autoExpandNames) {
+// Build one collapsible department card inside the Status Report section.
+function buildDepartmentCard(name, status, autoExpandNames) {
   const wrapper = document.createElement('div');
   wrapper.className = 'mobile-rd-section';
   wrapper.dataset.name = name;
@@ -134,19 +134,19 @@ async function renderStatusReport(container) {
   section.appendChild(heading);
 
   try {
-    const { domains, autoExpandNames } = await fetchStatusReportData();
+    const { departments, autoExpandNames } = await fetchStatusReportData();
 
-    if (domains.length === 0) {
+    if (departments.length === 0) {
       const empty = document.createElement('p');
       empty.className = 'placeholder';
       empty.textContent = 'No status report available';
       section.appendChild(empty);
     } else {
-      domains.forEach(({ name, status, domainKey }) => {
-        const { wrapper, body } = buildDomainCard(name, status, autoExpandNames);
+      departments.forEach(({ name, status, departmentKey }) => {
+        const { wrapper, body } = buildDepartmentCard(name, status, autoExpandNames);
 
         const idxOffset = reportMentionItems.length;
-        const { html, items } = markdownToHtml(status, domainKey);
+        const { html, items } = markdownToHtml(status, departmentKey);
         reportMentionItems = reportMentionItems.concat(items);
 
         body.innerHTML = html;
@@ -203,7 +203,7 @@ function extractSourceLabel(text) {
   return m ? m[1].trim() : null;
 }
 
-function markdownToHtml(md, domainKey) {
+function markdownToHtml(md, departmentKey) {
   const lines = md.split('\n');
 
   // ── Pass 1: parse into token objects ───────────────────────────────────────
@@ -316,8 +316,8 @@ function markdownToHtml(md, domainKey) {
       const checkSourceLabel = extractSourceLabel(t.text);
       // Use top-level section for label guessing so Phase: items map back to their parent label
       const itemSection = currentSection.startsWith('Phase:') ? currentTopSection : currentSection;
-      items.push({ title: t.text, section: itemSection, sourceLabel: checkSourceLabel, domainKey });
-      console.debug('[mobile-note] item pushed:', { title: t.text, section: itemSection, sourceLabel: checkSourceLabel, domainKey });
+      items.push({ title: t.text, section: itemSection, sourceLabel: checkSourceLabel, departmentKey });
+      console.debug('[mobile-note] item pushed:', { title: t.text, section: itemSection, sourceLabel: checkSourceLabel, departmentKey });
       const doneClass = t.checked ? ' mr-item-done' : '';
       html += `<div class="mr-item${doneClass}" data-idx="${idx++}"><div class="mr-item-header"><span class="mr-item-text">${esc(t.text)}</span></div>`;
       openItem = true;
@@ -325,8 +325,8 @@ function markdownToHtml(md, domainKey) {
       closeItem();
       const itemSourceLabel = extractSourceLabel(t.text);
       const itemSection = currentSection.startsWith('Phase:') ? currentTopSection : currentSection;
-      items.push({ title: t.text, section: itemSection, sourceLabel: itemSourceLabel, domainKey });
-      console.debug('[mobile-note] item pushed:', { title: t.text, section: itemSection, sourceLabel: itemSourceLabel, domainKey });
+      items.push({ title: t.text, section: itemSection, sourceLabel: itemSourceLabel, departmentKey });
+      console.debug('[mobile-note] item pushed:', { title: t.text, section: itemSection, sourceLabel: itemSourceLabel, departmentKey });
       html += `<div class="mr-item" data-idx="${idx++}"><div class="mr-item-header"><span class="mr-item-text">${esc(t.text)}</span></div>`;
       openItem = true;
     } else if (t.type === 'detail' && openItem) {

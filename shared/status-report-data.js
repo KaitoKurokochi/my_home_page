@@ -2,20 +2,20 @@
 // Used by both js/status.js (desktop) and mobile/report.js (mobile).
 // Depends on: shared/github-client.js (githubFetch)
 //
-// Fetches each domain's status.md, extracts the display-worthy body, and
-// decides which domains to include — up through "clean per-domain markdown
+// Fetches each department's status.md, extracts the display-worthy body, and
+// decides which departments to include — up through "clean per-department markdown
 // text". Turning that into HTML/DOM (markdownToHtml, section wrapping,
 // mention buttons, etc.) is UI-specific and stays local to each side, since
 // desktop and mobile render this into genuinely different layouts.
 //
 // Both js/status.js and mobile/report.js used to each fetch a different file
-// per domain (status.md vs the retired note.md pipeline, frozen since
+// per department (status.md vs the retired note.md pipeline, frozen since
 // 2026-09-20) — this is the single source now.
 
-// All available domains: [filePath, displayName, domainKey]
+// All available departments: [filePath, displayName, departmentKey]
 // "My Home Page" was merged into HQ (2026-09-17) and has no status.md of its
 // own anymore — its todos live under HQ/status.md's "### My Home Page" heading.
-const AGENT_DOMAINS = [
+const AGENT_DEPARTMENTS = [
   ['research/status.md',      'Research',     'research'],
   ['Lions_IS/status.md',      'Lions IS',     'Lions_IS'],
   ['baseball/status.md',      'Baseball',     'baseball'],
@@ -29,15 +29,15 @@ const AGENT_DOMAINS = [
   ['HQ/status.md',            'HQ',           'HQ'],
 ];
 
-// Domains always shown regardless of selected_domains.json or context.
-const ALWAYS_DOMAIN_KEYS = ['research', 'general', 'living'];
+// Departments always shown regardless of selected_departments.json or context.
+const ALWAYS_DEPARTMENT_KEYS = ['research', 'general', 'living'];
 
-// Reverse map: display name → domain key (e.g. "University" → "univ")
-const DISPLAY_NAME_TO_KEY = Object.fromEntries(AGENT_DOMAINS.map(([, name, key]) => [name, key]));
+// Reverse map: display name → department key (e.g. "University" → "univ")
+const DISPLAY_NAME_TO_KEY = Object.fromEntries(AGENT_DEPARTMENTS.map(([, name, key]) => [name, key]));
 
-// Returns the display name for a domain key (looks up AGENT_DOMAINS).
-function domainName(key) {
-  const entry = AGENT_DOMAINS.find(([,, k]) => k === key);
+// Returns the display name for a department key (looks up AGENT_DEPARTMENTS).
+function departmentName(key) {
+  const entry = AGENT_DEPARTMENTS.find(([,, k]) => k === key);
   return entry ? entry[1] : key;
 }
 
@@ -58,37 +58,37 @@ function extractStatusBody(md) {
   return body.join('\n');
 }
 
-// Fetches selected_domains.json from GitHub. Returns an array of domain
+// Fetches selected_departments.json from GitHub. Returns an array of department
 // keys, or [] on failure.
-async function fetchSelectedDomains() {
+async function fetchSelectedDepartments() {
   try {
-    const text = await githubFetch('my_home_page/runtime/selected_domains.json');
+    const text = await githubFetch('my_home_page/runtime/selected_departments.json');
     const parsed = JSON.parse(text);
     if (Array.isArray(parsed)) return parsed;
-    if (Array.isArray(parsed.domains)) return parsed.domains;
+    if (Array.isArray(parsed.departments)) return parsed.departments;
     return [];
   } catch (_) {
     return [];
   }
 }
 
-// Computes the set of domain keys to display based on:
-//   1. always set (ALWAYS_DOMAIN_KEYS)
-//   2. selected_domains.json contents
+// Computes the set of department keys to display based on:
+//   1. always set (ALWAYS_DEPARTMENT_KEYS)
+//   2. selected_departments.json contents
 //   3. context rules (window.currentZone, day of week)
 //   4. schedule-based rules (window.todayEvents[].calendar — desktop-only;
 //      mobile has no calendar widget, so window.todayEvents is just absent
 //      and this branch is a no-op there)
-// Also computes which domain keys should be auto-expanded.
-// Returns { domainKeys: Set<string>, autoExpand: Set<string> } (both domain keys)
-async function computeDomainSelection() {
-  const domainKeys = new Set(ALWAYS_DOMAIN_KEYS);
+// Also computes which department keys should be auto-expanded.
+// Returns { departmentKeys: Set<string>, autoExpand: Set<string> } (both department keys)
+async function computeDepartmentSelection() {
+  const departmentKeys = new Set(ALWAYS_DEPARTMENT_KEYS);
   const autoExpand = new Set();
 
-  const validDomainKeys = new Set(AGENT_DOMAINS.map(([,, k]) => k));
+  const validDepartmentKeys = new Set(AGENT_DEPARTMENTS.map(([,, k]) => k));
 
-  const selected = await fetchSelectedDomains();
-  for (const k of selected) domainKeys.add(k);
+  const selected = await fetchSelectedDepartments();
+  for (const k of selected) departmentKeys.add(k);
 
   const zone = window.currentZone;  // may be undefined if GPS not yet ready
   const dow  = new Date().getDay(); // 0 = Sunday
@@ -100,50 +100,50 @@ async function computeDomainSelection() {
     autoExpand.add('research');
   }
   if (zone === 'lions_is') {
-    domainKeys.add('Lions_IS');
+    departmentKeys.add('Lions_IS');
     autoExpand.add('Lions_IS');
   }
   if (dow === 0) {
-    domainKeys.add('HQ');
+    departmentKeys.add('HQ');
     autoExpand.add('HQ');
   }
 
   const events = Array.isArray(window.todayEvents) ? window.todayEvents : [];
   for (const ev of events) {
     const cal = ev.calendar;
-    if (cal && validDomainKeys.has(cal)) {
-      domainKeys.add(cal);
+    if (cal && validDepartmentKeys.has(cal)) {
+      departmentKeys.add(cal);
       autoExpand.add(cal);
     }
   }
 
-  return { domainKeys, autoExpand };
+  return { departmentKeys, autoExpand };
 }
 
 // Fetches and assembles this cycle's status report data: one entry per
-// visible domain with its extracted status.md body, plus the set of display
+// visible department with its extracted status.md body, plus the set of display
 // names that should start auto-expanded.
-// Returns { domains: [{ name, status, domainKey }], autoExpandNames: Set<string> }
+// Returns { departments: [{ name, status, departmentKey }], autoExpandNames: Set<string> }
 async function fetchStatusReportData() {
-  const { domainKeys, autoExpand } = await computeDomainSelection();
+  const { departmentKeys, autoExpand } = await computeDepartmentSelection();
 
-  // Preserve AGENT_DOMAINS' canonical order.
-  const selectedDomains = AGENT_DOMAINS.filter(([,, k]) => domainKeys.has(k));
+  // Preserve AGENT_DEPARTMENTS' canonical order.
+  const selectedDepartments = AGENT_DEPARTMENTS.filter(([,, k]) => departmentKeys.has(k));
 
   const results = await Promise.all(
-    selectedDomains.map(async ([path, name, key]) => {
+    selectedDepartments.map(async ([path, name, key]) => {
       try {
         const md = await githubFetch(path);
         const status = extractStatusBody(md);
         if (!status) return null;
-        return { name, status, domainKey: key };
+        return { name, status, departmentKey: key };
       } catch (_) {
         return null;
       }
     })
   );
 
-  const autoExpandNames = new Set([...autoExpand].map(domainName));
+  const autoExpandNames = new Set([...autoExpand].map(departmentName));
 
-  return { domains: results.filter(Boolean), autoExpandNames };
+  return { departments: results.filter(Boolean), autoExpandNames };
 }

@@ -100,7 +100,7 @@
       if (typeof selectLabelPill === 'function') {
         selectLabelPill(label);
       }
-      // If report is already rendered, re-apply domain auto-expand.
+      // If report is already rendered, re-apply department auto-expand.
       if (typeof reapplyReportAutoExpand === 'function') {
         reapplyReportAutoExpand();
       }

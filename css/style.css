@@ -1402,49 +1402,6 @@ body {
   cursor: pointer;
 }
 
-.note-label-edit {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.75rem;
-  color: inherit;
-  opacity: 0.5;
-  padding: 0 2px;
-  line-height: 1;
-  transition: opacity 0.15s;
-}
-
-.note-label-pill:hover .note-label-edit,
-.note-label-pill.selected .note-label-edit {
-  opacity: 1;
-}
-
-.note-label-edit-input {
-  border: none;
-  outline: none;
-  font-size: 0.8rem;
-  font-family: inherit;
-  background: transparent;
-  width: 90px;
-  color: #1a73e8;
-}
-
-.note-label-add {
-  padding: 4px 10px;
-  border-radius: 20px;
-  border: 1.5px dashed #dadce0;
-  background: none;
-  font-size: 0.8rem;
-  color: #9aa0a6;
-  cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
-}
-
-.note-label-add:hover {
-  border-color: #1a73e8;
-  color: #1a73e8;
-}
-
 .note-item-tags {
   display: flex;
   align-items: center;

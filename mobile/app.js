@@ -200,154 +200,10 @@ function renderForm() {
       labelRow.querySelectorAll('.label-pill').forEach(p => p.classList.toggle('selected', p.textContent === l));
       updateNoteTemplate();
     });
-    labelRow.insertBefore(pill, labelRow.querySelector('.label-add-btn'));
+    labelRow.appendChild(pill);
   }
 
   labels.forEach(l => addLabelPill(l));
-
-  // Add label button
-  const addLabelBtn = document.createElement('button');
-  addLabelBtn.type = 'button';
-  addLabelBtn.className = 'label-add-btn';
-  addLabelBtn.textContent = '+';
-  addLabelBtn.addEventListener('click', openLabelModal);
-  labelRow.appendChild(addLabelBtn);
-
-  // Manage labels button
-  const manageBtn = document.createElement('button');
-  manageBtn.type = 'button';
-  manageBtn.className = 'label-manage-btn';
-  manageBtn.textContent = '✎';
-  manageBtn.addEventListener('click', openLabelModal);
-  labelRow.appendChild(manageBtn);
-
-  function openLabelModal() {
-    const overlay = document.createElement('div');
-    overlay.className = 'label-modal-overlay';
-
-    const sheet = document.createElement('div');
-    sheet.className = 'label-modal-sheet';
-
-    function close() {
-      overlay.remove();
-      pushSync();
-      renderForm();
-    }
-
-    // Header
-    const header = document.createElement('div');
-    header.className = 'label-modal-header';
-    const title = document.createElement('span');
-    title.textContent = 'Manage Labels';
-    const doneBtn = document.createElement('button');
-    doneBtn.type = 'button';
-    doneBtn.className = 'label-modal-done';
-    doneBtn.textContent = 'Done';
-    doneBtn.addEventListener('click', close);
-    header.appendChild(title);
-    header.appendChild(doneBtn);
-
-    // List
-    const list = document.createElement('ul');
-    list.className = 'label-modal-list';
-
-    function renderList() {
-      list.innerHTML = '';
-      getLabels().forEach((l, idx) => {
-        const item = document.createElement('li');
-        item.className = 'label-modal-item';
-
-        const nameEl = document.createElement('span');
-        nameEl.className = 'label-modal-name';
-        nameEl.textContent = l;
-
-        const renameBtn = document.createElement('button');
-        renameBtn.type = 'button';
-        renameBtn.className = 'label-modal-rename';
-        renameBtn.textContent = '✎';
-        renameBtn.addEventListener('click', () => {
-          const input = document.createElement('input');
-          input.type = 'text';
-          input.className = 'label-modal-rename-input';
-          input.value = l;
-          item.replaceChild(input, nameEl);
-          input.focus();
-          input.select();
-
-          function commitRename() {
-            const val = input.value.trim();
-            if (val && val !== l) {
-              const ls = getLabels();
-              ls[idx] = val;
-              localStorage.setItem(LABELS_KEY, JSON.stringify(ls));
-              if (selectedLabel === l) selectedLabel = val;
-            }
-            renderList();
-          }
-          input.addEventListener('blur', commitRename);
-          input.addEventListener('keydown', e => {
-            if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
-            if (e.key === 'Escape') { input.removeEventListener('blur', commitRename); renderList(); }
-          });
-        });
-
-        const delBtn = document.createElement('button');
-        delBtn.type = 'button';
-        delBtn.className = 'label-modal-delete';
-        delBtn.textContent = '×';
-        delBtn.addEventListener('click', () => {
-          const ls = getLabels().filter((_, i) => i !== idx);
-          localStorage.setItem(LABELS_KEY, JSON.stringify(ls));
-          if (selectedLabel === l) selectedLabel = ls[0] || null;
-          renderList();
-        });
-
-        item.appendChild(nameEl);
-        item.appendChild(renameBtn);
-        item.appendChild(delBtn);
-        list.appendChild(item);
-      });
-    }
-
-    renderList();
-
-    // Add new label row
-    const addRow = document.createElement('div');
-    addRow.className = 'label-modal-add';
-    const addInput = document.createElement('input');
-    addInput.type = 'text';
-    addInput.className = 'label-modal-add-input';
-    addInput.placeholder = 'New label';
-    const addBtn = document.createElement('button');
-    addBtn.type = 'button';
-    addBtn.className = 'label-modal-add-btn';
-    addBtn.textContent = 'Add';
-
-    function addLabel() {
-      const val = addInput.value.trim();
-      if (!val) return;
-      const ls = getLabels();
-      if (ls.includes(val)) { addInput.value = ''; return; }
-      ls.push(val);
-      localStorage.setItem(LABELS_KEY, JSON.stringify(ls));
-      selectedLabel = val;
-      addInput.value = '';
-      renderList();
-    }
-
-    addBtn.addEventListener('click', addLabel);
-    addInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addLabel(); } });
-
-    addRow.appendChild(addInput);
-    addRow.appendChild(addBtn);
-
-    sheet.appendChild(header);
-    sheet.appendChild(list);
-    sheet.appendChild(addRow);
-    overlay.appendChild(sheet);
-    overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
-    document.body.appendChild(overlay);
-  }
 
   // Roles
   const roleRow = document.getElementById('role-row');
@@ -613,7 +469,8 @@ document.getElementById('notes-refresh-btn').addEventListener('click', () => {
 
 async function init() {
   if (!getToken()) { renderTokenSetup(); return; }
-  pullSync(); // fire and forget — form renders immediately without waiting for sync
+  pullSync(); // fire and forget (roles only now) — form renders without waiting for it
+  await fetchDepartmentLabels();  // populate getLabels()'s cache before the first render
   renderForm();
   // Preload notes and report in the background so tabs open instantly
   loadNotes();

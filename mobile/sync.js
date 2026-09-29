@@ -1,17 +1,13 @@
 // ── Labels/roles storage (mobile) ────────────────────────────────────────────
-// pullSync()/pushSync() themselves now live in ../shared/sync-api.js — this
-// file only keeps the label/role defaults and accessors, which stay local
-// because mobile's DEFAULT_LABELS intentionally differs from desktop's
-// (js/note.js's) — they're only ever used as first-run fallbacks before the
-// first successful sync from vault.
+// pullSync()/pushSync() themselves now live in ../shared/sync-api.js.
+// Labels now come from ../shared/departments-api.js's fetchDepartmentLabels()
+// cache instead of a locally-maintained DEFAULT_LABELS (which had drifted
+// badly from the real department list — stray "Others"/"my_home_page"
+// entries, inconsistent casing — see status.md/history.md 2026-09-29).
+// Roles are unaffected and keep their own local defaults.
 
-const LABELS_KEY    = 'note_labels';
 const ROLES_KEY     = 'note_roles';
 
-const DEFAULT_LABELS = [
-  'Lions_IS', 'Books', 'Research', 'General', 'Softball',
-  'my_home_page', 'Football', 'HQ', 'video_content', 'Others', 'Baseball',
-];
 const DEFAULT_ROLES  = [
   { key: 'Memo',       icon: '📝' },
   { key: 'Todo',       icon: '🔲' },
@@ -21,5 +17,7 @@ const DEFAULT_ROLES  = [
   { key: 'Done',       icon: '✅' },
 ];
 
-function getLabels() { return JSON.parse(localStorage.getItem(LABELS_KEY) || JSON.stringify(DEFAULT_LABELS)); }
+// getLabels() reads fetchDepartmentLabels()'s cache (populated by initApp()
+// before any render — see app.js) instead of localStorage.
+function getLabels() { return _departmentLabelsCache || DEPARTMENTS_FALLBACK; }
 function getRoles()  { return JSON.parse(localStorage.getItem(ROLES_KEY)  || JSON.stringify(DEFAULT_ROLES)); }

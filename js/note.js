@@ -2,15 +2,15 @@
 // Depends on: shared/github-client.js (getToken, esc), shared/notes-api.js
 // (GITHUB_API, parseTitleParts, buildTitle, updateIssue, fetchRecentNotes),
 // shared/note-labels.js (guessLabel, isBookLabel, isVideoLabel, templates),
-// shared/sync-api.js (pullSync, pushSync)
+// shared/sync-api.js (pullSync, pushSync), shared/departments-api.js
+// (fetchDepartmentLabels — labels now come from the department list, not a
+// per-browser editable list; see that file's header for why, 2026-09-29)
 // Token is stored in localStorage (never in the codebase).
 // To set it, open DevTools console and run:
 //   localStorage.setItem('NOTE_TOKEN', 'ghp_xxxxxxxxxxxx')
 
 const NOTE_TOKEN_KEY  = 'NOTE_TOKEN';
-const NOTE_LABELS_KEY = 'note_labels';
 const NOTE_ROLES_KEY  = 'note_roles';
-const DEFAULT_LABELS  = ['Lions_IS', 'Entertainment', 'Research', 'living', 'health'];
 const DEFAULT_ROLES   = [
   { key: 'Memo',        icon: '📝' },
   { key: 'Todo',        icon: '🔔' },
@@ -21,12 +21,11 @@ const DEFAULT_ROLES   = [
 ];
 
 // getToken() is defined in shared/github-client.js
-function getLabels() { return JSON.parse(localStorage.getItem(NOTE_LABELS_KEY) || JSON.stringify(DEFAULT_LABELS)); }
+// Labels come from fetchDepartmentLabels()'s cache (shared/departments-api.js)
+// — initNote() awaits it once before any render, so this is safe to call
+// synchronously everywhere it already was.
+function getLabels() { return _departmentLabelsCache || DEPARTMENTS_FALLBACK; }
 function getRoles()  { return JSON.parse(localStorage.getItem(NOTE_ROLES_KEY)  || JSON.stringify(DEFAULT_ROLES)); }
-function saveLabels(labels) {
-  localStorage.setItem(NOTE_LABELS_KEY, JSON.stringify(labels));
-  if (typeof pushSync === 'function') pushSync();
-}
 function saveRoles(roles) {
   localStorage.setItem(NOTE_ROLES_KEY, JSON.stringify(roles));
   if (typeof pushSync === 'function') pushSync();
@@ -46,10 +45,11 @@ function renderTokenSetup() {
       <p class="note-setup-hint">The token is stored only in this browser's localStorage — never in the repository.</p>
     </div>
   `;
-  document.getElementById('note-token-save').addEventListener('click', () => {
+  document.getElementById('note-token-save').addEventListener('click', async () => {
     const val = document.getElementById('note-token-input').value.trim();
     if (!val) return;
     localStorage.setItem(NOTE_TOKEN_KEY, val);
+    await fetchDepartmentLabels();  // populate getLabels()'s cache before any render
     renderNoteUI();
     loadNotes();
   });
@@ -105,10 +105,9 @@ function renderLabelBar() {
   const labels = getLabels();
   bar.innerHTML = '';
 
-  labels.forEach((name, i) => {
+  labels.forEach((name) => {
     const pill = document.createElement('span');
     pill.className = 'note-label-pill' + (name === selectedLabel ? ' selected' : '');
-    pill.dataset.index = i;
 
     const nameSpan = document.createElement('span');
     nameSpan.className = 'note-label-name';
@@ -118,64 +117,11 @@ function renderLabelBar() {
       renderLabelBar();
     });
 
-    const editBtn = document.createElement('button');
-    editBtn.className = 'note-label-edit';
-    editBtn.title = 'Rename';
-    editBtn.textContent = '✎';
-    editBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      startLabelEdit(pill, i, name);
-    });
-
     pill.appendChild(nameSpan);
-    pill.appendChild(editBtn);
     bar.appendChild(pill);
   });
 
-  // Add label button
-  const addBtn = document.createElement('button');
-  addBtn.className = 'note-label-add';
-  addBtn.textContent = '+ Add';
-  addBtn.addEventListener('click', () => {
-    const labels = getLabels();
-    const newName = 'New label';
-    labels.push(newName);
-    saveLabels(labels);
-    renderLabelBar();
-    // Immediately open edit for the new label
-    const newIndex = labels.length - 1;
-    const pills = document.querySelectorAll('.note-label-pill');
-    startLabelEdit(pills[newIndex], newIndex, newName);
-  });
-  bar.appendChild(addBtn);
   updateNoteTemplate();
-}
-
-function startLabelEdit(pill, index, currentName) {
-  const input = document.createElement('input');
-  input.className = 'note-label-edit-input';
-  input.value = currentName;
-  pill.innerHTML = '';
-  pill.appendChild(input);
-  input.focus();
-  input.select();
-
-  function commit() {
-    const val = input.value.trim();
-    if (val) {
-      const labels = getLabels();
-      labels[index] = val;
-      saveLabels(labels);
-      if (selectedLabel === currentName) selectedLabel = val;
-    }
-    renderLabelBar();
-  }
-
-  input.addEventListener('blur', commit);
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
-    if (e.key === 'Escape') { input.removeEventListener('blur', commit); renderLabelBar(); }
-  });
 }
 
 // ── Role bar ──────────────────────────────────────────────────────────────────
@@ -644,12 +590,13 @@ function defaultLabelForZone(zoneName) {
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
-function initNote() {
+async function initNote() {
   // Initialize note_roles in localStorage if not yet set, so pushSync includes it
   if (localStorage.getItem(NOTE_ROLES_KEY) === null) {
     localStorage.setItem(NOTE_ROLES_KEY, JSON.stringify(DEFAULT_ROLES));
   }
   if (getToken()) {
+    await fetchDepartmentLabels();  // populate getLabels()'s cache before any render
     renderNoteUI();
     loadNotes();
   } else {

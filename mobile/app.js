@@ -250,12 +250,14 @@ function renderForm() {
 
     const roleStr  = [...selectedRoles].map(r => `[${r}]`).join('');
     const refLine  = currentMention ? (() => {
-      // Strip both "(#NNN)" and "(#NNN, label_key)" suffixes from the title
+      // Strip both "(#NNN)" and "(#NNN, label_key)" suffixes from the title.
+      // No label/section suffix here (unlike the mention badge) — agent-scripts'
+      // github_issues.py matches this line against the original status.md text
+      // verbatim when there's no issue number to key off of, so anything appended
+      // here would break that match (see status.md/history.md 2026-09-30).
       const cleanTitle = currentMention.title.replace(/\s*\(#\d+(?:,\s*[^)]+)?\)$/, '');
       const num = currentMention.number != null ? `#${currentMention.number} ` : '';
-      const displaySec = currentMention.sourceLabel || currentMention.section;
-      const sec = displaySec ? ` (${displaySec})` : '';
-      return `ref: ${num}${cleanTitle}${sec}\n\n`;
+      return `ref: ${num}${cleanTitle}\n\n`;
     })() : '';
     const body  = refLine + text;
     const title = `[${selectedLabel}]${roleStr}`;

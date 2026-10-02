@@ -2206,7 +2206,7 @@ body {
   line-height: 1.6;
 }
 
-/* Department subheading inside a section: ### label */
+/* Subheading inside a ## section (e.g. 今月やったこと/来月注力すること inside a department's section): ### label */
 .wr-subsection {
   font-size: 0.95rem;
   font-weight: 700;

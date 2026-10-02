@@ -25,6 +25,8 @@
       for (const line of lines) {
         if (line.startsWith('# ')) {
           html += `<h1 class="wr-title">${esc(line.slice(2).trim())}</h1>`;
+        } else if (line.startsWith('### ')) {
+          html += `<h3 class="wr-subsection">${esc(line.slice(4).trim())}</h3>`;
         } else if (line.startsWith('## ')) {
           html += `<h2 class="wr-section">${esc(line.slice(3).trim())}</h2>`;
         } else if (line.startsWith('*') && line.endsWith('*') && !line.startsWith('**')) {

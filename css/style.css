@@ -2206,6 +2206,14 @@ body {
   line-height: 1.6;
 }
 
+/* Department subheading inside a section: ### label */
+.wr-subsection {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #3c4043;
+  margin: 18px 0 6px;
+}
+
 /* ── Meeting Note body ───────────────────────────────────────────────────────*/
 
 .mn-body {

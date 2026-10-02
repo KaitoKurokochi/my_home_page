@@ -1091,12 +1091,6 @@ body {
   color: #202124;
 }
 
-.mlb-at {
-  padding: 0 4px;
-  font-size: 0.75rem;
-  color: #9aa0a6;
-}
-
 .mlb-players-list {
   list-style: none;
   margin: 5px 0 0;
@@ -1131,7 +1125,7 @@ body {
 .mlb-stats-item {
   display: flex;
   flex-direction: row;
-  align-items: baseline;
+  align-items: center;
   gap: 5px;
   padding: 4px 0;
   border-bottom: 1px solid #f1f3f4;
@@ -1143,10 +1137,18 @@ body {
   border-bottom: none;
 }
 
+.mlb-team-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .mlb-stats-name {
   font-size: 0.82rem;
   font-weight: 600;
   color: #202124;
+  text-decoration: none;
   flex-shrink: 0;
 }
 
@@ -1154,13 +1156,6 @@ body {
   font-size: 0.8rem;
   color: #1a73e8;
   flex-shrink: 0;
-}
-
-.mlb-stats-opp {
-  font-size: 0.72rem;
-  color: #9aa0a6;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* ── My Note ─────────────────────────────────────────────────────────────────*/

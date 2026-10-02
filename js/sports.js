@@ -38,6 +38,17 @@ function makeTeamLogo(initial) {
   return span;
 }
 
+// MLB team crests, served directly from MLB's own static CDN by team_id
+// (from fetch_sports.py's find_japanese_in_boxscore()) — no local asset needed.
+function makeMlbTeamLogo(teamId, teamName) {
+  if (!teamId) return null;
+  const img = document.createElement('img');
+  img.src = `https://www.mlbstatic.com/team-logos/${teamId}.svg`;
+  img.alt = teamName || '';
+  img.className = 'mlb-team-logo';
+  return img;
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function sportsTimeAgo(isoString) {
@@ -298,29 +309,28 @@ function renderNpbHighlights(highlights) {
 
 // ── MLB: Japanese Players Section ────────────────────────────────────────────
 
+function makeMlbTeamBadge(teamId, teamName) {
+  // Same logo-or-text-fallback shape as NPB's makeTeamLogo(), for the rare
+  // case a game's team_id is missing.
+  const logo = makeMlbTeamLogo(teamId, teamName);
+  if (logo) return logo;
+  const span = document.createElement('span');
+  span.className = 'mlb-team-name';
+  span.textContent = teamName;
+  return span;
+}
+
 function buildMlbGameItem(g) {
   const li = document.createElement('li');
   li.className = 'sports-result-chip sports-result-chip--highlight';
 
-  // away @ home
-  const away = document.createElement('span');
-  away.className = 'mlb-team-name';
-  away.textContent = g.away;
-  li.appendChild(away);
-
-  const sep = document.createElement('span');
-  sep.className = 'mlb-at';
-  sep.textContent = '@';
-  li.appendChild(sep);
-
-  const home = document.createElement('span');
-  home.className = 'mlb-team-name';
-  home.textContent = g.home;
-  li.appendChild(home);
+  // [home logo] [score] [away logo] — same layout as NPB's makeGameList(),
+  // no team-name text and no league split (MLB's game list is already flat).
+  li.appendChild(makeMlbTeamBadge(g.home_id, g.home));
 
   // Score or status
   if (g.status === 'final' && g.away_score != null) {
-    const scoreText = `${g.away_score}-${g.home_score}`;
+    const scoreText = `${g.home_score}-${g.away_score}`;
     if (g.game_url) {
       const a = document.createElement('a');
       a.href = g.game_url;
@@ -342,10 +352,26 @@ function buildMlbGameItem(g) {
     li.appendChild(scoreSpan);
   }
 
+  li.appendChild(makeMlbTeamBadge(g.away_id, g.away));
+
   return li;
 }
 
 // ── MLB: Stats columns ────────────────────────────────────────────────────────
+
+function makeMlbStatsName(p) {
+  // A link to the game's own gameday page when game_url is available
+  // (fetch_sports.py's find_japanese_in_boxscore()), a plain span otherwise.
+  const el = document.createElement(p.game_url ? 'a' : 'span');
+  el.className = 'mlb-stats-name';
+  el.textContent = p.name;
+  if (p.game_url) {
+    el.href = p.game_url;
+    el.target = '_blank';
+    el.rel = 'noopener';
+  }
+  return el;
+}
 
 function buildMlbBatterList(batters) {
   const ul = document.createElement('ul');
@@ -354,9 +380,10 @@ function buildMlbBatterList(batters) {
     const li = document.createElement('li');
     li.className = 'mlb-stats-item';
 
-    const name = document.createElement('span');
-    name.className = 'mlb-stats-name';
-    name.textContent = p.name;
+    const logo = makeMlbTeamLogo(p.team_id, p.team);
+    if (logo) li.appendChild(logo);
+
+    const name = makeMlbStatsName(p);
 
     const stat = document.createElement('span');
     stat.className = 'mlb-stats-line';
@@ -366,13 +393,8 @@ function buildMlbBatterList(batters) {
     if (p.bb)  s += ` ${p.bb}四球`;
     stat.textContent = s;
 
-    const opp = document.createElement('span');
-    opp.className = 'mlb-stats-opp';
-    opp.textContent = `vs ${p.opp}`;
-
     li.appendChild(name);
     li.appendChild(stat);
-    li.appendChild(opp);
     ul.appendChild(li);
   }
   return ul;
@@ -385,9 +407,10 @@ function buildMlbPitcherList(pitchers) {
     const li = document.createElement('li');
     li.className = 'mlb-stats-item';
 
-    const name = document.createElement('span');
-    name.className = 'mlb-stats-name';
-    name.textContent = p.name;
+    const logo = makeMlbTeamLogo(p.team_id, p.team);
+    if (logo) li.appendChild(logo);
+
+    const name = makeMlbStatsName(p);
 
     const stat = document.createElement('span');
     stat.className = 'mlb-stats-line';
@@ -395,13 +418,8 @@ function buildMlbPitcherList(pitchers) {
     if (p.bb) s += ` ${p.bb}BB`;
     stat.textContent = s;
 
-    const opp = document.createElement('span');
-    opp.className = 'mlb-stats-opp';
-    opp.textContent = `vs ${p.opp}`;
-
     li.appendChild(name);
     li.appendChild(stat);
-    li.appendChild(opp);
     ul.appendChild(li);
   }
   return ul;
@@ -473,6 +491,12 @@ function renderMlb(data) {
   grid.appendChild(pitchersCol);
 
   container.appendChild(grid);
+
+  // News
+  if (mlb.news && mlb.news.length) {
+    const newsEl = renderNpbNews(mlb.news);
+    if (newsEl) container.appendChild(newsEl);
+  }
 
   // Highlights
   if (mlb.highlights && mlb.highlights.length) {

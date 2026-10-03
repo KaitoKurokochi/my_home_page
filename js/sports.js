@@ -505,6 +505,168 @@ function renderMlb(data) {
   }
 }
 
+// ── Premier League: Japanese Players Section ──────────────────────────────────
+// Same shape as the MLB section above, but with one flat "出場選手成績" list
+// instead of a batter/pitcher split (soccer has no equivalent role division).
+
+function makePlTeamLogo(teamId, teamName) {
+  // Team crests served from ESPN's own static CDN (fetch_sports.py's
+  // find_japanese_in_pl_summary()/fetch_pl_schedule() supply team_id) — same
+  // "no local asset needed" approach as makeMlbTeamLogo(), different CDN.
+  if (!teamId) return null;
+  const img = document.createElement('img');
+  img.src = `https://a.espncdn.com/i/teamlogos/soccer/500/${teamId}.png`;
+  img.alt = teamName || '';
+  img.className = 'pl-team-logo';
+  return img;
+}
+
+function makePlTeamBadge(teamId, teamName) {
+  const logo = makePlTeamLogo(teamId, teamName);
+  if (logo) return logo;
+  const span = document.createElement('span');
+  span.className = 'mlb-team-name';
+  span.textContent = teamName;
+  return span;
+}
+
+function buildPlGameItem(g) {
+  const li = document.createElement('li');
+  li.className = 'sports-result-chip sports-result-chip--highlight';
+
+  li.appendChild(makePlTeamBadge(g.home_id, g.home));
+
+  if (g.status === 'final' && g.away_score != null) {
+    const scoreText = `${g.home_score}-${g.away_score}`;
+    if (g.game_url) {
+      const a = document.createElement('a');
+      a.href = g.game_url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.className = 'sports-result-score sports-result-score--link';
+      a.textContent = scoreText;
+      li.appendChild(a);
+    } else {
+      const scoreSpan = document.createElement('span');
+      scoreSpan.className = 'sports-result-score';
+      scoreSpan.textContent = scoreText;
+      li.appendChild(scoreSpan);
+    }
+  } else {
+    const scoreSpan = document.createElement('span');
+    scoreSpan.className = 'sports-result-score';
+    scoreSpan.textContent = g.status === 'live' ? 'LIVE' : '予定';
+    li.appendChild(scoreSpan);
+  }
+
+  li.appendChild(makePlTeamBadge(g.away_id, g.away));
+
+  return li;
+}
+
+function makePlStatsName(p) {
+  const el = document.createElement(p.game_url ? 'a' : 'span');
+  el.className = 'mlb-stats-name';
+  el.textContent = p.name;
+  if (p.game_url) {
+    el.href = p.game_url;
+    el.target = '_blank';
+    el.rel = 'noopener';
+  }
+  return el;
+}
+
+function buildPlStatLine(p) {
+  const parts = [p.starter ? '先発' : '途中出場'];
+  if (p.goals)        parts.push(`${p.goals}G`);
+  if (p.assists)       parts.push(`${p.assists}A`);
+  if (p.yellow_cards)  parts.push('警告');
+  if (p.red_cards)     parts.push('退場');
+  return parts.join(' ');
+}
+
+function buildPlStatsList(players) {
+  const ul = document.createElement('ul');
+  ul.className = 'mlb-stats-list';
+  for (const p of players) {
+    const li = document.createElement('li');
+    li.className = 'mlb-stats-item';
+
+    const logo = makePlTeamLogo(p.team_id, p.team);
+    if (logo) li.appendChild(logo);
+
+    const name = makePlStatsName(p);
+
+    const stat = document.createElement('span');
+    stat.className = 'mlb-stats-line';
+    stat.textContent = buildPlStatLine(p);
+
+    li.appendChild(name);
+    li.appendChild(stat);
+    ul.appendChild(li);
+  }
+  return ul;
+}
+
+function renderPremierLeague(data) {
+  const container = document.getElementById('sports-pl-content');
+  if (!container || !data.pl) return;
+  container.innerHTML = '';
+
+  const pl = data.pl;
+
+  if (pl.date_label) {
+    const dh = document.createElement('div');
+    dh.className = 'sports-results-date';
+    dh.textContent = `▽${pl.date_label}`;
+    container.appendChild(dh);
+  }
+
+  const grid = document.createElement('div');
+  grid.className = 'sports-two-col';
+
+  // Column 1: Game results
+  const gamesCol = document.createElement('div');
+  gamesCol.className = 'sports-col';
+  gamesCol.appendChild(makeSublabel('試合結果'));
+  const games = pl.games || [];
+  if (games.length) {
+    const ul = document.createElement('ul');
+    ul.className = 'sports-results-vlist';
+    for (const g of games) ul.appendChild(buildPlGameItem(g));
+    gamesCol.appendChild(ul);
+  } else {
+    const p = document.createElement('p');
+    p.className = 'sports-empty';
+    p.textContent = '日本人選手の出場試合なし';
+    gamesCol.appendChild(p);
+  }
+  grid.appendChild(gamesCol);
+
+  // Column 2: Player stats
+  const playersCol = document.createElement('div');
+  playersCol.className = 'sports-col';
+  playersCol.appendChild(makeSublabel('出場選手成績'));
+  const players = pl.players || [];
+  if (players.length) {
+    playersCol.appendChild(buildPlStatsList(players));
+  } else {
+    const p = document.createElement('p');
+    p.className = 'sports-empty';
+    p.textContent = 'データなし';
+    playersCol.appendChild(p);
+  }
+  grid.appendChild(playersCol);
+
+  container.appendChild(grid);
+
+  // Highlights
+  if (pl.highlights && pl.highlights.length) {
+    const hlEl = renderNpbHighlights(pl.highlights);
+    if (hlEl) container.appendChild(hlEl);
+  }
+}
+
 // ── Main render ───────────────────────────────────────────────────────────────
 
 function renderNpb(data) {
@@ -557,6 +719,7 @@ async function initSports() {
 
   const npbContainer = document.getElementById('sports-npb-content');
   const mlbContainer = document.getElementById('sports-mlb-content');
+  const plContainer  = document.getElementById('sports-pl-content');
   if (!npbContainer) return;
 
   try {
@@ -564,6 +727,7 @@ async function initSports() {
     const data = JSON.parse(text);
     renderNpb(data);
     if (mlbContainer) renderMlb(data);
+    if (plContainer) renderPremierLeague(data);
     sportsLoaded = true;
   } catch (e) {
     const errMsg404 = '<p class="sports-empty">データ未取得（main_routine 待ち）</p>';
@@ -571,9 +735,11 @@ async function initSports() {
     if (/^404 /.test(e.message)) {
       npbContainer.innerHTML = errMsg404;
       if (mlbContainer) mlbContainer.innerHTML = errMsg404;
+      if (plContainer) plContainer.innerHTML = errMsg404;
     } else {
       npbContainer.innerHTML = errMsgGen;
       if (mlbContainer) mlbContainer.innerHTML = '';
+      if (plContainer) plContainer.innerHTML = '';
     }
   }
 }

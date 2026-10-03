@@ -1144,6 +1144,13 @@ body {
   flex-shrink: 0;
 }
 
+.pl-team-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .mlb-stats-name {
   font-size: 0.82rem;
   font-weight: 600;

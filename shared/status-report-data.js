@@ -80,6 +80,20 @@ async function fetchSelectedDepartments() {
   }
 }
 
+// Fetches zone_departments.json from GitHub — {zone_name: [department_key, ...]},
+// built by agent-scripts from each department's own "zones" setting in its
+// department_settings/<key>.toml (see select_departments.py's
+// build_zone_departments()). {} on failure.
+async function fetchZoneDepartments() {
+  try {
+    const text = await githubFetch('my_home_page/runtime/zone_departments.json');
+    const parsed = JSON.parse(text);
+    return (parsed && typeof parsed === 'object') ? parsed : {};
+  } catch (_) {
+    return {};
+  }
+}
+
 // Computes the set of department keys to display based on:
 //   1. always set (ALWAYS_DEPARTMENT_KEYS)
 //   2. selected_departments.json contents
@@ -89,8 +103,10 @@ async function fetchSelectedDepartments() {
 //      and this branch is a no-op there)
 // Also computes which department keys should be auto-expanded — this now
 // includes selected_departments.json's "auto_expand" (weekday-based, from
-// each department's own toml — see fetchSelectedDepartments()) alongside the
-// zone/calendar rules below.
+// each department's own toml — see fetchSelectedDepartments()) and
+// zone_departments.json's entry for window.currentZone (also from each
+// department's own toml — see fetchZoneDepartments()), alongside the
+// calendar rule below.
 // Returns { departmentKeys: Set<string>, autoExpand: Set<string> } (both department keys)
 async function computeDepartmentSelection() {
   const departmentKeys = new Set(ALWAYS_DEPARTMENT_KEYS);
@@ -103,16 +119,12 @@ async function computeDepartmentSelection() {
   for (const k of serverAutoExpand) autoExpand.add(k);
 
   const zone = window.currentZone;  // may be undefined if GPS not yet ready
-
-  if (zone === 'home') {
-    autoExpand.add('living');
-  }
-  if (zone === 'univ') {
-    autoExpand.add('research');
-  }
-  if (zone === 'lions_is') {
-    departmentKeys.add('Lions_IS');
-    autoExpand.add('Lions_IS');
+  if (zone) {
+    const zoneDepartments = await fetchZoneDepartments();
+    for (const k of (zoneDepartments[zone] || [])) {
+      departmentKeys.add(k);
+      autoExpand.add(k);
+    }
   }
 
   const events = Array.isArray(window.todayEvents) ? window.todayEvents : [];

@@ -58,28 +58,60 @@ function extractStatusBody(md) {
   return body.join('\n');
 }
 
-// Fetches selected_departments.json from GitHub. Returns an array of department
-// keys, or [] on failure.
+// Fetches selected_departments.json from GitHub.
+// Returns { departments: string[], autoExpand: string[] } — departments is
+// the keys to show; autoExpand is department_settings/<key>.toml's optional
+// expand_days (weekday names), already resolved against today server-side
+// (see agent-scripts' select_departments.py select_auto_expand()) — e.g. HQ's
+// section opening specifically on Sundays, when its weekly recurring task
+// appears. Both empty on failure or for an older cached file with no
+// "auto_expand" key.
 async function fetchSelectedDepartments() {
   try {
     const text = await githubFetch('my_home_page/runtime/selected_departments.json');
     const parsed = JSON.parse(text);
-    if (Array.isArray(parsed)) return parsed;
-    if (Array.isArray(parsed.departments)) return parsed.departments;
-    return [];
+    if (Array.isArray(parsed)) return { departments: parsed, autoExpand: [] };
+    return {
+      departments: Array.isArray(parsed.departments) ? parsed.departments : [],
+      autoExpand: Array.isArray(parsed.auto_expand) ? parsed.auto_expand : [],
+    };
   } catch (_) {
-    return [];
+    return { departments: [], autoExpand: [] };
+  }
+}
+
+// Fetches zone_departments.json from GitHub — {zone_name: [department_key, ...]},
+// built by agent-scripts from each department's own "zones" setting in its
+// department_settings/<key>.toml (see select_departments.py's
+// build_zone_departments()). {} on failure.
+async function fetchZoneDepartments() {
+  try {
+    const text = await githubFetch('my_home_page/runtime/zone_departments.json');
+    const parsed = JSON.parse(text);
+    return (parsed && typeof parsed === 'object') ? parsed : {};
+  } catch (_) {
+    return {};
   }
 }
 
 // Computes the set of department keys to display based on:
 //   1. always set (ALWAYS_DEPARTMENT_KEYS)
-//   2. selected_departments.json contents
-//   3. context rules (window.currentZone, day of week)
+//   2. selected_departments.json contents — this is also where a calendar
+//      match lives now (agent-scripts' select_departments.py matches a
+//      department's own key against today's event calendar labels first,
+//      falling back to its configured calendar_trigger aliases), so display
+//      itself no longer needs its own separate calendar-matching pass here
+//   3. context rules (window.currentZone, via zone_departments.json)
 //   4. schedule-based rules (window.todayEvents[].calendar — desktop-only;
 //      mobile has no calendar widget, so window.todayEvents is just absent
 //      and this branch is a no-op there)
-// Also computes which department keys should be auto-expanded.
+// Also computes which department keys should be auto-expanded: the
+// schedule-based rule below (#4) is expand-only now, since display is
+// already covered by #2 above. selected_departments.json's "auto_expand"
+// (weekday-based, from each department's own toml — see
+// fetchSelectedDepartments()) and zone_departments.json's entry for
+// window.currentZone (also from each department's own toml — see
+// fetchZoneDepartments()) feed both display and expand.
 // Returns { departmentKeys: Set<string>, autoExpand: Set<string> } (both department keys)
 async function computeDepartmentSelection() {
   const departmentKeys = new Set(ALWAYS_DEPARTMENT_KEYS);
@@ -87,32 +119,23 @@ async function computeDepartmentSelection() {
 
   const validDepartmentKeys = new Set(AGENT_DEPARTMENTS.map(([,, k]) => k));
 
-  const selected = await fetchSelectedDepartments();
+  const { departments: selected, autoExpand: serverAutoExpand } = await fetchSelectedDepartments();
   for (const k of selected) departmentKeys.add(k);
+  for (const k of serverAutoExpand) autoExpand.add(k);
 
   const zone = window.currentZone;  // may be undefined if GPS not yet ready
-  const dow  = new Date().getDay(); // 0 = Sunday
-
-  if (zone === 'home') {
-    autoExpand.add('living');
-  }
-  if (zone === 'univ') {
-    autoExpand.add('research');
-  }
-  if (zone === 'lions_is') {
-    departmentKeys.add('Lions_IS');
-    autoExpand.add('Lions_IS');
-  }
-  if (dow === 0) {
-    departmentKeys.add('HQ');
-    autoExpand.add('HQ');
+  if (zone) {
+    const zoneDepartments = await fetchZoneDepartments();
+    for (const k of (zoneDepartments[zone] || [])) {
+      departmentKeys.add(k);
+      autoExpand.add(k);
+    }
   }
 
   const events = Array.isArray(window.todayEvents) ? window.todayEvents : [];
   for (const ev of events) {
     const cal = ev.calendar;
     if (cal && validDepartmentKeys.has(cal)) {
-      departmentKeys.add(cal);
       autoExpand.add(cal);
     }
   }

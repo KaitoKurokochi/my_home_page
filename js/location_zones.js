@@ -1,7 +1,9 @@
-// ── Location zones — section expand/collapse control ─────────────────────────
+// ── Location zones — GPS-to-zone-name detection ───────────────────────────────
 //
-// Config is fetched from agent/my_home_page/runtime/location_zones.json (pushed by assembler.py).
-// Each zone entry supports two matching strategies (evaluated in order):
+// Config is fetched from agent/my_home_page/runtime/location_zones.json —
+// static, manually maintained (no script currently generates it; the
+// assembler.py that originally did was abolished 2026-06-27). Each zone
+// entry supports two matching strategies (evaluated in order):
 //
 //   address_fields: { <field>: <value>, ... }
 //     Exact match against Nominatim address fields (e.g. quarter, suburb).
@@ -16,8 +18,14 @@
 // Zones are evaluated in the order they appear in the JSON.
 // The first matching zone wins — put more specific zones (e.g. home) first.
 //
-// sections: section keys to expand by default at this location.
-// If location is unavailable or no zone matches, ALL sections are expanded (fallback).
+// This file only resolves GPS coordinates to a zone NAME (window.currentZone).
+// Which department(s) that zone name maps to for display/auto-expand comes
+// from agent-scripts' zone_departments.json (built from each department's
+// own "zones" setting in department_settings/<key>.toml) — see
+// shared/status-report-data.js's computeDepartmentSelection(). A zone entry
+// here used to also carry its own "sections" list for this, but that was
+// dead code (detectExpandedSections()'s return value was never consumed —
+// see history.md) and has been removed.
 
 // Depends on: shared/github-client.js (githubFetch)
 
@@ -48,7 +56,9 @@ function matchPlaceNames(zone, matchText) {
   return keywords.some(kw => matchText.includes(kw));
 }
 
-// Returns a Set of section keys to expand, or null (= expand all).
+// Resolves GPS coordinates to a zone name, exposing it as window.currentZone
+// for computeDepartmentSelection() to react to. Returns the matched zone
+// name, or null if location is unavailable or no zone matches.
 async function detectExpandedSections() {
   // 1. Get coordinates from localStorage (saved by app.js weather widget)
   let loc;
@@ -106,7 +116,7 @@ async function detectExpandedSections() {
       if (locEl) locEl.textContent = '📍 ' + label;
       // Expose the matched zone name globally so other modules can react.
       window.currentZone = zone.name;
-      return new Set(zone.sections || []);
+      return zone.name;
     }
   }
 

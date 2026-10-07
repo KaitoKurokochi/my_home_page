@@ -74,12 +74,17 @@ async function fetchSelectedDepartments() {
 
 // Computes the set of department keys to display based on:
 //   1. always set (ALWAYS_DEPARTMENT_KEYS)
-//   2. selected_departments.json contents
+//   2. selected_departments.json contents — this is also where a calendar
+//      match lives now (agent-scripts' select_departments.py matches a
+//      department's own key against today's event calendar labels first,
+//      falling back to its configured calendar_trigger aliases), so display
+//      itself no longer needs its own separate calendar-matching pass here
 //   3. context rules (window.currentZone, day of week)
-//   4. schedule-based rules (window.todayEvents[].calendar — desktop-only;
-//      mobile has no calendar widget, so window.todayEvents is just absent
-//      and this branch is a no-op there)
-// Also computes which department keys should be auto-expanded.
+// Also computes which department keys should be auto-expanded — the
+// schedule-based rule below (window.todayEvents[].calendar — desktop-only;
+// mobile has no calendar widget, so window.todayEvents is just absent and
+// this branch is a no-op there) is expand-only now, since display is
+// already covered by #2 above.
 // Returns { departmentKeys: Set<string>, autoExpand: Set<string> } (both department keys)
 async function computeDepartmentSelection() {
   const departmentKeys = new Set(ALWAYS_DEPARTMENT_KEYS);
@@ -112,7 +117,6 @@ async function computeDepartmentSelection() {
   for (const ev of events) {
     const cal = ev.calendar;
     if (cal && validDepartmentKeys.has(cal)) {
-      departmentKeys.add(cal);
       autoExpand.add(cal);
     }
   }

@@ -12,10 +12,21 @@
 // per department (status.md vs the retired note.md pipeline, frozen since
 // 2026-09-20) — this is the single source now.
 
-// All available departments: [filePath, displayName, departmentKey]
-// "My Home Page" was merged into HQ (2026-09-17) and has no status.md of its
-// own anymore — its todos live under HQ/status.md's "### My Home Page" heading.
-const AGENT_DEPARTMENTS = [
+// Populated by fetchAgentDepartments() — [filePath, displayName, departmentKey]
+// triplets, derived from agent-scripts' departments.json (key + label) plus
+// the universal "<key>/status.md" file-path convention every department
+// follows (including HQ, whose own status.md also carries "My Home Page"'s
+// todos, merged 2026-09-17, under its "### My Home Page" heading — no
+// separate file). No longer hardcoded here: this used to duplicate
+// departments.json's key list (and silently miss any department added
+// there, as happened with "health") — see computeDepartmentSelection(),
+// which awaits fetchAgentDepartments() before anything below reads this.
+let AGENT_DEPARTMENTS = [];
+
+// Used only if the fetch fails (network error, file missing, bad JSON) —
+// same rationale/fallback pattern as shared/departments-api.js's
+// DEPARTMENTS_FALLBACK.
+const AGENT_DEPARTMENTS_FALLBACK = [
   ['research/status.md',      'Research',     'research'],
   ['Lions_IS/status.md',      'Lions IS',     'Lions_IS'],
   ['baseball/status.md',      'Baseball',     'baseball'],
@@ -27,13 +38,37 @@ const AGENT_DEPARTMENTS = [
   ['general/status.md',       'General',      'general'],
   ['living/status.md',        'Living',       'living'],
   ['HQ/status.md',            'HQ',           'HQ'],
+  ['health/status.md',        'Health',       'health'],
 ];
 
 // Departments always shown regardless of selected_departments.json or context.
 const ALWAYS_DEPARTMENT_KEYS = ['research', 'general', 'living'];
 
-// Reverse map: display name → department key (e.g. "University" → "univ")
-const DISPLAY_NAME_TO_KEY = Object.fromEntries(AGENT_DEPARTMENTS.map(([, name, key]) => [name, key]));
+// Reverse map: display name → department key (e.g. "University" → "univ").
+// Rebuilt by fetchAgentDepartments() each time AGENT_DEPARTMENTS changes.
+let DISPLAY_NAME_TO_KEY = {};
+
+let _agentDepartmentsCache = null;
+
+// Fetches (once — cached after) departments.json and derives AGENT_DEPARTMENTS
+// + DISPLAY_NAME_TO_KEY from it. Awaited by computeDepartmentSelection()
+// before either is read, so every caller of that function (and
+// fetchStatusReportData(), which calls it) sees up-to-date data without
+// needing to call this directly.
+async function fetchAgentDepartments() {
+  if (_agentDepartmentsCache) return _agentDepartmentsCache;
+  try {
+    const text = await githubFetch('my_home_page/runtime/departments.json');
+    const parsed = JSON.parse(text);
+    const list = parsed.map(d => [`${d.key}/status.md`, d.label || d.key, d.key]);
+    _agentDepartmentsCache = list.length ? list : AGENT_DEPARTMENTS_FALLBACK;
+  } catch (_) {
+    _agentDepartmentsCache = AGENT_DEPARTMENTS_FALLBACK;
+  }
+  AGENT_DEPARTMENTS = _agentDepartmentsCache;
+  DISPLAY_NAME_TO_KEY = Object.fromEntries(AGENT_DEPARTMENTS.map(([, name, key]) => [name, key]));
+  return AGENT_DEPARTMENTS;
+}
 
 // Returns the display name for a department key (looks up AGENT_DEPARTMENTS).
 function departmentName(key) {
@@ -114,6 +149,8 @@ async function fetchZoneDepartments() {
 // fetchZoneDepartments()) feed both display and expand.
 // Returns { departmentKeys: Set<string>, autoExpand: Set<string> } (both department keys)
 async function computeDepartmentSelection() {
+  await fetchAgentDepartments();
+
   const departmentKeys = new Set(ALWAYS_DEPARTMENT_KEYS);
   const autoExpand = new Set();
 

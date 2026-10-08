@@ -21,28 +21,10 @@
 // departments.json's key list (and silently miss any department added
 // there, as happened with "health") — see computeDepartmentSelection(),
 // which awaits fetchAgentDepartments() before anything below reads this.
+// Empty (nothing shown) on fetch failure — same fail-soft-to-empty
+// philosophy as fetchSelectedDepartments()/fetchZoneDepartments() below, no
+// department-specific hardcoded fallback list.
 let AGENT_DEPARTMENTS = [];
-
-// Used only if the fetch fails (network error, file missing, bad JSON) —
-// same rationale/fallback pattern as shared/departments-api.js's
-// DEPARTMENTS_FALLBACK.
-const AGENT_DEPARTMENTS_FALLBACK = [
-  ['research/status.md',      'Research',     'research'],
-  ['Lions_IS/status.md',      'Lions IS',     'Lions_IS'],
-  ['baseball/status.md',      'Baseball',     'baseball'],
-  ['football/status.md',      'Football',     'football'],
-  ['books/status.md',         'Books',        'books'],
-  ['softball/status.md',      'Softball',     'softball'],
-  ['univ/status.md',          'University',   'univ'],
-  ['video_content/status.md', 'Video Content','video_content'],
-  ['general/status.md',       'General',      'general'],
-  ['living/status.md',        'Living',       'living'],
-  ['HQ/status.md',            'HQ',           'HQ'],
-  ['health/status.md',        'Health',       'health'],
-];
-
-// Departments always shown regardless of selected_departments.json or context.
-const ALWAYS_DEPARTMENT_KEYS = ['research', 'general', 'living'];
 
 // Reverse map: display name → department key (e.g. "University" → "univ").
 // Rebuilt by fetchAgentDepartments() each time AGENT_DEPARTMENTS changes.
@@ -60,10 +42,9 @@ async function fetchAgentDepartments() {
   try {
     const text = await githubFetch('my_home_page/runtime/departments.json');
     const parsed = JSON.parse(text);
-    const list = parsed.map(d => [`${d.key}/status.md`, d.label || d.key, d.key]);
-    _agentDepartmentsCache = list.length ? list : AGENT_DEPARTMENTS_FALLBACK;
+    _agentDepartmentsCache = parsed.map(d => [`${d.key}/status.md`, d.label || d.key, d.key]);
   } catch (_) {
-    _agentDepartmentsCache = AGENT_DEPARTMENTS_FALLBACK;
+    _agentDepartmentsCache = [];
   }
   AGENT_DEPARTMENTS = _agentDepartmentsCache;
   DISPLAY_NAME_TO_KEY = Object.fromEntries(AGENT_DEPARTMENTS.map(([, name, key]) => [name, key]));
@@ -130,28 +111,31 @@ async function fetchZoneDepartments() {
 }
 
 // Computes the set of department keys to display based on:
-//   1. always set (ALWAYS_DEPARTMENT_KEYS)
-//   2. selected_departments.json contents — this is also where a calendar
-//      match lives now (agent-scripts' select_departments.py matches a
-//      department's own key against today's event calendar labels first,
-//      falling back to its configured calendar_trigger aliases), so display
-//      itself no longer needs its own separate calendar-matching pass here
-//   3. context rules (window.currentZone, via zone_departments.json)
-//   4. schedule-based rules (window.todayEvents[].calendar — desktop-only;
+//   1. selected_departments.json contents — this is also where "always show"
+//      (department_settings/<key>.toml's always = true) and a calendar match
+//      live now (agent-scripts' select_departments.py matches a department's
+//      own key against today's event calendar labels first, falling back to
+//      its configured calendar_trigger aliases), so display itself needs no
+//      separate always-list or calendar-matching pass here
+//   2. context rules (window.currentZone, via zone_departments.json)
+//   3. schedule-based rules (window.todayEvents[].calendar — desktop-only;
 //      mobile has no calendar widget, so window.todayEvents is just absent
 //      and this branch is a no-op there)
 // Also computes which department keys should be auto-expanded: the
-// schedule-based rule below (#4) is expand-only now, since display is
-// already covered by #2 above. selected_departments.json's "auto_expand"
+// schedule-based rule below (#3) is expand-only now, since display is
+// already covered by #1 above. selected_departments.json's "auto_expand"
 // (weekday-based, from each department's own toml — see
 // fetchSelectedDepartments()) and zone_departments.json's entry for
 // window.currentZone (also from each department's own toml — see
 // fetchZoneDepartments()) feed both display and expand.
-// Returns { departmentKeys: Set<string>, autoExpand: Set<string> } (both department keys)
+// Returns { departmentKeys: Set<string>, autoExpand: Set<string> } (both department keys).
+// Nothing is shown if selected_departments.json's fetch fails — no hardcoded
+// always-list fallback (fail-soft-to-empty, same philosophy as
+// fetchAgentDepartments()/fetchZoneDepartments()).
 async function computeDepartmentSelection() {
   await fetchAgentDepartments();
 
-  const departmentKeys = new Set(ALWAYS_DEPARTMENT_KEYS);
+  const departmentKeys = new Set();
   const autoExpand = new Set();
 
   const validDepartmentKeys = new Set(AGENT_DEPARTMENTS.map(([,, k]) => k));

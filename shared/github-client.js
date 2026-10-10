@@ -54,3 +54,15 @@ function esc(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 }
+
+// ── Local date ────────────────────────────────────────────────────────────────
+
+// Today's date as YYYY-MM-DD in the browser's local time zone. Do not use
+// new Date().toISOString().slice(0, 10) for this: that is the UTC date, which is
+// still "yesterday" between 00:00 and 09:00 JST and breaks comparisons against
+// the JST dates the agent-scripts pipeline writes (e.g. due_today.json's "date").
+function localDateString(d = new Date()) {
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${mm}-${dd}`;
+}

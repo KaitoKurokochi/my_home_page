@@ -40,7 +40,7 @@
     const section = document.getElementById('due-today');
     if (!section) return;
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = localDateString();
     // Ignore stale files (generated for a different date)
     if (data.date && data.date !== today) {
       section.style.display = 'none';

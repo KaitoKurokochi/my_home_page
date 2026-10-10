@@ -20,7 +20,7 @@ async function renderDueToday(container) {
     const text = await githubFetch('my_home_page/runtime/due_today.json');
     const data = JSON.parse(text);
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = localDateString();
     const tasks = (data.tasks || []).filter(() => !data.date || data.date === today);
 
     if (tasks.length === 0) {

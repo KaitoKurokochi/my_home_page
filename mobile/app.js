@@ -103,6 +103,7 @@ function selectLabelPill(name) {
 
 function setMention(item) {
   currentMention = item;
+  window.labelTouchedByUser = true;
   renderMentionBadge();
   // sourceLabel > departmentKey > section name (departmentKey maps report department to its label)
   const labelCandidate = item.sourceLabel || item.departmentKey || item.section;
@@ -197,6 +198,7 @@ function renderForm() {
     pill.textContent = l;
     pill.addEventListener('click', () => {
       selectedLabel = l;
+      window.labelTouchedByUser = true;
       labelRow.querySelectorAll('.label-pill').forEach(p => p.classList.toggle('selected', p.textContent === l));
       updateNoteTemplate();
     });

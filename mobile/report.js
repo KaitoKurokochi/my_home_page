@@ -193,6 +193,8 @@ async function loadReport() {
 
   await renderDueToday(container);
   await renderStatusReport(container);
+  // Zone detection may have finished while the report was still rendering (as desktop).
+  if (window.currentZone) reapplyReportAutoExpand();
 }
 
 // esc() comes from ../shared/github-client.js

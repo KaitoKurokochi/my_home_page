@@ -97,24 +97,23 @@
       textSpan.textContent = displayText;
       li.appendChild(textSpan);
 
-      if (issueNum != null) {
-        const mentionBtn = document.createElement('button');
-        mentionBtn.className = 'mr-mention-btn';
-        mentionBtn.textContent = '@';
-        mentionBtn.title = 'メンションしてメモを書く';
-        mentionBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (typeof window.setMention === 'function') {
-            window.setMention({
-              title: displayText,
-              section: t.label || t.key || '',
-              number: issueNum,
-              sourceLabel: null,
-            });
-          }
-        });
-        li.appendChild(mentionBtn);
-      }
+      // Shown for every task, with or without an issue number (same as Status Report items).
+      const mentionBtn = document.createElement('button');
+      mentionBtn.className = 'mr-mention-btn';
+      mentionBtn.textContent = '@';
+      mentionBtn.title = 'メンションしてメモを書く';
+      mentionBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (typeof window.setMention === 'function') {
+          window.setMention({
+            title: displayText,
+            section: t.label || t.key || '',
+            number: issueNum,
+            sourceLabel: null,
+          });
+        }
+      });
+      li.appendChild(mentionBtn);
 
       ul.appendChild(li);
     });

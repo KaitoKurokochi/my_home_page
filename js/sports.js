@@ -667,6 +667,21 @@ function renderPremierLeague(data) {
   }
 }
 
+// ── Other sports (Japanese athletes' achievements, news only) ──────────────────
+
+function renderOtherSports(data) {
+  const container = document.getElementById('sports-other-content');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const newsEl = renderNpbNews(data.other && data.other.news);
+  if (newsEl) {
+    container.appendChild(newsEl);
+  } else {
+    container.innerHTML = '<p class="sports-empty">該当するニュースはありません</p>';
+  }
+}
+
 // ── Main render ───────────────────────────────────────────────────────────────
 
 function renderNpb(data) {
@@ -720,6 +735,7 @@ async function initSports() {
   const npbContainer = document.getElementById('sports-npb-content');
   const mlbContainer = document.getElementById('sports-mlb-content');
   const plContainer  = document.getElementById('sports-pl-content');
+  const otherContainer = document.getElementById('sports-other-content');
   if (!npbContainer) return;
 
   try {
@@ -728,6 +744,7 @@ async function initSports() {
     renderNpb(data);
     if (mlbContainer) renderMlb(data);
     if (plContainer) renderPremierLeague(data);
+    if (otherContainer) renderOtherSports(data);
     sportsLoaded = true;
   } catch (e) {
     const errMsg404 = '<p class="sports-empty">データ未取得（main_routine 待ち）</p>';
@@ -736,10 +753,12 @@ async function initSports() {
       npbContainer.innerHTML = errMsg404;
       if (mlbContainer) mlbContainer.innerHTML = errMsg404;
       if (plContainer) plContainer.innerHTML = errMsg404;
+      if (otherContainer) otherContainer.innerHTML = errMsg404;
     } else {
       npbContainer.innerHTML = errMsgGen;
       if (mlbContainer) mlbContainer.innerHTML = '';
       if (plContainer) plContainer.innerHTML = '';
+      if (otherContainer) otherContainer.innerHTML = '';
     }
   }
 }

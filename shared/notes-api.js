@@ -14,9 +14,11 @@ function parseTitleParts(title) {
   return { label, roles, text };
 }
 
+// The label is written as its department key (see departmentKeyForLabel() in
+// shared/departments-api.js for why), so every title built here is syncable.
 function buildTitle(label, roles) {
   const roleStr = roles.map(r => `[${r}]`).join('');
-  return `[${label}]${roleStr}`;
+  return `[${departmentKeyForLabel(label)}]${roleStr}`;
 }
 
 // ── Issue update (PATCH) ──────────────────────────────────────────────────────

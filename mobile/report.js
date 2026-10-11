@@ -20,7 +20,7 @@ async function renderDueToday(container) {
     const text = await githubFetch('my_home_page/runtime/due_today.json');
     const data = JSON.parse(text);
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = localDateString();
     const tasks = (data.tasks || []).filter(() => !data.date || data.date === today);
 
     if (tasks.length === 0) {
@@ -38,13 +38,32 @@ async function renderDueToday(container) {
         labelSpan.className = 'report-label-badge';
         labelSpan.textContent = (t.label || t.key || '').replace(/_/g, ' ');
         const textSpan = document.createElement('span');
-        textSpan.textContent = t.task
+        textSpan.className = 'report-item-text';
+        const cleanText = t.task
           .replace(/^\d{4}-\d{2}-\d{2}\s+/, '')
           .replace(/\[[\w\s]+\]\s*/g, '')
           .replace(/\s*\(#\d+\)\s*$/, '')
           .trim();
+        const issueNum = t.issue_number ?? (t.task.match(/\(#(\d+)\)/)?.[1] ?? null);
+        const displayText = issueNum != null ? `${cleanText} (#${issueNum})` : cleanText;
+        textSpan.textContent = cleanText;
         li.appendChild(labelSpan);
         li.appendChild(textSpan);
+
+        // @ mention (same as desktop's due-today row; also shown when the task has no issue number)
+        const btn = document.createElement('button');
+        btn.className = 'mr-mention-btn';
+        btn.textContent = '@';
+        btn.addEventListener('click', () => {
+          setMention({
+            title: displayText,
+            section: t.label || t.key || '',
+            number: issueNum != null ? Number(issueNum) : null,
+            sourceLabel: null,
+          });
+          switchTab('form');
+        });
+        li.appendChild(btn);
         ul.appendChild(li);
       });
       section.appendChild(ul);
@@ -193,6 +212,8 @@ async function loadReport() {
 
   await renderDueToday(container);
   await renderStatusReport(container);
+  // Zone detection may have finished while the report was still rendering (as desktop).
+  if (window.currentZone) reapplyReportAutoExpand();
 }
 
 // esc() comes from ../shared/github-client.js

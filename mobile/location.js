@@ -8,14 +8,14 @@
 // Zone → default label mapping:
 //   univ      → Research
 //   home      → living
-//   lions_is  → Lions IS
-//   (other)   → general
+//   lions_is  → Lions_IS
+//   (other zone) → general; zone unknown → no pre-selection (as desktop)
 
 (function () {
   const ZONE_LABEL_MAP = {
     univ:     'Research',
     home:     'living',
-    lions_is: 'Lions IS',
+    lions_is: 'Lions_IS',
   };
   const DEFAULT_LABEL = 'General';
 
@@ -44,8 +44,18 @@
     }
   }
 
-  async function detectZone() {
-    // 1. Get current GPS position
+  // Same cache the desktop weather widget uses (same origin → shared localStorage):
+  // reuse coordinates younger than LOCATION_TTL so the GPS permission prompt
+  // is not shown on every load.
+  const LOCATION_TTL = 60 * 60 * 1000;
+
+  async function getCoords() {
+    try {
+      const cached = JSON.parse(localStorage.getItem('userLocation') || 'null');
+      if (cached && cached.lat && cached.lng && Date.now() - cached.ts < LOCATION_TTL) {
+        return { lat: cached.lat, lng: cached.lng };
+      }
+    } catch (_) { /* fall through to a fresh fix */ }
     const pos = await new Promise((resolve, reject) => {
       if (!navigator.geolocation) { reject(new Error('no geolocation')); return; }
       navigator.geolocation.getCurrentPosition(resolve, reject, {
@@ -54,6 +64,15 @@
       });
     });
     const { latitude: lat, longitude: lng } = pos.coords;
+    try {
+      localStorage.setItem('userLocation', JSON.stringify({ lat, lng, ts: Date.now() }));
+    } catch (_) { /* storage unavailable — still usable this load */ }
+    return { lat, lng };
+  }
+
+  async function detectZone() {
+    // 1. Get coordinates (cached or fresh GPS)
+    const { lat, lng } = await getCoords();
 
     // 2. Reverse geocode via Nominatim
     const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=ja`;
@@ -91,13 +110,24 @@
   async function init() {
     try {
       const zoneName = await detectZone();
-      const label = (zoneName && ZONE_LABEL_MAP[zoneName]) || DEFAULT_LABEL;
-      window.defaultLabelForZone = label;
+      // Like desktop: no pre-selection while the zone is unknown; a known zone
+      // maps to its department label, falling back to General when unmapped.
+      let label = null;
+      if (zoneName) {
+        const labels = await fetchDepartmentLabels();
+        const want = ZONE_LABEL_MAP[zoneName] || DEFAULT_LABEL;
+        label = labels.find(l => l.toLowerCase() === want.toLowerCase())
+          || labels.find(l => l.toLowerCase() === DEFAULT_LABEL.toLowerCase())
+          || null;
+      }
+      // Never override a label the user (or an @ mention) already chose.
+      const applyLabel = label && !window.labelTouchedByUser;
+      if (applyLabel) window.defaultLabelForZone = label;
       // Expose zone name for other modules (e.g. report.js auto-expand logic).
       window.currentZone = zoneName || null;
       // If the form is already rendered, update the pill selection.
       // selectLabelPill is defined in app.js and only changes the UI highlight.
-      if (typeof selectLabelPill === 'function') {
+      if (applyLabel && typeof selectLabelPill === 'function') {
         selectLabelPill(label);
       }
       // If report is already rendered, re-apply department auto-expand.

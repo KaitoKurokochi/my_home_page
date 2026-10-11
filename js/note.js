@@ -226,8 +226,7 @@ function renderNoteUI() {
     status.textContent = 'Saving...';
     status.className = 'note-status';
 
-    const roleStr = [...selectedRoles].map(r => `[${r}]`).join('');
-    const newTitle = `[${selectedLabel}]${roleStr}`;
+    const newTitle = buildTitle(selectedLabel, [...selectedRoles]);
 
     // ── Edit mode: PATCH existing issue ──────────────────────────────────────
     if (window._editingIssueNumber) {
@@ -386,7 +385,7 @@ function buildNoteItem(issue) {
     tagSpan.addEventListener('click', e => {
       e.stopPropagation();
       const options = getLabels()
-        .filter(l => l !== label)
+        .filter(l => departmentKeyForLabel(l) !== departmentKeyForLabel(label))
         .map(l => ({ label: l, value: l }));
       showDropdown(tagSpan, options, newLabel => {
         const newTitle = buildTitle(newLabel, roles);

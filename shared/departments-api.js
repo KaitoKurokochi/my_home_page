@@ -19,6 +19,18 @@ const DEPARTMENTS_FALLBACK = [
 ];
 
 let _departmentLabelsCache = null;
+let _departmentList = [];  // [{key, label}] from departments.json; empty until fetched (or if the fetch failed)
+
+// Issue titles must carry the department KEY ("Lions_IS"), not its display label
+// ("Lions IS"): agent-scripts' sync matches a title's first bracket against the key,
+// so a display-label title is never picked up. Maps a label (or an already-key
+// string) to its key; anything unknown (fetch failed, hand-typed) comes back unchanged.
+function departmentKeyForLabel(label) {
+  const norm = String(label || '').trim().toLowerCase();
+  const hit = _departmentList.find(d =>
+    (d.label || '').toLowerCase() === norm || (d.key || '').toLowerCase() === norm);
+  return hit ? hit.key : label;
+}
 
 // Fetches (once — cached after) and returns the department label list.
 // Callers that need this synchronously (renderLabelBar, etc.) should await
@@ -29,6 +41,7 @@ async function fetchDepartmentLabels() {
   try {
     const text = await githubFetch('my_home_page/runtime/departments.json');
     const parsed = JSON.parse(text);
+    _departmentList = parsed.filter(d => d && d.key);
     const labels = parsed.map(d => d.label || d.key).filter(Boolean);
     _departmentLabelsCache = labels.length ? labels : DEPARTMENTS_FALLBACK;
   } catch (_) {

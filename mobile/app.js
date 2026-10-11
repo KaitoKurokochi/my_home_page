@@ -250,7 +250,6 @@ function renderForm() {
     status.textContent = 'Saving...';
     status.className = 'form-status';
 
-    const roleStr  = [...selectedRoles].map(r => `[${r}]`).join('');
     const refLine  = currentMention ? (() => {
       // Strip both "(#NNN)" and "(#NNN, label_key)" suffixes from the title.
       // No label/section suffix here (unlike the mention badge) — agent-scripts'
@@ -262,7 +261,7 @@ function renderForm() {
       return `ref: ${num}${cleanTitle}\n\n`;
     })() : '';
     const body  = refLine + text;
-    const title = `[${selectedLabel}]${roleStr}`;
+    const title = buildTitle(selectedLabel, [...selectedRoles]);
 
     try {
       const res = await fetch(GITHUB_API, {
@@ -352,7 +351,7 @@ function buildNoteItem(issue) {
     tag.textContent = label;
     tag.addEventListener('click', e => {
       e.stopPropagation();
-      const opts = getLabels().filter(l => l !== label).map(l => ({ label: l, value: l }));
+      const opts = getLabels().filter(l => departmentKeyForLabel(l) !== departmentKeyForLabel(label)).map(l => ({ label: l, value: l }));
       showDropdown(tag, opts, newLabel => {
         const t = buildTitle(newLabel, roles);
         replaceWith(t);

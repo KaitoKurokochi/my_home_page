@@ -75,7 +75,6 @@ function renderMlb(data) {
   const grid = document.createElement('div');
   grid.className = 'sports-three-col';
 
-  // Column 1: Game results
   const gamesCol = document.createElement('div');
   gamesCol.className = 'sports-col';
   gamesCol.appendChild(makeSublabel('試合結果'));
@@ -93,7 +92,6 @@ function renderMlb(data) {
   }
   grid.appendChild(gamesCol);
 
-  // Column 2: Batter stats
   const battersCol = document.createElement('div');
   battersCol.className = 'sports-col';
   battersCol.appendChild(makeSublabel('野手成績'));
@@ -108,7 +106,6 @@ function renderMlb(data) {
   }
   grid.appendChild(battersCol);
 
-  // Column 3: Pitcher stats
   const pitchersCol = document.createElement('div');
   pitchersCol.className = 'sports-col';
   pitchersCol.appendChild(makeSublabel('投手成績'));
@@ -125,13 +122,11 @@ function renderMlb(data) {
 
   container.appendChild(grid);
 
-  // News
   if (mlb.news && mlb.news.length) {
     const newsEl = renderNpbNews(mlb.news);
     if (newsEl) container.appendChild(newsEl);
   }
 
-  // Highlights
   if (mlb.highlights && mlb.highlights.length) {
     const hlEl = renderNpbHighlights(mlb.highlights);
     if (hlEl) container.appendChild(hlEl);

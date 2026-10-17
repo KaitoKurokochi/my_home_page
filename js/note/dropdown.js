@@ -23,8 +23,6 @@ function showDropdown(anchor, items, onSelect) {
     el.appendChild(row);
   });
   document.body.appendChild(el);
-  // Adjust horizontal position: align left edge to anchor, but clamp so the
-  // dropdown does not overflow the right edge of the viewport.
   const elWidth = el.getBoundingClientRect().width;
   const viewportWidth = document.documentElement.clientWidth;
   const preferredLeft = rect.left + window.scrollX;

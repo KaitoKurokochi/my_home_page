@@ -17,22 +17,16 @@
     return JSON.parse(text);
   }
 
-  // Extract issue number from "(#N)" pattern in task text.
-  // Returns null if not found.
   function extractIssueNumber(taskText) {
     const m = taskText.match(/\(#(\d+)\)/);
     return m ? parseInt(m[1], 10) : null;
   }
 
-  // Clean task text for display:
-  //   - Remove leading YYYY-MM-DD date prefix
-  //   - Remove [Role] tags like [Todo], [Memo], etc.
-  //   - Remove "(#N)" issue reference suffix
   function cleanTaskText(taskText) {
     return taskText
-      .replace(/^\d{4}-\d{2}-\d{2}\s+/, '')   // leading date
-      .replace(/\[[\w\s]+\]\s*/g, '')           // [Role] tags
-      .replace(/\s*\(#\d+\)\s*$/, '')           // trailing (#N)
+      .replace(/^\d{4}-\d{2}-\d{2}\s+/, '')
+      .replace(/\[[\w\s]+\]\s*/g, '')
+      .replace(/\s*\(#\d+\)\s*$/, '')
       .trim();
   }
 
@@ -59,7 +53,6 @@
     const wrapper = document.createElement('div');
     wrapper.className = 'mr-body dt-body-wrap';
 
-    // Header row (collapsible, same look as mr-cat but with badge + arrow)
     const header = document.createElement('div');
     header.className = 'dt-header';
     header.innerHTML = `
@@ -69,7 +62,6 @@
     `;
     wrapper.appendChild(header);
 
-    // Task list — reuse mr-list / mr-item exactly as status report does
     const ul = document.createElement('ul');
     ul.className = 'mr-list dt-task-list';
 
@@ -97,7 +89,6 @@
       textSpan.textContent = displayText;
       li.appendChild(textSpan);
 
-      // Shown for every task, with or without an issue number (same as Status Report items).
       const mentionBtn = document.createElement('button');
       mentionBtn.className = 'mr-mention-btn';
       mentionBtn.textContent = '@';
@@ -123,7 +114,6 @@
     section.appendChild(wrapper);
     section.style.display = '';
 
-    // Toggle collapse on header click
     header.addEventListener('click', () => {
       section.classList.toggle('dt-collapsed');
     });
@@ -136,7 +126,6 @@
       const data = await fetchDueToday();
       renderDueToday(data);
     } catch (_) {
-      // Silently hide on any error
       section.style.display = 'none';
     }
   }

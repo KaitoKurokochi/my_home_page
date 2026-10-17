@@ -19,10 +19,8 @@ const DEFAULT_ROLES   = [
   { key: 'Done',        icon: '✅' },
 ];
 
-// getToken() is defined in shared/github-client.js
-// Labels come from fetchDepartmentLabels()'s cache (shared/departments-api.js)
-// — initNote() awaits it once before any render, so this is safe to call
-// synchronously everywhere it already was.
+// getLabels() reads fetchDepartmentLabels()'s cache (shared/departments-api.js); initNote() awaits
+// it once before any render.
 function getLabels() { return _departmentLabelsCache || DEPARTMENTS_FALLBACK; }
 function getRoles()  { return JSON.parse(localStorage.getItem(NOTE_ROLES_KEY)  || JSON.stringify(DEFAULT_ROLES)); }
 function saveRoles(roles) {
@@ -48,7 +46,7 @@ function renderTokenSetup() {
     const val = document.getElementById('note-token-input').value.trim();
     if (!val) return;
     localStorage.setItem(NOTE_TOKEN_KEY, val);
-    await fetchDepartmentLabels();  // populate getLabels()'s cache before any render
+    await fetchDepartmentLabels();
     renderNoteUI();
     loadNotes();
   });

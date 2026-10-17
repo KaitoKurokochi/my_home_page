@@ -27,7 +27,6 @@ function renderNpb(data) {
 
   const dateLabel = data.results?.date_label || '';
 
-  // [試合結果] | [順位表] 横並び、それぞれ内部も横並び
   const mainRow = document.createElement('div');
   mainRow.className = 'sports-main-row';
 
@@ -40,19 +39,16 @@ function renderNpb(data) {
 
   container.appendChild(mainRow);
 
-  // 3. News
   if (data.news && data.news.length) {
     const newsEl = renderNpbNews(data.news);
     if (newsEl) container.appendChild(newsEl);
   }
 
-  // 4. Highlights
   if (data.highlights && data.highlights.length) {
     const hlEl = renderNpbHighlights(data.highlights);
     if (hlEl) container.appendChild(hlEl);
   }
 
-  // Updated timestamp
   if (data.fetchedAt) {
     const meta = document.createElement('p');
     meta.className = 'news-meta';

@@ -7,8 +7,6 @@
 // the label name by norm() below.
 const DEPARTMENT_LABEL_OVERRIDE = {};
 
-// Match a section/department name to an existing label (case-insensitive, ignoring
-// emoji/symbols).
 function guessLabel(section) {
   if (!section) return null;
   const labels = getLabels();
@@ -18,18 +16,14 @@ function guessLabel(section) {
     if (found) return found;
   }
   if (labels.includes(section)) return section;
-  // Strip non-alphanumeric chars (emoji, spaces, underscores) and compare
-  // case-insensitively, e.g. "🔬 Research"→"research", "Lions_IS"→"lionsis".
   const norm = s => s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
   return labels.find(l => norm(l) === norm(section)) || null;
 }
 
-// Returns true when the given label name refers to the books department.
 function isBookLabel(label) {
   return !!(label && label.toLowerCase().includes('book'));
 }
 
-// Returns true when the given label name refers to the video content department.
 function isVideoLabel(label) {
   return !!(label && (label.toLowerCase().includes('video') || label.toLowerCase().includes('entertainment')));
 }
@@ -44,5 +38,4 @@ const VIDEO_DONE_TEMPLATE = 'タイトル: \n制作/監督: \nジャンル: \n�
 const VIDEO_TODO_TEMPLATE  = 'タイトル: \nメモ: \n';
 const VIDEO_TEMPLATES = [VIDEO_DONE_TEMPLATE, VIDEO_TODO_TEMPLATE];
 
-// All known templates (used to detect unmodified state across label switches)
 const ALL_TEMPLATES = [...BOOKS_TEMPLATES, ...VIDEO_TEMPLATES];

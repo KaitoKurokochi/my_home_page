@@ -4,7 +4,6 @@
 
 (function () {
   function isLastDayOfMonth(date) {
-    // Day 0 of next month = last day of this month
     const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
     return date.getDate() === lastDay;
   }
@@ -14,7 +13,6 @@
     const btn  = document.getElementById('monthly-report-btn');
     if (!wrap || !btn) return;
 
-    // Show only on the last day of each month
     const today = new Date();
     if (!isLastDayOfMonth(today)) return;
 

@@ -41,7 +41,6 @@
         return;
       }
 
-      // Open pages/meeting_note.html passing the compact date as query param
       const url = `pages/meeting_note.html?date=${encodeURIComponent(dateCompact)}`;
       window.open(url, '_blank');
     } catch (e) {
@@ -58,7 +57,6 @@
     const wrap = document.getElementById('meeting-note-wrap');
     if (!wrap) return;
 
-    // Compute today's date strings
     const today = new Date();
     const dateCompact = [
       today.getFullYear(),
@@ -66,10 +64,8 @@
       String(today.getDate()).padStart(2, '0'),
     ].join('');
 
-    // Remote path: research/meetings/YYYYMMDD.md
     const filePath = `research/meetings/${dateCompact}.md`;
 
-    // Wait for schedule.json to be loaded (renderCalWidget sets window.todayEvents)
     let events = [];
     for (let i = 0; i < 20; i++) {
       if (window.todayEvents !== undefined) {

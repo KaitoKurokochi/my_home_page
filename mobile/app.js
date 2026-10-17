@@ -88,7 +88,6 @@ function updateNoteTemplate() {
   }
 }
 
-// Select a label pill in the form UI by label name
 function selectLabelPill(name) {
   selectedLabel = name;
   const labelRow = document.getElementById('label-row');
@@ -188,7 +187,6 @@ function renderForm() {
     </form>
   `;
 
-  // Labels
   const labelRow = document.getElementById('label-row');
 
   function addLabelPill(l) {
@@ -207,7 +205,6 @@ function renderForm() {
 
   labels.forEach(l => addLabelPill(l));
 
-  // Roles
   const roleRow = document.getElementById('role-row');
   roles.forEach(({ key, icon }) => {
     const pill = document.createElement('button');
@@ -230,7 +227,6 @@ function renderForm() {
     roleRow.appendChild(pill);
   });
 
-  // Mention clear
   document.getElementById('mention-badge').querySelector('.mention-clear').addEventListener('click', () => {
     currentMention = null;
     renderMentionBadge();
@@ -238,7 +234,6 @@ function renderForm() {
 
   renderMentionBadge();
 
-  // Submit
   document.getElementById('note-form').addEventListener('submit', async e => {
     e.preventDefault();
     const text   = document.getElementById('note-input').value.trim();
@@ -283,7 +278,7 @@ function renderForm() {
       roleRow.querySelectorAll('.role-pill').forEach(p => p.classList.remove('selected'));
       status.textContent = 'Saved ✓';
       status.className = 'form-status ok';
-      notesLoaded = false; // force reload next time
+      notesLoaded = false;
     } catch (err) {
       status.textContent = `Error: ${err.message}`;
       status.className = 'form-status err';
@@ -302,7 +297,6 @@ function esc2(str) {
   return esc(str).replace(/\n/g, '<br>');
 }
 
-// parseTitleParts/buildTitle/updateIssue come from ../shared/notes-api.js
 
 let _dropdown = null;
 function closeDropdown() { if (_dropdown) { _dropdown.remove(); _dropdown = null; } }
@@ -373,7 +367,6 @@ function buildNoteItem(issue) {
     tagsDiv.appendChild(span);
   });
 
-  // Add role button (shown only when no roles are set)
   if (roles.length === 0) {
     const addRoleBtn = document.createElement('button');
     addRoleBtn.className = 'note-item-add-role';
@@ -390,7 +383,6 @@ function buildNoteItem(issue) {
     tagsDiv.appendChild(addRoleBtn);
   }
 
-  // Mention button
   const mentionBtn = document.createElement('button');
   mentionBtn.className = 'note-item-mention-btn';
   mentionBtn.textContent = '@';
@@ -431,7 +423,6 @@ async function loadNotes() {
   notesLoading = true;
   const c = document.getElementById('notes-container');
 
-  // Show cached notes immediately (even stale) while fetching fresh data
   let hasCached = false;
   try {
     const cached = JSON.parse(localStorage.getItem(NOTES_CACHE_KEY));
@@ -469,12 +460,11 @@ document.getElementById('notes-refresh-btn').addEventListener('click', () => {
 
 async function init() {
   if (!getToken()) { renderTokenSetup(); return; }
-  pullSync(); // fire and forget (roles only now) — form renders without waiting for it
-  await fetchDepartmentLabels();  // populate getLabels()'s cache before the first render
+  pullSync();
+  await fetchDepartmentLabels();
   renderForm();
-  // Preload notes and report in the background so tabs open instantly
   loadNotes();
-  reportLoaded = true; // prevent switchTab from triggering a second load
+  reportLoaded = true;
   loadReport();
 }
 

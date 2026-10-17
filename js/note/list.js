@@ -76,7 +76,6 @@ function buildNoteItem(issue) {
   const item = document.createElement('div');
   item.className = 'note-item';
 
-  // Optimistic update: replace this item in-place with updated issue data
   function replaceWith(newTitle) {
     const updated = { ...issue, title: newTitle };
     item.replaceWith(buildNoteItem(updated));
@@ -86,7 +85,6 @@ function buildNoteItem(issue) {
   const tagsDiv = document.createElement('div');
   tagsDiv.className = 'note-item-tags';
 
-  // Label (click → change)
   if (label) {
     const tagSpan = document.createElement('span');
     tagSpan.className = 'note-item-tag';
@@ -105,7 +103,6 @@ function buildNoteItem(issue) {
     tagsDiv.appendChild(tagSpan);
   }
 
-  // Roles (click → remove)
   roles.forEach(roleKey => {
     const roleSpan = document.createElement('span');
     roleSpan.className = 'note-item-role';
@@ -120,7 +117,6 @@ function buildNoteItem(issue) {
     tagsDiv.appendChild(roleSpan);
   });
 
-  // Add role button (shown only when no roles are set)
   if (roles.length === 0) {
     const addRoleBtn = document.createElement('button');
     addRoleBtn.className = 'note-item-add-role';
@@ -137,7 +133,6 @@ function buildNoteItem(issue) {
     tagsDiv.appendChild(addRoleBtn);
   }
 
-  // Mention button
   const mentionBtn = document.createElement('button');
   mentionBtn.className = 'note-item-mention-btn';
   mentionBtn.textContent = '@';
@@ -153,7 +148,6 @@ function buildNoteItem(issue) {
   dateSpan.textContent = dateLabel;
   tagsDiv.appendChild(dateSpan);
 
-  // ⋮ menu button (Edit / Delete)
   const menuBtn = document.createElement('button');
   menuBtn.className = 'note-item-menu-btn';
   menuBtn.textContent = '⋮';

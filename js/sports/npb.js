@@ -85,7 +85,6 @@ function renderResultsGrid(results, dateLabel) {
   const grid = document.createElement('div');
   grid.className = 'sports-two-col';
 
-  // 1軍: セリーグ列 | パリーグ列
   const firstGames = results?.first || [];
   const ceGames = firstGames.filter(g => CE_TEAMS.has(g.home) || CE_TEAMS.has(g.away));
   const paGames = firstGames.filter(g => PA_TEAMS.has(g.home) || PA_TEAMS.has(g.away));
@@ -101,7 +100,6 @@ function renderResultsGrid(results, dateLabel) {
   }
   grid.appendChild(firstCol);
 
-  // 2軍: 前半列 | 後半列
   const secondGames = results?.second || [];
   const half = Math.ceil(secondGames.length / 2);
   const secondCol = document.createElement('div');

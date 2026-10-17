@@ -2,22 +2,14 @@
 // Used by both note.js/sync.js (desktop) and app.js/sync.js (mobile).
 // Depends on: shared/github-client.js (GITHUB_OWNER, NOTES_REPO, getToken)
 //
-// Labels are no longer synced here — they come from shared/departments-api.js's
-// fetchDepartmentLabels() instead (2026-09-29, see status.md/history.md).
-// A "labels" field may still linger in existing sync.json files from before
-// this change; it's simply ignored now, never read or written.
+// Only roles are synced. Reads/writes the 'note_roles' localStorage key (NOTE_ROLES_KEY) directly,
+// not through each side's getRoles() (whose defaults intentionally differ), so it behaves the same
+// on either page.
 //
-// Reads/writes the 'note_roles' localStorage key (NOTE_ROLES_KEY) directly (rather than
-// through each side's own getRoles(), whose default values intentionally
-// differ between desktop and mobile) so this works identically regardless
-// of which page loads it.
+// pushSync() fetches the current file, merges roles into it (preserving unrelated fields like
+// "groups") and PUTs, without sha when the file doesn't exist yet, retrying once on 409 (stale sha).
 //
-// pushSync() fetches the current file, merges roles into whatever is
-// already there (preserving unrelated fields like "groups"), and PUTs — with
-// no sha when the file doesn't exist yet (first-time creation), retrying once
-// on 409 (stale sha race) with a fresh fetch+merge.
-//
-// All failures are silent — sync is best-effort and never blocks the UI.
+// All failures are silent: sync is best-effort and never blocks the UI.
 
 const NOTE_ROLES_KEY = 'note_roles';
 
@@ -33,14 +25,13 @@ function _syncHeaders() {
   };
 }
 
-// Pull remote → localStorage, then re-render whichever UI is loaded on this
-// page (guarded so this works whether the page defines desktop's
-// renderRoleBar or mobile's renderForm).
+// Pull remote → localStorage, then re-render whichever UI this page has (desktop's renderRoleBar
+// or mobile's renderForm).
 async function pullSync() {
   if (!getToken()) return;
   try {
     const res = await fetch(SYNC_API, { headers: _syncHeaders() });
-    if (!res.ok) return; // 404 on first use — will be created on first push
+    if (!res.ok) return;
     const data = await res.json();
     const content = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
     localStorage.setItem(SYNC_SHA_KEY, data.sha);
@@ -50,8 +41,7 @@ async function pullSync() {
   } catch (_) { /* silent */ }
 }
 
-// Push localStorage → remote. See module comment above for the merge/retry
-// behavior.
+// Push localStorage → remote.
 async function pushSync() {
   if (!getToken()) return;
   const rolesRaw = localStorage.getItem(NOTE_ROLES_KEY);

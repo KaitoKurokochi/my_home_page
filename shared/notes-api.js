@@ -49,10 +49,7 @@ function changeIssueTitleOptimistically(issue, newTitle, replaceItem) {
 
 // ── Recent notes fetch ────────────────────────────────────────────────────────
 //
-// Fetches "note"-labeled issues, filtered to the last `cutoffHours` hours,
-// newest first, capped at `limit`. Desktop and mobile used to each duplicate
-// this fetch+filter logic, and had let the cutoff value drift between them
-// (see history.md #887/#891) — this is the single source now.
+// "note"-labeled issues from the last `cutoffHours` hours, newest first, capped at `limit`.
 
 async function fetchRecentNotes({ cutoffHours = 5, limit = 10 } = {}) {
   const res = await fetch(

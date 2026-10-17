@@ -1,10 +1,6 @@
 // ── Labels/roles storage (mobile) ────────────────────────────────────────────
-// pullSync()/pushSync() themselves now live in ../shared/sync-api.js.
-// Labels now come from ../shared/departments-api.js's fetchDepartmentLabels()
-// cache instead of a locally-maintained DEFAULT_LABELS (which had drifted
-// badly from the real department list — stray "Others"/"my_home_page"
-// entries, inconsistent casing — see status.md/history.md 2026-09-29).
-// Roles are unaffected and keep their own local defaults.
+// pullSync()/pushSync() live in ../shared/sync-api.js. Labels come from the cache of
+// ../shared/departments-api.js's fetchDepartmentLabels(); roles keep their own local defaults.
 
 const DEFAULT_ROLES  = [
   { key: 'Memo',       icon: '📝' },

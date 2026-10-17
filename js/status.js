@@ -146,62 +146,8 @@ function saveRoutineDone(state) {
 }
 
 function markdownToHtml(md) {
-  const lines = md.split('\n');
-
-  // ── Pass 1: parse into token objects ──────────────────────────────────────
-  const tokens = [];
-  for (const line of lines) {
-    if (line.startsWith('#### ')) {
-      tokens.push({ type: 'h4', text: line.slice(5).trim() });
-    } else if (line.startsWith('### ')) {
-      tokens.push({ type: 'h3', text: line.slice(4).trim() });
-    } else if (line.startsWith('## ')) {
-      tokens.push({ type: 'h2', text: line.slice(3).trim() });
-    } else if (line.startsWith('# ')) {
-      tokens.push({ type: 'h1', text: line.slice(2).trim() });
-    } else if (line.startsWith('> ')) {
-      tokens.push({ type: 'summary', text: line.slice(2).trim() });
-    } else if (line.startsWith('- [ ] ') || line.startsWith('- [x] ')) {
-      tokens.push({ type: 'check', text: line.slice(6).trim(), checked: line.startsWith('- [x] ') });
-    } else if (line.startsWith('- ')) {
-      tokens.push({ type: 'item', text: line.slice(2).trim() });
-    } else if (line.startsWith('・')) {
-      tokens.push({ type: 'item', text: line.slice(1).trim() });
-    } else if (line.startsWith('**') && line.endsWith('**')) {
-      tokens.push({ type: 'subhead', text: line.replace(/\*\*/g, '').trim() });
-    } else if (line.startsWith('  *')) {
-      tokens.push({ type: 'detail', text: line.trim().replace(/\*/g, '') });
-    } else if (line.startsWith('  `')) {
-      tokens.push({ type: 'since', text: line.trim().replace(/`/g, '') });
-    } else if (line.trim() === '') {
-      tokens.push({ type: 'blank' });
-    } else {
-      tokens.push({ type: 'paragraph', text: line.trim() });
-    }
-  }
-
-  // ── Pass 2: skip heading tokens whose section has no content ─────────────
-  // A heading is "empty" if there's no content token before the next heading
-  // of the same or shallower level. Deeper headings nested inside it (e.g. an
-  // "### " subsection under "## TODO") are content-bearing containers, not
-  // section boundaries, so they're skipped over rather than stopping the scan.
-  const HEADING_TYPES = new Set(['h1', 'h2', 'h3', 'h4']);
-  const HEADING_LEVEL = { h1: 1, h2: 2, h3: 3, h4: 4 };
-  const CONTENT_TYPES = new Set(['summary', 'check', 'item', 'subhead', 'detail', 'since', 'paragraph']);
-  const skipIdx = new Set();
-  for (let i = 0; i < tokens.length; i++) {
-    const t = tokens[i];
-    if (t.type !== 'h2' && t.type !== 'h3' && t.type !== 'h4') continue;
-    const level = HEADING_LEVEL[t.type];
-    // look ahead for content before the next heading at this level or shallower
-    let hasContent = false;
-    for (let j = i + 1; j < tokens.length; j++) {
-      const tj = tokens[j];
-      if (HEADING_TYPES.has(tj.type) && HEADING_LEVEL[tj.type] <= level) break;
-      if (CONTENT_TYPES.has(tj.type)) { hasContent = true; break; }
-    }
-    if (!hasContent) skipIdx.add(i);
-  }
+  const tokens = tokenizeMarkdown(md);
+  const skipIdx = findEmptyHeadingIndices(tokens, ['h2', 'h3', 'h4']);
 
   // ── Pass 3: render ────────────────────────────────────────────────────────
   let html = '';

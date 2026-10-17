@@ -7,7 +7,7 @@
 // A "labels" field may still linger in existing sync.json files from before
 // this change; it's simply ignored now, never read or written.
 //
-// Reads/writes the 'note_roles' localStorage key directly (rather than
+// Reads/writes the 'note_roles' localStorage key (NOTE_ROLES_KEY) directly (rather than
 // through each side's own getRoles(), whose default values intentionally
 // differ between desktop and mobile) so this works identically regardless
 // of which page loads it.
@@ -18,6 +18,8 @@
 // on 409 (stale sha race) with a fresh fetch+merge.
 //
 // All failures are silent — sync is best-effort and never blocks the UI.
+
+const NOTE_ROLES_KEY = 'note_roles';
 
 const SYNC_FILE    = 'my_home_page/runtime/sync.json';
 const SYNC_API     = `https://api.github.com/repos/${GITHUB_OWNER}/${NOTES_REPO}/contents/${SYNC_FILE}`;
@@ -42,7 +44,7 @@ async function pullSync() {
     const data = await res.json();
     const content = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
     localStorage.setItem(SYNC_SHA_KEY, data.sha);
-    if (content.roles  !== undefined) localStorage.setItem('note_roles',  JSON.stringify(content.roles));
+    if (content.roles  !== undefined) localStorage.setItem(NOTE_ROLES_KEY,  JSON.stringify(content.roles));
     if (typeof renderRoleBar  === 'function' && document.getElementById('note-role-bar'))  renderRoleBar();
     if (typeof renderForm     === 'function' && document.getElementById('form-container')) renderForm();
   } catch (_) { /* silent */ }
@@ -52,7 +54,7 @@ async function pullSync() {
 // behavior.
 async function pushSync() {
   if (!getToken()) return;
-  const rolesRaw = localStorage.getItem('note_roles');
+  const rolesRaw = localStorage.getItem(NOTE_ROLES_KEY);
 
   async function attempt() {
     const getRes = await fetch(SYNC_API, { headers: _syncHeaders() });

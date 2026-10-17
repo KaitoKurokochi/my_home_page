@@ -6,8 +6,6 @@
 // entries, inconsistent casing — see status.md/history.md 2026-09-29).
 // Roles are unaffected and keep their own local defaults.
 
-const ROLES_KEY     = 'note_roles';
-
 const DEFAULT_ROLES  = [
   { key: 'Memo',       icon: '📝' },
   { key: 'Todo',       icon: '🔲' },
@@ -20,4 +18,4 @@ const DEFAULT_ROLES  = [
 // getLabels() reads fetchDepartmentLabels()'s cache (populated by initApp()
 // before any render — see app.js) instead of localStorage.
 function getLabels() { return _departmentLabelsCache || DEPARTMENTS_FALLBACK; }
-function getRoles()  { return JSON.parse(localStorage.getItem(ROLES_KEY)  || JSON.stringify(DEFAULT_ROLES)); }
+function getRoles()  { return JSON.parse(localStorage.getItem(NOTE_ROLES_KEY)  || JSON.stringify(DEFAULT_ROLES)); }

@@ -37,6 +37,16 @@ async function updateIssue(number, patch) {
   return res.json();
 }
 
+// Shows newTitle immediately via replaceItem(title) and PATCHes it; if the PATCH
+// fails, replaceItem(issue.title) puts the old one back.
+function changeIssueTitleOptimistically(issue, newTitle, replaceItem) {
+  replaceItem(newTitle);
+  updateIssue(issue.number, { title: newTitle }).catch(err => {
+    console.error(err);
+    replaceItem(issue.title);
+  });
+}
+
 // ── Recent notes fetch ────────────────────────────────────────────────────────
 //
 // Fetches "note"-labeled issues, filtered to the last `cutoffHours` hours,

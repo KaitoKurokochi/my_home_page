@@ -1,6 +1,6 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 // Depends on: shared/github-client.js (getToken, esc), shared/notes-api.js
-// (GITHUB_API, parseTitleParts, buildTitle, updateIssue, fetchRecentNotes),
+// (GITHUB_API, parseTitleParts, buildTitle, updateIssue, changeIssueTitleOptimistically, fetchRecentNotes),
 // shared/note-labels.js (guessLabel, isBookLabel, isVideoLabel, templates),
 // shared/sync-api.js (pullSync, pushSync), shared/departments-api.js
 // (fetchDepartmentLabels — labels now come from the department list, not a
@@ -10,7 +10,6 @@
 //   localStorage.setItem('NOTE_TOKEN', 'ghp_xxxxxxxxxxxx')
 
 const NOTE_TOKEN_KEY  = 'NOTE_TOKEN';
-const NOTE_ROLES_KEY  = 'note_roles';
 const DEFAULT_ROLES   = [
   { key: 'Memo',        icon: '📝' },
   { key: 'Todo',        icon: '🔔' },
@@ -389,11 +388,7 @@ function buildNoteItem(issue) {
         .map(l => ({ label: l, value: l }));
       showDropdown(tagSpan, options, newLabel => {
         const newTitle = buildTitle(newLabel, roles);
-        replaceWith(newTitle);  // instant DOM update
-        updateIssue(issue.number, { title: newTitle }).catch(err => {
-          console.error(err);
-          replaceWith(issue.title);  // revert on failure
-        });
+        changeIssueTitleOptimistically(issue, newTitle, replaceWith);
       });
     });
     tagsDiv.appendChild(tagSpan);
@@ -409,11 +404,7 @@ function buildNoteItem(issue) {
       e.stopPropagation();
       const newRoles = roles.filter(r => r !== roleKey);
       const newTitle = buildTitle(label, newRoles);
-      replaceWith(newTitle);
-      updateIssue(issue.number, { title: newTitle }).catch(err => {
-        console.error(err);
-        replaceWith(issue.title);
-      });
+      changeIssueTitleOptimistically(issue, newTitle, replaceWith);
     });
     tagsDiv.appendChild(roleSpan);
   });
@@ -429,11 +420,7 @@ function buildNoteItem(issue) {
       const options = getRoles().map(({ key, icon }) => ({ label: `${icon} ${key}`, value: key }));
       showDropdown(addRoleBtn, options, roleKey => {
         const newTitle = buildTitle(label, [roleKey]);
-        replaceWith(newTitle);
-        updateIssue(issue.number, { title: newTitle }).catch(err => {
-          console.error(err);
-          replaceWith(issue.title);
-        });
+        changeIssueTitleOptimistically(issue, newTitle, replaceWith);
       });
     });
     tagsDiv.appendChild(addRoleBtn);

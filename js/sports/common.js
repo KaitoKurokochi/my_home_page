@@ -35,8 +35,7 @@ function makeTeamLogo(initial) {
   return span;
 }
 
-// MLB team crests, served directly from MLB's own static CDN by team_id
-// (from fetch_sports.py's find_japanese_in_boxscore()) — no local asset needed.
+// MLB crests come from MLB's static CDN by team_id; no local asset needed.
 function makeMlbTeamLogo(teamId, teamName) {
   if (!teamId) return null;
   const img = document.createElement('img');

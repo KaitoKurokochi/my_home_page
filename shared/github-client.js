@@ -23,12 +23,10 @@ function githubHeaders() {
 
 // ── GitHub Contents API fetch ─────────────────────────────────────────────────
 //
-// Fetches a file from the GitHub Contents API and returns the decoded text.
+// Fetches a file and returns the decoded text; throws on HTTP error.
 // path: e.g. 'my_home_page/runtime/news.json'
 // options.repo: override repo (default: NOTES_REPO)
 // options.returnMeta: if true, returns { text, sha } instead of just text
-//
-// Throws on HTTP error.
 
 async function githubFetch(path, options = {}) {
   const repo = options.repo || NOTES_REPO;

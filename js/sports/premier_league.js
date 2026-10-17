@@ -3,9 +3,7 @@
 // instead of a batter/pitcher split (soccer has no equivalent role division).
 
 function makePlTeamLogo(teamId, teamName) {
-  // Team crests served from ESPN's own static CDN (fetch_sports.py's
-  // find_japanese_in_pl_summary()/fetch_pl_schedule() supply team_id) — same
-  // "no local asset needed" approach as makeMlbTeamLogo(), different CDN.
+  // Crests come from ESPN's static CDN by team_id; no local asset needed.
   if (!teamId) return null;
   const img = document.createElement('img');
   img.src = `https://a.espncdn.com/i/teamlogos/soccer/500/${teamId}.png`;

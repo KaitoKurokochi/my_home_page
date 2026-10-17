@@ -14,12 +14,10 @@ function itemKey(text) {
 
 let mentionItems = [];
 
-// Wraps each ## section (h2.mr-cat + its following sibling nodes up to the
-// next h2) in a <div class="sr-section" data-key="KEY">.
-// Adds a toggle arrow to the h2 and wires click-to-collapse behaviour.
-// autoExpandKeys: Set of display names to auto-expand on load.
-//                 All other sections start collapsed.
-//                 Pass an empty Set (not null) to collapse everything by default.
+// Wraps each ## section (h2.mr-cat + its following siblings up to the next h2) in
+// <div class="sr-section" data-key="KEY"> with a toggle arrow and click-to-collapse.
+// autoExpandKeys: Set of display names to start expanded; all others start collapsed
+// (pass an empty Set, not null, to collapse everything).
 function wrapSections(bodyEl, autoExpandKeys) {
   const children = Array.from(bodyEl.childNodes);
   let currentWrapper = null;
@@ -61,9 +59,8 @@ function wrapSections(bodyEl, autoExpandKeys) {
   }
 }
 
-// Re-applies auto-expand state to already-rendered .sr-section wrappers
-// based on the current window.currentZone and day of week.
-// Called after initial render and again when GPS zone becomes available.
+// Re-applies auto-expand to rendered .sr-section wrappers from window.currentZone and the day of
+// week (after the initial render, and again when the GPS zone becomes available).
 async function reapplyAutoExpand(bodyEl) {
   const { autoExpand } = await computeDepartmentSelection();
   const autoExpandNames = new Set();

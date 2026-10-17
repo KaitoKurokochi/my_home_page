@@ -80,9 +80,8 @@ async function renderDueToday(container) {
 
 // ── Status Report ─────────────────────────────────────────────────────────────
 
-// Re-applies auto-expand to already-rendered mobile-rd-section wrappers.
-// Called by location.js when GPS zone becomes available after initial render.
-// Never auto-collapses manually expanded sections.
+// Re-applies auto-expand to rendered mobile-rd-section wrappers (called by location.js when the
+// GPS zone arrives after the initial render). Never auto-collapses a manually expanded section.
 async function reapplyReportAutoExpand() {
   const section = document.querySelector('.report-section[data-report="status"]');
   if (!section) return;

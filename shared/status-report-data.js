@@ -2,39 +2,21 @@
 // Used by both js/status.js (desktop) and mobile/report.js (mobile).
 // Depends on: shared/github-client.js (githubFetch)
 //
-// Fetches each department's status.md, extracts the display-worthy body, and
-// decides which departments to include — up through "clean per-department markdown
-// text". Turning that into HTML/DOM (markdownToHtml, section wrapping,
-// mention buttons, etc.) is UI-specific and stays local to each side, since
-// desktop and mobile render this into genuinely different layouts.
-//
-// Both js/status.js and mobile/report.js used to each fetch a different file
-// per department (status.md vs the retired note.md pipeline, frozen since
-// 2026-09-20) — this is the single source now.
+// Fetches each department's status.md, extracts the display-worthy body and decides which
+// departments to include. Turning that markdown into DOM is UI-specific and stays local to each
+// side, since desktop and mobile render genuinely different layouts.
 
-// Populated by fetchAgentDepartments() — [filePath, displayName, departmentKey]
-// triplets, derived from agent-scripts' departments.json (key + label) plus
-// the universal "<key>/status.md" file-path convention every department
-// follows (including HQ, whose own status.md also carries "My Home Page"'s
-// todos, merged 2026-09-17, under its "### My Home Page" heading — no
-// separate file). No longer hardcoded here: this used to duplicate
-// departments.json's key list (and silently miss any department added
-// there, as happened with "health") — see computeDepartmentSelection(),
-// which awaits fetchAgentDepartments() before anything below reads this.
-// Empty (nothing shown) on fetch failure — same fail-soft-to-empty
-// philosophy as fetchSelectedDepartments()/fetchZoneDepartments() below, no
-// department-specific hardcoded fallback list.
+// Populated by fetchAgentDepartments(): [filePath, displayName, departmentKey] triplets from
+// departments.json plus the "<key>/status.md" file-path convention (HQ's status.md also carries
+// the "### My Home Page" todos). Empty on fetch failure: nothing is shown, no hardcoded fallback.
 let AGENT_DEPARTMENTS = [];
 
 let DISPLAY_NAME_TO_KEY = {};
 
 let _agentDepartmentsCache = null;
 
-// Fetches (once — cached after) departments.json and derives AGENT_DEPARTMENTS
-// + DISPLAY_NAME_TO_KEY from it. Awaited by computeDepartmentSelection()
-// before either is read, so every caller of that function (and
-// fetchStatusReportData(), which calls it) sees up-to-date data without
-// needing to call this directly.
+// Fetches departments.json once (cached) and derives AGENT_DEPARTMENTS + DISPLAY_NAME_TO_KEY.
+// computeDepartmentSelection() awaits it, so callers don't need to call it directly.
 async function fetchAgentDepartments() {
   if (_agentDepartmentsCache) return _agentDepartmentsCache;
   try {
@@ -54,9 +36,8 @@ function departmentName(key) {
   return entry ? entry[1] : key;
 }
 
-// Extracts the displayable body from a status.md string: drops the leading
-// "# ..." title line and any preamble text before the first "## " section,
-// so only the actual Todo/Ideas/etc. sections remain.
+// The displayable part of a status.md: drops the leading "# ..." title and any preamble before the
+// first "## " section.
 function extractStatusBody(md) {
   const lines = md.split('\n');
   let start = 0;
@@ -71,14 +52,10 @@ function extractStatusBody(md) {
   return body.join('\n');
 }
 
-// Fetches selected_departments.json from GitHub.
-// Returns { departments: string[], autoExpand: string[] } — departments is
-// the keys to show; autoExpand is department_settings/<key>.toml's optional
-// expand_days (weekday names), already resolved against today server-side
-// (see agent-scripts' select_departments.py select_auto_expand()) — e.g. HQ's
-// section opening specifically on Sundays, when its weekly recurring task
-// appears. Both empty on failure or for an older cached file with no
-// "auto_expand" key.
+// Fetches selected_departments.json: { departments: string[], autoExpand: string[] }. departments
+// are the keys to show; autoExpand is each department's expand_days (weekday names) already
+// resolved against today by select_departments.py (e.g. HQ opening on Sundays). Both empty on
+// failure or when an older file has no "auto_expand" key.
 async function fetchSelectedDepartments() {
   try {
     const text = await githubFetch('my_home_page/runtime/selected_departments.json');
@@ -93,10 +70,8 @@ async function fetchSelectedDepartments() {
   }
 }
 
-// Fetches zone_departments.json from GitHub — {zone_name: [department_key, ...]},
-// built by agent-scripts from each department's own "zones" setting in its
-// department_settings/<key>.toml (see select_departments.py's
-// build_zone_departments()). {} on failure.
+// Fetches zone_departments.json ({zone_name: [department_key, ...]}, built from each department's
+// "zones" setting). {} on failure.
 async function fetchZoneDepartments() {
   try {
     const text = await githubFetch('my_home_page/runtime/zone_departments.json');
@@ -107,28 +82,14 @@ async function fetchZoneDepartments() {
   }
 }
 
-// Computes the set of department keys to display based on:
-//   1. selected_departments.json contents — this is also where "always show"
-//      (department_settings/<key>.toml's always = true) and a calendar match
-//      live now (agent-scripts' select_departments.py matches a department's
-//      own key against today's event calendar labels first, falling back to
-//      its configured calendar_trigger aliases), so display itself needs no
-//      separate always-list or calendar-matching pass here
-//   2. context rules (window.currentZone, via zone_departments.json)
-//   3. schedule-based rules (window.todayEvents[].calendar — desktop-only;
-//      mobile has no calendar widget, so window.todayEvents is just absent
-//      and this branch is a no-op there)
-// Also computes which department keys should be auto-expanded: the
-// schedule-based rule below (#3) is expand-only now, since display is
-// already covered by #1 above. selected_departments.json's "auto_expand"
-// (weekday-based, from each department's own toml — see
-// fetchSelectedDepartments()) and zone_departments.json's entry for
-// window.currentZone (also from each department's own toml — see
-// fetchZoneDepartments()) feed both display and expand.
-// Returns { departmentKeys: Set<string>, autoExpand: Set<string> } (both department keys).
-// Nothing is shown if selected_departments.json's fetch fails — no hardcoded
-// always-list fallback (fail-soft-to-empty, same philosophy as
-// fetchAgentDepartments()/fetchZoneDepartments()).
+// Which department keys to display and which to auto-expand. Display comes from:
+//   1. selected_departments.json (select_departments.py already applied always, days and calendar
+//      matching), plus its "auto_expand" weekday rule
+//   2. zone_departments.json's entry for window.currentZone (shown and expanded)
+//   3. window.todayEvents[].calendar matching a department key (expand only; desktop-only —
+//      mobile has no calendar widget, so this is a no-op there)
+// Returns { departmentKeys: Set<string>, autoExpand: Set<string> }. Nothing is shown if the
+// selected_departments.json fetch fails.
 async function computeDepartmentSelection() {
   await fetchAgentDepartments();
 
@@ -161,9 +122,8 @@ async function computeDepartmentSelection() {
   return { departmentKeys, autoExpand };
 }
 
-// Fetches and assembles this cycle's status report data: one entry per
-// visible department with its extracted status.md body, plus the set of display
-// names that should start auto-expanded.
+// One entry per visible department with its extracted status.md body, plus the display names that
+// start auto-expanded.
 // Returns { departments: [{ name, status, departmentKey }], autoExpandNames: Set<string> }
 async function fetchStatusReportData() {
   const { departmentKeys, autoExpand } = await computeDepartmentSelection();

@@ -1,31 +1,16 @@
 // ── Location zones — GPS-to-zone-name detection ───────────────────────────────
 //
-// Config is fetched from agent/my_home_page/runtime/location_zones.json —
-// static, manually maintained (no script currently generates it; the
-// assembler.py that originally did was abolished 2026-06-27). Each zone
-// entry supports two matching strategies (evaluated in order):
+// Zones come from agent/my_home_page/runtime/location_zones.json (static, maintained by hand).
+// A zone matches by one of two strategies, evaluated in order:
+//   address_fields: { <field>: <value>, ... } — exact match on Nominatim address fields (e.g.
+//     quarter, suburb); ALL fields must match. Preferred, to avoid false positives.
+//   place_names: [...] — keyword substring match against display_name and address fields; ANY
+//     keyword matches. Use only when exact field matching is not possible.
+// Zones are evaluated in JSON order and the first match wins: put specific zones (e.g. home) first.
 //
-//   address_fields: { <field>: <value>, ... }
-//     Exact match against Nominatim address fields (e.g. quarter, suburb).
-//     A zone matches when ALL specified fields match exactly.
-//     This is the preferred strategy — use it to avoid false positives.
-//
-//   place_names: [...]
-//     Keyword substring match against display_name and address fields.
-//     A zone matches when ANY keyword is found as a substring.
-//     Use this only when exact field matching is not possible.
-//
-// Zones are evaluated in the order they appear in the JSON.
-// The first matching zone wins — put more specific zones (e.g. home) first.
-//
-// This file only resolves GPS coordinates to a zone NAME (window.currentZone).
-// Which department(s) that zone name maps to for display/auto-expand comes
-// from agent-scripts' zone_departments.json (built from each department's
-// own "zones" setting in department_settings/<key>.toml) — see
-// shared/status-report-data.js's computeDepartmentSelection(). A zone entry
-// here used to also carry its own "sections" list for this, but that was
-// dead code (detectExpandedSections()'s return value was never consumed —
-// see history.md) and has been removed.
+// This file only resolves GPS coordinates to a zone NAME (window.currentZone). Which departments a
+// zone covers comes from zone_departments.json (see shared/status-report-data.js's
+// computeDepartmentSelection()).
 
 // Depends on: shared/github-client.js (githubFetch)
 

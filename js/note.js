@@ -4,17 +4,15 @@
 
 // ── Location-based default label ─────────────────────────────────────────────
 
-// Maps location zone name → default note label.
-// Zone names come from location_zones.json (zone.name field).
+// Location zone name (location_zones.json's zone.name) → default note label.
 const ZONE_DEFAULT_LABEL = {
   univ:     'Research',
   home:     'living',
   lions_is: 'Lions_IS',
 };
 
-// Returns the default label for the given zone name.
-// Returns null when zoneName is unknown (location not yet resolved) so no label
-// is pre-selected until GPS zone is confirmed via window.onLocationReady().
+// Default label for a zone name; null while the zone is unknown, so no label is pre-selected
+// until the GPS zone is confirmed via window.onLocationReady().
 function defaultLabelForZone(zoneName) {
   if (!zoneName) return null;
   const labels = getLabels();
@@ -44,9 +42,8 @@ async function initNote() {
 
 initNote();
 
-// Register location-ready hook to update default label when GPS zone is confirmed.
-// Wraps any previously registered window.onLocationReady (e.g. from status.js)
-// so both callbacks fire.
+// Updates the default label when the GPS zone is confirmed, chaining any previously registered
+// window.onLocationReady (e.g. from status.js).
 (function registerLocationHook() {
   const prev = window.onLocationReady;
   window.onLocationReady = function () {

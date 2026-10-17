@@ -1,15 +1,9 @@
 // ── Location-based default label ──────────────────────────────────────────────
 //
-// Detects the current location zone using Nominatim reverse geocoding and the
-// same zone config as the desktop (agent/my_home_page/location_zones.json).
-// Sets window.defaultLabelForZone before renderForm() is called so that the
-// form can pre-select the appropriate label.
-//
-// Zone → default label mapping:
-//   univ      → Research
-//   home      → living
-//   lions_is  → Lions_IS
-//   (other zone) → general; zone unknown → no pre-selection (as desktop)
+// Detects the location zone (Nominatim reverse geocoding + the desktop's zone config) and sets
+// window.defaultLabelForZone before renderForm(), so the form can pre-select a label.
+// Zone → label: univ → Research, home → living, lions_is → Lions_IS, other zone → general;
+// unknown zone → no pre-selection (as desktop).
 
 (function () {
   const ZONE_LABEL_MAP = {

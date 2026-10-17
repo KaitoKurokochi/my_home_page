@@ -1,0 +1,349 @@
+/* ── Sports section ──────────────────────────────────────────────────────────*/
+
+.sports-subsection {
+  padding: 14px 0 10px;
+  border-top: 1px solid #e8eaed;
+}
+
+.sports-section-header {
+  margin-bottom: 10px;
+}
+
+.npb-logo {
+  height: 36px;
+  width: auto;
+  display: block;
+  transition: opacity 0.15s;
+}
+
+.npb-logo:hover {
+  opacity: 0.8;
+}
+
+.sports-sub-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #202124;
+  margin-bottom: 10px;
+}
+
+.sports-section-header {
+  margin-bottom: 10px;
+}
+
+.mlb-logo {
+  height: 36px;
+  width: auto;
+  display: block;
+  transition: opacity 0.15s;
+}
+
+.mlb-logo:hover {
+  opacity: 0.8;
+}
+
+.sports-section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #5f6368;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 10px 0 6px;
+}
+
+.sports-section-label:first-child {
+  margin-top: 0;
+}
+
+/* Outer row: [試合結果] | [順位表] */
+
+.sports-main-row {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* Each block (results / standings) */
+
+.sports-section-block {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Inner 2-col grid: [1軍]|[2軍] and [パリーグ]|[セリーグ] */
+
+.sports-two-col {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.sports-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.sports-results-date {
+  font-size: 0.85rem;
+  color: #9aa0a6;
+  margin-bottom: 8px;
+}
+
+.sports-live-badge {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ea4335;
+  animation: sports-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes sports-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+.sports-result-chip--live .sports-result-score {
+  color: #ea4335;
+  font-weight: 700;
+}
+
+/* Sublabel: [1軍] [2軍] [パリーグ] [セリーグ] */
+
+.sports-sublabel {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #5f6368;
+  border: 1px solid #dadce0;
+  border-radius: 3px;
+  padding: 2px 8px;
+  margin: 10px 0 6px;
+  letter-spacing: 0.02em;
+}
+
+.sports-sublabel:first-child {
+  margin-top: 0;
+}
+
+.sports-results-sep {
+  display: none;
+}
+
+.sports-subcols {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.sports-results-vlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sports-team-logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+.sports-team-initial {
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.sports-result-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: #202124;
+  padding: 3px 0;
+  white-space: nowrap;
+}
+
+.sports-result-chip .sports-team-logo {
+  width: 24px;
+  height: 24px;
+}
+
+.sports-result-score {
+  font-size: 0.875rem;
+  min-width: 3.5em;
+  text-align: center;
+}
+
+.sports-result-score--link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sports-result-score--link:hover {
+  text-decoration: underline;
+  color: #1a73e8;
+}
+
+.sports-result-chip--highlight {
+  color: #1a73e8;
+  font-weight: 600;
+}
+
+.sports-standings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.sports-standings-table th {
+  text-align: right;
+  padding: 4px 8px;
+  color: #9aa0a6;
+  font-weight: 500;
+  border-bottom: 1px solid #e8eaed;
+}
+
+.sports-standings-table th:nth-child(2) {
+  text-align: left;
+}
+
+.sports-standings-table td {
+  text-align: right;
+  padding: 4px 8px;
+  color: #202124;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.sports-standings-table td:nth-child(2) {
+  text-align: left;
+}
+
+.sports-standings-team {
+  font-weight: 700;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+}
+
+.sports-standings-highlight td {
+  background: #e8f0fe;
+}
+
+.sports-standings-highlight .sports-standings-team {
+  color: #1a73e8;
+}
+
+.sports-empty {
+  font-size: 0.875rem;
+  color: #9aa0a6;
+  padding: 4px 0;
+}
+
+.sports-highlights {
+  margin-top: 12px;
+}
+
+.sports-highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: start;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.sports-highlight-iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: none;
+  border-radius: 6px;
+}
+
+.sports-loading {
+  font-size: 0.875rem;
+  color: #9aa0a6;
+  padding: 8px 0;
+}
+
+/* ── MLB Japanese Players ────────────────────────────────────────────────────*/
+
+.mlb-team-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #202124;
+}
+
+.mlb-players-list {
+  list-style: none;
+  margin: 5px 0 0;
+  padding: 0;
+  width: 100%;
+}
+
+.mlb-player-item {
+  font-size: 0.75rem;
+  color: #5f6368;
+  padding: 1px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── MLB 3-column layout & stats lists ──────────────────────────────────────*/
+
+.sports-three-col {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.mlb-stats-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mlb-stats-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 0;
+  border-bottom: 1px solid #f1f3f4;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.mlb-stats-item:last-child {
+  border-bottom: none;
+}
+
+.mlb-team-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.pl-team-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.mlb-stats-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #202124;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.mlb-stats-line {
+  font-size: 0.8rem;
+  color: #1a73e8;
+  flex-shrink: 0;
+}
+

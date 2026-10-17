@@ -60,7 +60,6 @@ function matchPlaceNames(zone, matchText) {
 // for computeDepartmentSelection() to react to. Returns the matched zone
 // name, or null if location is unavailable or no zone matches.
 async function detectExpandedSections() {
-  // 1. Get coordinates from localStorage (saved by app.js weather widget)
   let loc;
   try {
     const raw = localStorage.getItem('userLocation');
@@ -71,7 +70,6 @@ async function detectExpandedSections() {
   }
   if (!loc?.lat || !loc?.lng) return null;
 
-  // 2. Reverse geocode via Nominatim
   let addr, matchText;
   try {
     const url = `https://nominatim.openstreetmap.org/reverse?lat=${loc.lat}&lon=${loc.lng}&format=json&accept-language=ja`;
@@ -101,9 +99,6 @@ async function detectExpandedSections() {
     return null;
   }
 
-  // 3. Load zones from my_notes and match.
-  // Zones are evaluated in order; the first match wins.
-  // Priority: address_fields (exact) > place_names (substring).
   const zones = await fetchLocationZones();
   for (const zone of zones) {
     const matched =
@@ -114,7 +109,6 @@ async function detectExpandedSections() {
       const label = zone.label || zone.name;
       const locEl = document.getElementById('current-location');
       if (locEl) locEl.textContent = '📍 ' + label;
-      // Expose the matched zone name globally so other modules can react.
       window.currentZone = zone.name;
       return zone.name;
     }

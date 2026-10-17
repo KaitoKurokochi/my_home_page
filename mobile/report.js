@@ -99,13 +99,11 @@ async function reapplyReportAutoExpand() {
   });
 }
 
-// Build one collapsible department card inside the Status Report section.
 function buildDepartmentCard(name, status, autoExpandNames) {
   const wrapper = document.createElement('div');
   wrapper.className = 'mobile-rd-section';
   wrapper.dataset.name = name;
 
-  // Heading row (clickable)
   const headingRow = document.createElement('div');
   headingRow.className = 'mobile-rd-heading';
 
@@ -121,12 +119,10 @@ function buildDepartmentCard(name, status, autoExpandNames) {
   headingRow.appendChild(title);
   wrapper.appendChild(headingRow);
 
-  // Body
   const body = document.createElement('div');
   body.className = 'mobile-rd-body';
   wrapper.appendChild(body);
 
-  // Determine initial collapsed state
   const shouldExpand = [...autoExpandNames].some(n =>
     name === n || name.toLowerCase().includes(n.toLowerCase()) || n.toLowerCase().includes(name.toLowerCase())
   );
@@ -134,7 +130,6 @@ function buildDepartmentCard(name, status, autoExpandNames) {
     wrapper.classList.add('mobile-rd-collapsed');
   }
 
-  // Click handler
   headingRow.addEventListener('click', () => {
     wrapper.classList.toggle('mobile-rd-collapsed');
   });
@@ -170,7 +165,6 @@ async function renderStatusReport(container) {
 
         body.innerHTML = html;
 
-        // Attach @ buttons
         body.querySelectorAll('.mr-item[data-idx]').forEach(el => {
           const idx = idxOffset + Number(el.dataset.idx);
           const btn = document.createElement('button');
@@ -216,7 +210,6 @@ async function loadReport() {
   if (window.currentZone) reapplyReportAutoExpand();
 }
 
-// esc() comes from ../shared/github-client.js
 
 // Extract label_key from "(#NNN, label_key)" suffix, e.g. "Task text (#42, my_home_page)" → "my_home_page"
 function extractSourceLabel(text) {

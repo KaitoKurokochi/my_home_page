@@ -34,7 +34,7 @@ async function initNote() {
     localStorage.setItem(NOTE_ROLES_KEY, JSON.stringify(DEFAULT_ROLES));
   }
   if (getToken()) {
-    await fetchDepartmentLabels();  // populate getLabels()'s cache before any render
+    await fetchDepartmentLabels();
     renderNoteUI();
     loadNotes();
   } else {

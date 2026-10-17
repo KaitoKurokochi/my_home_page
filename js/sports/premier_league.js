@@ -67,7 +67,6 @@ function renderPremierLeague(data) {
   const grid = document.createElement('div');
   grid.className = 'sports-two-col';
 
-  // Column 1: Game results
   const gamesCol = document.createElement('div');
   gamesCol.className = 'sports-col';
   gamesCol.appendChild(makeSublabel('試合結果'));
@@ -85,7 +84,6 @@ function renderPremierLeague(data) {
   }
   grid.appendChild(gamesCol);
 
-  // Column 2: Player stats
   const playersCol = document.createElement('div');
   playersCol.className = 'sports-col';
   playersCol.appendChild(makeSublabel('出場選手成績'));
@@ -102,7 +100,6 @@ function renderPremierLeague(data) {
 
   container.appendChild(grid);
 
-  // Highlights
   if (pl.highlights && pl.highlights.length) {
     const hlEl = renderNpbHighlights(pl.highlights);
     if (hlEl) container.appendChild(hlEl);

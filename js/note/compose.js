@@ -4,7 +4,6 @@ let selectedLabel = null;
 const selectedRoles = new Set();
 let currentMention = null;  // { title, section, number }
 
-// Called from status.js or note list when user clicks [@] on an item
 window.setMention = function(item) {
   currentMention = item;
   renderMentionBadge();
@@ -148,7 +147,6 @@ function renderNoteUI() {
     <div id="note-list" class="note-list"></div>
   `;
 
-  // Default selection: determined by location zone; fall back to 'general'.
   if (!selectedLabel) selectedLabel = defaultLabelForZone(window.currentZone);
   renderLabelBar();
   renderRoleBar();
@@ -235,7 +233,6 @@ function renderNoteUI() {
       status.textContent = 'Saved.';
       status.className = 'note-status note-status--ok';
 
-      // Optimistic update: prepend the new note immediately without waiting for a reload
       const list = document.getElementById('note-list');
       if (list) {
         const empty = list.querySelector('.note-list-empty');
@@ -254,4 +251,3 @@ function renderNoteUI() {
   });
 }
 
-// parseTitleParts/buildTitle/updateIssue come from shared/notes-api.js

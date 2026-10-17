@@ -26,8 +26,6 @@
 // department-specific hardcoded fallback list.
 let AGENT_DEPARTMENTS = [];
 
-// Reverse map: display name → department key (e.g. "University" → "univ").
-// Rebuilt by fetchAgentDepartments() each time AGENT_DEPARTMENTS changes.
 let DISPLAY_NAME_TO_KEY = {};
 
 let _agentDepartmentsCache = null;
@@ -51,7 +49,6 @@ async function fetchAgentDepartments() {
   return AGENT_DEPARTMENTS;
 }
 
-// Returns the display name for a department key (looks up AGENT_DEPARTMENTS).
 function departmentName(key) {
   const entry = AGENT_DEPARTMENTS.find(([,, k]) => k === key);
   return entry ? entry[1] : key;
@@ -144,7 +141,7 @@ async function computeDepartmentSelection() {
   for (const k of selected) departmentKeys.add(k);
   for (const k of serverAutoExpand) autoExpand.add(k);
 
-  const zone = window.currentZone;  // may be undefined if GPS not yet ready
+  const zone = window.currentZone;
   if (zone) {
     const zoneDepartments = await fetchZoneDepartments();
     for (const k of (zoneDepartments[zone] || [])) {
@@ -171,7 +168,6 @@ async function computeDepartmentSelection() {
 async function fetchStatusReportData() {
   const { departmentKeys, autoExpand } = await computeDepartmentSelection();
 
-  // Preserve AGENT_DEPARTMENTS' canonical order.
   const selectedDepartments = AGENT_DEPARTMENTS.filter(([,, k]) => departmentKeys.has(k));
 
   const results = await Promise.all(

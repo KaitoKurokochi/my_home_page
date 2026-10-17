@@ -48,7 +48,7 @@ function renderTokenSetup() {
     const val = document.getElementById('note-token-input').value.trim();
     if (!val) return;
     localStorage.setItem(NOTE_TOKEN_KEY, val);
-    await fetchDepartmentLabels();  // populate getLabels()'s cache before any render
+    await fetchDepartmentLabels();
     renderNoteUI();
     loadNotes();
   });

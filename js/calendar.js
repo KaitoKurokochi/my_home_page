@@ -84,7 +84,6 @@ async function renderCalWidget() {
       <div class="cal-detail-location" id="cal-detail-location"></div>
     </div>`;
 
-  // toggle list panel on summary click
   const btn        = document.getElementById('cal-summary');
   const panel      = document.getElementById('cal-panel');
   const detailPanel = document.getElementById('cal-detail-panel');
@@ -92,14 +91,12 @@ async function renderCalWidget() {
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
     panel.classList.toggle('hidden');
-    // close detail panel when list panel closes
     if (panel.classList.contains('hidden')) {
       detailPanel.classList.add('hidden');
       panel.querySelectorAll('.cal-panel-event--active').forEach(el => el.classList.remove('cal-panel-event--active'));
     }
   });
 
-  // Close both panels when clicking outside the widget
   document.addEventListener('click', (e) => {
     if (!widget.contains(e.target)) {
       panel.classList.add('hidden');
@@ -108,14 +105,12 @@ async function renderCalWidget() {
     }
   });
 
-  // Close detail panel via close button
   document.getElementById('cal-detail-close').addEventListener('click', (e) => {
     e.stopPropagation();
     detailPanel.classList.add('hidden');
     panel.querySelectorAll('.cal-panel-event--active').forEach(el => el.classList.remove('cal-panel-event--active'));
   });
 
-  // Event item click → show detail panel
   panel.querySelectorAll('.cal-panel-event[data-event-index]').forEach(row => {
     row.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -123,11 +118,9 @@ async function renderCalWidget() {
       const ev = events[idx];
       if (!ev) return;
 
-      // Highlight selected row
       panel.querySelectorAll('.cal-panel-event--active').forEach(el => el.classList.remove('cal-panel-event--active'));
       row.classList.add('cal-panel-event--active');
 
-      // Populate detail panel
       const timeRange = ev.allDay ? '終日' : `${ev.start} – ${ev.end}`;
       document.getElementById('cal-detail-title').textContent = ev.title || '';
       document.getElementById('cal-detail-time').textContent  = timeRange;
@@ -159,11 +152,9 @@ async function renderCalWidget() {
       detailPanel.classList.remove('hidden');
 
       if (spaceRight >= detailW) {
-        // Enough space on the right
         detailPanel.style.left = `${panel.offsetLeft + panel.offsetWidth + 8}px`;
         detailPanel.style.right = 'auto';
       } else {
-        // Not enough space → show to the left of the list panel
         detailPanel.style.right = `${widget.offsetWidth - panel.offsetLeft + 8}px`;
         detailPanel.style.left = 'auto';
       }

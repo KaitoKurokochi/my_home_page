@@ -34,7 +34,6 @@
     return keywords.some(kw => matchText.includes(kw));
   }
 
-  // githubFetch() comes from ../shared/github-client.js
   async function fetchLocationZones() {
     try {
       const text = await githubFetch('my_home_page/runtime/location_zones.json');
@@ -71,10 +70,8 @@
   }
 
   async function detectZone() {
-    // 1. Get coordinates (cached or fresh GPS)
     const { lat, lng } = await getCoords();
 
-    // 2. Reverse geocode via Nominatim
     const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=ja`;
     const geoRes = await fetch(url, { headers: { 'User-Agent': 'MobileNote/1.0' } });
     if (!geoRes.ok) return null;
@@ -97,7 +94,6 @@
     ].filter(Boolean);
     const matchText = parts.join(' ');
 
-    // 3. Match against zone config
     const zones = await fetchLocationZones();
     for (const zone of zones) {
       if (matchAddressFields(zone, addr) || matchPlaceNames(zone, matchText)) {
@@ -123,14 +119,10 @@
       // Never override a label the user (or an @ mention) already chose.
       const applyLabel = label && !window.labelTouchedByUser;
       if (applyLabel) window.defaultLabelForZone = label;
-      // Expose zone name for other modules (e.g. report.js auto-expand logic).
       window.currentZone = zoneName || null;
-      // If the form is already rendered, update the pill selection.
-      // selectLabelPill is defined in app.js and only changes the UI highlight.
       if (applyLabel && typeof selectLabelPill === 'function') {
         selectLabelPill(label);
       }
-      // If report is already rendered, re-apply department auto-expand.
       if (typeof reapplyReportAutoExpand === 'function') {
         reapplyReportAutoExpand();
       }

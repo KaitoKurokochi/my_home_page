@@ -40,7 +40,7 @@ async function pullSync() {
   if (!getToken()) return;
   try {
     const res = await fetch(SYNC_API, { headers: _syncHeaders() });
-    if (!res.ok) return; // 404 on first use — will be created on first push
+    if (!res.ok) return;
     const data = await res.json();
     const content = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
     localStorage.setItem(SYNC_SHA_KEY, data.sha);

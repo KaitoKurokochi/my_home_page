@@ -5,7 +5,6 @@
 //             computeDepartmentSelection, fetchStatusReportData)
 //             js/calendar.js (renderCalWidget — sets window.todayEvents)
 
-// Returns a stable key for an item: issue number if present, otherwise full text.
 function itemKey(text) {
   const m = text.match(/\(#(\d+)(?:,\s*[^)]+)?\)/);
   return m ? '#' + m[1] : text;
@@ -13,7 +12,7 @@ function itemKey(text) {
 
 // ── Report (left-col, above news) ─────────────────────────────────────────────
 
-let mentionItems = [];  // shared with note.js via window
+let mentionItems = [];
 
 // Wraps each ## section (h2.mr-cat + its following sibling nodes up to the
 // next h2) in a <div class="sr-section" data-key="KEY">.
@@ -28,7 +27,6 @@ function wrapSections(bodyEl, autoExpandKeys) {
   for (const node of children) {
     const isH2 = node.nodeType === Node.ELEMENT_NODE && node.tagName === 'H2' && node.classList.contains('mr-cat');
     if (isH2) {
-      // Derive a section key from the heading text (strip emoji + whitespace)
       const key = node.textContent.trim().replace(/[\u{1F300}-\u{1FAFF}]/gu, '').trim();
       currentWrapper = document.createElement('div');
       currentWrapper.className = 'sr-section';
@@ -36,13 +34,11 @@ function wrapSections(bodyEl, autoExpandKeys) {
       bodyEl.insertBefore(currentWrapper, node);
       currentWrapper.appendChild(node);
 
-      // Add arrow icon to h2
       const arrow = document.createElement('span');
       arrow.className = 'sr-arrow';
       arrow.textContent = '▼';
       node.appendChild(arrow);
 
-      // Default: collapsed. Expand only if key matches autoExpandKeys.
       const shouldExpand = autoExpandKeys !== null && autoExpandKeys.size > 0
         ? [...autoExpandKeys].some(k => key === k || key.includes(k) || k.includes(key))
         : false;
@@ -50,13 +46,11 @@ function wrapSections(bodyEl, autoExpandKeys) {
         currentWrapper.classList.add('collapsed');
       }
 
-      // Click handler: toggle collapsed state (capture wrapper, not currentWrapper)
       const wrapper = currentWrapper;
       node.addEventListener('click', () => {
         wrapper.classList.toggle('collapsed');
       });
     } else if (currentWrapper) {
-      // Wrap content nodes (all siblings after h2) in a body div
       if (!currentWrapper.querySelector('.sr-section-body')) {
         const body = document.createElement('div');
         body.className = 'sr-section-body';
@@ -100,21 +94,16 @@ async function renderReport() {
     bodyEl.innerHTML = markdownToHtml(md);
     el.innerHTML = '';
     el.appendChild(bodyEl);
-    // Pass autoExpandNames directly: sections not in the set start collapsed.
     wrapSections(bodyEl, autoExpandNames);
     window.mentionItems = mentionItems;
     attachMentionButtons(el);
     attachRoutineItems(el);
     attachBulletToggles(el);
-    // Register callback for when GPS zone becomes available later.
-    // Chain with any previously registered onLocationReady callbacks.
     const _prevLocationReady = window.onLocationReady;
     window.onLocationReady = function () {
       reapplyAutoExpand(bodyEl);
       if (typeof _prevLocationReady === 'function') _prevLocationReady();
     };
-    // If zone detection already completed before renderReport() finished,
-    // apply auto-expand immediately (no need to wait for the callback).
     if (window.currentZone) {
       reapplyAutoExpand(bodyEl);
     }
@@ -151,20 +140,18 @@ function markdownToHtml(md) {
 
   // ── Pass 3: render ────────────────────────────────────────────────────────
   let html = '';
-  let currentLabel = '';         // current h2 label (Research, Lions_IS, etc.)
-  let currentDepartmentKey = '';     // department key for currentLabel (e.g. "univ" for "University")
-  let currentSection = '';      // current h3 sub-section text (Phase:, Questions, etc.)
+  let currentLabel = '';
+  let currentDepartmentKey = '';
+  let currentSection = '';
   let itemIndex = 0;
   let inRoutine = false;
 
-  // Helper: flush a pending item-list run
   function flushList(listItems) {
     if (!listItems.length) return '';
     const liHtml = listItems.map(li => li).join('');
     return `<ul class="mr-list">${liHtml}</ul>`;
   }
 
-  // Helper: render a single item/check token as <li>
   function renderLi(t, section, isRoutine) {
     // Match "(#NNN)" (solo) or "(#NNN, label_key)" (Others section format)
     const numMatch = t.text.match(/\(#(\d+)(?:,\s*([^)]+))?\)$/);
@@ -182,7 +169,7 @@ function markdownToHtml(md) {
     return `<li class="mr-item" data-mention-index="${idx}"><span class="mr-bullet" data-item-key="${esc(itemKey(t.text))}">-</span>${esc(t.text)}</li>`;
   }
 
-  let pendingList = [];  // accumulates <li> strings for the current run
+  let pendingList = [];
 
   for (let i = 0; i < tokens.length; i++) {
     if (skipIdx.has(i)) continue;
@@ -195,7 +182,6 @@ function markdownToHtml(md) {
       continue;
     }
 
-    // Flush any accumulated list before rendering non-list token
     if (pendingList.length) {
       html += flushList(pendingList);
       pendingList = [];
@@ -231,7 +217,6 @@ function markdownToHtml(md) {
     }
   }
 
-  // Flush any remaining list at end
   if (pendingList.length) {
     html += flushList(pendingList);
   }
@@ -243,13 +228,10 @@ function attachMentionButtons(el) {
   el.querySelectorAll('.mr-item[data-mention-index]').forEach(p => {
     const idx = Number(p.dataset.mentionIndex);
 
-    // bullet span is already in DOM from renderLi; extract it before rewriting
     const bulletSpan = p.querySelector('.mr-bullet');
 
-    // Wrap text in span so button sits right next to it
     const textSpan = document.createElement('span');
     textSpan.className = 'mr-item-text';
-    // Text content = li text minus the bullet span text
     textSpan.textContent = p.textContent.replace(/^-\s*/, '').trim();
     p.textContent = '';
     if (bulletSpan) p.appendChild(bulletSpan);
@@ -273,24 +255,20 @@ function attachRoutineItems(el) {
     const key = p.dataset.routineKey;
     if (!key) return;
 
-    // Restore saved state
-    const savedState = doneState[key] || 'none'; // 'none' | 'hidden'
+    const savedState = doneState[key] || 'none';
     if (savedState === 'hidden') {
       p.style.display = 'none';
     }
 
     p.style.cursor = 'pointer';
     p.addEventListener('click', (e) => {
-      // Ignore clicks on the @ mention button
       if (e.target.classList.contains('mr-mention-btn')) return;
       const state = loadRoutineDone();
       const cur = state[key] || 'none';
       if (cur === 'none') {
-        // First click: hide immediately
         p.style.display = 'none';
         state[key] = 'hidden';
       } else {
-        // Second click: restore
         p.classList.remove('mr-routine-struck');
         p.style.display = '';
         state[key] = 'none';
@@ -321,7 +299,6 @@ function attachBulletToggles(el) {
     const key = bullet.dataset.itemKey || '';
     const li = bullet.closest('li');
 
-    // Restore saved state
     if (activeItems.includes(key)) {
       bullet.textContent = '🔴';
       if (li) li.classList.add('mr-item--active');
@@ -332,13 +309,11 @@ function attachBulletToggles(el) {
       const state = loadActiveItems();
       const isActive = state.includes(key);
       if (isActive) {
-        // Remove from active
         const idx = state.indexOf(key);
         state.splice(idx, 1);
         bullet.textContent = '-';
         if (li) li.classList.remove('mr-item--active');
       } else {
-        // Add to active
         state.push(key);
         bullet.textContent = '🔴';
         if (li) li.classList.add('mr-item--active');

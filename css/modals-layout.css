@@ -1,0 +1,111 @@
+/* ── Modals ──────────────────────────────────────────────────────────────────*/
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-box {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+
+.modal-box h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #202124;
+}
+
+.modal-box input {
+  padding: 9px 12px;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  outline: none;
+  color: #202124;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.modal-box input:focus {
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.15);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.modal-actions button {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.btn-cancel {
+  background: none;
+  color: #1a73e8;
+}
+
+.btn-cancel:hover {
+  background: #e8f0fe;
+}
+
+.btn-save {
+  background: #1a73e8;
+  color: white;
+}
+
+.btn-save:hover {
+  background: #1557b0;
+}
+
+/* ── Two-column layout ───────────────────────────────────────────────────────*/
+
+.main-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 24px;
+}
+
+.left-col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.right-col {
+  width: 360px;
+  flex-shrink: 0;
+}
+
+.left-col section h2:not(.mr-cat):not(.mr-section):not(.mr-phase) {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+  color: #202124;
+}
+

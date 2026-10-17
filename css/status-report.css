@@ -1,0 +1,253 @@
+/* ── Report section (left-col, above news) ───────────────────────────────────*/
+
+.status-report-section {
+  margin-bottom: 8px;
+}
+
+.mr-body {
+  background: #fafafa;
+  border: 1px solid #e8eaed;
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.mr-cat         { font-size: 0.95rem; font-weight: 700; color: #1a73e8; text-transform: uppercase; letter-spacing: 0.06em; margin: 14px 0 4px; border-bottom: 1px solid #e8f0fe; padding-bottom: 2px; }
+.mr-phase       { font-size: 0.82rem; font-weight: 700; color: #1a73e8; margin: 10px 0 4px; border-left: 3px solid #1a73e8; padding: 2px 0 2px 8px; background: #f0f4ff; border-radius: 0 4px 4px 0; }
+.mr-section     { font-size: 0.88rem; font-weight: 700; color: #1a73e8; margin: 10px 0 3px; }
+.mr-body h3    { font-size: 0.78rem; font-weight: 600; color: #1a73e8; margin: 7px 0 2px; }
+.mr-body h4    { font-size: 0.72rem; font-weight: 600; color: #80868b; margin: 5px 0 2px; }
+.mr-subhead     { font-size: 0.72rem; font-weight: 600; color: #5f6368; margin: 4px 0 2px; }
+.mr-summary     { font-size: 0.78rem; color: #5f6368; margin-bottom: 6px; line-height: 1.5; }
+.mr-list        { margin: 2px 0 6px; padding-left: 4px; list-style: none; }
+.mr-list .mr-item { display: flex; align-items: flex-start; font-size: 0.85rem; color: #202124; padding: 1px 0; line-height: 1.4; }
+.mr-item-done      { color: #9aa0a6; text-decoration: line-through; }
+.mr-routine-item   { cursor: pointer; transition: opacity 0.15s; }
+.mr-routine-item:hover { opacity: 0.75; }
+.mr-routine-struck { color: #9aa0a6; text-decoration: line-through; }
+
+/* ── Red-bullet active marker ─────────────────────────────────────────────────*/
+
+.mr-bullet {
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #9aa0a6;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.4;
+  transition: color 0.12s;
+}
+.mr-bullet:hover { color: #c5221f; }
+.mr-item--active {
+  font-weight: 600;
+  background: #fff3f3;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 4px;
+}
+.mr-detail-text { font-size: 0.74rem; color: #5f6368; padding-left: 14px; line-height: 1.4; }
+.mr-since       { font-size: 0.7rem; color: #9aa0a6; padding-left: 14px; margin-bottom: 4px; }
+.mr-para        { font-size: 0.82rem; color: #3c4043; margin: 3px 0 5px; line-height: 1.5; }
+.mr-error       { font-size: 0.78rem; color: #c5221f; }
+
+/* ── Weekly Report ───────────────────────────────────────────────────────────*/
+
+.report-btns-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wr-toggle-btn {
+  display: inline-block;
+  margin-bottom: 0;
+  padding: 8px 16px;
+  background: #e94560;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.wr-toggle-btn:hover {
+  opacity: 0.85;
+}
+
+/* (wr-panel / wr-body etc. live inside weekly.html as inline styles) */
+
+/* ── Meeting Note button (NTT MTG day) ───────────────────────────────────────*/
+
+.mn-toggle-btn {
+  background: #1a73e8;
+}
+
+.mn-toggle-btn:hover {
+  opacity: 0.85;
+}
+
+/* ── Status report section collapse ─────────────────────────────────────────*/
+
+.sr-section-body {
+  overflow: hidden;
+}
+
+.sr-section.collapsed .sr-section-body {
+  display: none;
+}
+
+.mr-cat {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sr-arrow {
+  float: right;
+  font-size: 0.75rem;
+  color: #9aa0a6;
+  transition: transform 0.2s;
+  line-height: inherit;
+}
+
+.sr-section.collapsed .sr-arrow {
+  transform: rotate(-90deg);
+}
+
+.current-location {
+  font-size: 0.68rem;
+  color: #9aa0a6;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* ── Tasks Due Today section ─────────────────────────────────────────────────*/
+/* Uses mr-body / mr-list / mr-item from the status report for visual parity. */
+
+.due-today-section {
+  margin-bottom: 8px;
+}
+
+/* Inner wrapper: same card style as .mr-body */
+.dt-body-wrap {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Header row — styled like an mr-cat but with badge + arrow */
+.dt-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 16px 8px;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid #e8f0fe;
+}
+
+/* When collapsed, task list is hidden — remove separator border from header */
+.dt-collapsed .dt-header {
+  border-bottom: none;
+}
+
+.dt-header:hover {
+  background: #f5f8ff;
+  border-radius: 10px 10px 0 0;
+}
+
+.dt-collapsed .dt-header:hover {
+  border-radius: 10px;
+}
+
+.dt-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a73e8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex: 1;
+}
+
+.dt-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: #1a73e8;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 9px;
+}
+
+.dt-arrow {
+  font-size: 0.75rem;
+  color: #9aa0a6;
+  transition: transform 0.2s;
+}
+
+.dt-collapsed .dt-arrow {
+  transform: rotate(-90deg);
+}
+
+/* Task list — no extra padding; mr-list already provides it */
+.dt-task-list {
+  padding: 4px 4px 8px;
+}
+
+.dt-collapsed .dt-task-list {
+  display: none;
+}
+
+/* Individual task rows reuse mr-item; add bottom border for separation */
+.dt-task-item {
+  border-bottom: 1px solid #f1f3f4;
+  padding: 3px 0;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.dt-task-item:last-child {
+  border-bottom: none;
+}
+
+/* Overdue: red text (overrides mr-item color) */
+.dt-task-item.dt-task--overdue {
+  color: #c5221f;
+}
+
+.dt-task-item.dt-task--overdue .dt-task-text {
+  font-weight: 600;
+}
+
+/* Label badge — same look as note-item-tag */
+.dt-label-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  background: #e8f0fe;
+  color: #1a73e8;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 4px;
+  white-space: nowrap;
+  text-transform: capitalize;
+  flex-shrink: 0;
+}
+
+.dt-task-item.dt-task--overdue .dt-label-badge {
+  background: #fce8e6;
+  color: #c5221f;
+}
+
+/* Task display text */
+.dt-task-text {
+  flex: 1;
+  min-width: 0;
+}
+

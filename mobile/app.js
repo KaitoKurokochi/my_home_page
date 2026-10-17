@@ -1,6 +1,6 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 // Depends on: ../shared/github-client.js (getToken, esc), ../shared/notes-api.js
-// (GITHUB_API, parseTitleParts, buildTitle, updateIssue, fetchRecentNotes),
+// (GITHUB_API, parseTitleParts, buildTitle, updateIssue, changeIssueTitleOptimistically, fetchRecentNotes),
 // ../shared/note-labels.js (guessLabel, isBookLabel, isVideoLabel, templates),
 // ../shared/sync-api.js (pullSync, pushSync)
 
@@ -354,8 +354,7 @@ function buildNoteItem(issue) {
       const opts = getLabels().filter(l => departmentKeyForLabel(l) !== departmentKeyForLabel(label)).map(l => ({ label: l, value: l }));
       showDropdown(tag, opts, newLabel => {
         const t = buildTitle(newLabel, roles);
-        replaceWith(t);
-        updateIssue(issue.number, { title: t }).catch(() => replaceWith(issue.title));
+        changeIssueTitleOptimistically(issue, t, replaceWith);
       });
     });
     tagsDiv.appendChild(tag);
@@ -369,8 +368,7 @@ function buildNoteItem(issue) {
     span.addEventListener('click', e => {
       e.stopPropagation();
       const t = buildTitle(label, roles.filter(r => r !== roleKey));
-      replaceWith(t);
-      updateIssue(issue.number, { title: t }).catch(() => replaceWith(issue.title));
+      changeIssueTitleOptimistically(issue, t, replaceWith);
     });
     tagsDiv.appendChild(span);
   });
@@ -386,8 +384,7 @@ function buildNoteItem(issue) {
       const options = getRoles().map(({ key, icon }) => ({ label: `${icon} ${key}`, value: key }));
       showDropdown(addRoleBtn, options, roleKey => {
         const t = buildTitle(label, [roleKey]);
-        replaceWith(t);
-        updateIssue(issue.number, { title: t }).catch(() => replaceWith(issue.title));
+        changeIssueTitleOptimistically(issue, t, replaceWith);
       });
     });
     tagsDiv.appendChild(addRoleBtn);

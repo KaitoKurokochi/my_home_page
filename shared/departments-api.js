@@ -2,14 +2,8 @@
 // Used by both js/note.js (desktop) and mobile/app.js (mobile).
 // Depends on: shared/github-client.js (githubFetch)
 //
-// Fetches my_home_page/runtime/departments.json — pushed daily by
-// agent-scripts' select_departments.py (see agent-scripts v1.16.5) — and
-// returns its label list. This replaces the old per-browser, user-editable
-// label list (localStorage 'note_labels', synced via sync.json): that list
-// had drifted from the real department set over time (e.g. "Entertainment"/
-// "Research" with no corresponding department), and there's no reason for
-// note labels to be anything other than the department list itself
-// (2026-09-29, see status.md/history.md).
+// Fetches my_home_page/runtime/departments.json (pushed daily by agent-scripts'
+// select_departments.py) and returns its label list: note labels are the department list itself.
 
 // Used only if the fetch fails (network error, file missing, bad JSON) —
 // keeps the label bar usable rather than empty.
@@ -32,10 +26,8 @@ function departmentKeyForLabel(label) {
   return hit ? hit.key : label;
 }
 
-// Fetches (once — cached after) and returns the department label list.
-// Callers that need this synchronously (renderLabelBar, etc.) should await
-// this once during page init and read getLabels() (each side's own thin
-// cache-reader) afterward.
+// Fetches once (cached after). Callers needing the labels synchronously (renderLabelBar, etc.)
+// await this once during page init, then read getLabels() (each side's own cache-reader).
 async function fetchDepartmentLabels() {
   if (_departmentLabelsCache) return _departmentLabelsCache;
   try {

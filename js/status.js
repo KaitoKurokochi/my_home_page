@@ -5,7 +5,6 @@
 //             computeDepartmentSelection, fetchStatusReportData)
 //             js/calendar.js (renderCalWidget — sets window.todayEvents)
 
-// Returns a stable key for an item: issue number if present, otherwise full text.
 function itemKey(text) {
   const m = text.match(/\(#(\d+)(?:,\s*[^)]+)?\)/);
   return m ? '#' + m[1] : text;
@@ -13,14 +12,12 @@ function itemKey(text) {
 
 // ── Report (left-col, above news) ─────────────────────────────────────────────
 
-let mentionItems = [];  // shared with note.js via window
+let mentionItems = [];
 
-// Wraps each ## section (h2.mr-cat + its following sibling nodes up to the
-// next h2) in a <div class="sr-section" data-key="KEY">.
-// Adds a toggle arrow to the h2 and wires click-to-collapse behaviour.
-// autoExpandKeys: Set of display names to auto-expand on load.
-//                 All other sections start collapsed.
-//                 Pass an empty Set (not null) to collapse everything by default.
+// Wraps each ## section (h2.mr-cat + its following siblings up to the next h2) in
+// <div class="sr-section" data-key="KEY"> with a toggle arrow and click-to-collapse.
+// autoExpandKeys: Set of display names to start expanded; all others start collapsed
+// (pass an empty Set, not null, to collapse everything).
 function wrapSections(bodyEl, autoExpandKeys) {
   const children = Array.from(bodyEl.childNodes);
   let currentWrapper = null;
@@ -28,7 +25,6 @@ function wrapSections(bodyEl, autoExpandKeys) {
   for (const node of children) {
     const isH2 = node.nodeType === Node.ELEMENT_NODE && node.tagName === 'H2' && node.classList.contains('mr-cat');
     if (isH2) {
-      // Derive a section key from the heading text (strip emoji + whitespace)
       const key = node.textContent.trim().replace(/[\u{1F300}-\u{1FAFF}]/gu, '').trim();
       currentWrapper = document.createElement('div');
       currentWrapper.className = 'sr-section';
@@ -36,13 +32,11 @@ function wrapSections(bodyEl, autoExpandKeys) {
       bodyEl.insertBefore(currentWrapper, node);
       currentWrapper.appendChild(node);
 
-      // Add arrow icon to h2
       const arrow = document.createElement('span');
       arrow.className = 'sr-arrow';
       arrow.textContent = '▼';
       node.appendChild(arrow);
 
-      // Default: collapsed. Expand only if key matches autoExpandKeys.
       const shouldExpand = autoExpandKeys !== null && autoExpandKeys.size > 0
         ? [...autoExpandKeys].some(k => key === k || key.includes(k) || k.includes(key))
         : false;
@@ -50,13 +44,11 @@ function wrapSections(bodyEl, autoExpandKeys) {
         currentWrapper.classList.add('collapsed');
       }
 
-      // Click handler: toggle collapsed state (capture wrapper, not currentWrapper)
       const wrapper = currentWrapper;
       node.addEventListener('click', () => {
         wrapper.classList.toggle('collapsed');
       });
     } else if (currentWrapper) {
-      // Wrap content nodes (all siblings after h2) in a body div
       if (!currentWrapper.querySelector('.sr-section-body')) {
         const body = document.createElement('div');
         body.className = 'sr-section-body';
@@ -67,9 +59,8 @@ function wrapSections(bodyEl, autoExpandKeys) {
   }
 }
 
-// Re-applies auto-expand state to already-rendered .sr-section wrappers
-// based on the current window.currentZone and day of week.
-// Called after initial render and again when GPS zone becomes available.
+// Re-applies auto-expand to rendered .sr-section wrappers from window.currentZone and the day of
+// week (after the initial render, and again when the GPS zone becomes available).
 async function reapplyAutoExpand(bodyEl) {
   const { autoExpand } = await computeDepartmentSelection();
   const autoExpandNames = new Set();
@@ -100,21 +91,16 @@ async function renderReport() {
     bodyEl.innerHTML = markdownToHtml(md);
     el.innerHTML = '';
     el.appendChild(bodyEl);
-    // Pass autoExpandNames directly: sections not in the set start collapsed.
     wrapSections(bodyEl, autoExpandNames);
     window.mentionItems = mentionItems;
     attachMentionButtons(el);
     attachRoutineItems(el);
     attachBulletToggles(el);
-    // Register callback for when GPS zone becomes available later.
-    // Chain with any previously registered onLocationReady callbacks.
     const _prevLocationReady = window.onLocationReady;
     window.onLocationReady = function () {
       reapplyAutoExpand(bodyEl);
       if (typeof _prevLocationReady === 'function') _prevLocationReady();
     };
-    // If zone detection already completed before renderReport() finished,
-    // apply auto-expand immediately (no need to wait for the callback).
     if (window.currentZone) {
       reapplyAutoExpand(bodyEl);
     }
@@ -146,79 +132,23 @@ function saveRoutineDone(state) {
 }
 
 function markdownToHtml(md) {
-  const lines = md.split('\n');
-
-  // ── Pass 1: parse into token objects ──────────────────────────────────────
-  const tokens = [];
-  for (const line of lines) {
-    if (line.startsWith('#### ')) {
-      tokens.push({ type: 'h4', text: line.slice(5).trim() });
-    } else if (line.startsWith('### ')) {
-      tokens.push({ type: 'h3', text: line.slice(4).trim() });
-    } else if (line.startsWith('## ')) {
-      tokens.push({ type: 'h2', text: line.slice(3).trim() });
-    } else if (line.startsWith('# ')) {
-      tokens.push({ type: 'h1', text: line.slice(2).trim() });
-    } else if (line.startsWith('> ')) {
-      tokens.push({ type: 'summary', text: line.slice(2).trim() });
-    } else if (line.startsWith('- [ ] ') || line.startsWith('- [x] ')) {
-      tokens.push({ type: 'check', text: line.slice(6).trim(), checked: line.startsWith('- [x] ') });
-    } else if (line.startsWith('- ')) {
-      tokens.push({ type: 'item', text: line.slice(2).trim() });
-    } else if (line.startsWith('・')) {
-      tokens.push({ type: 'item', text: line.slice(1).trim() });
-    } else if (line.startsWith('**') && line.endsWith('**')) {
-      tokens.push({ type: 'subhead', text: line.replace(/\*\*/g, '').trim() });
-    } else if (line.startsWith('  *')) {
-      tokens.push({ type: 'detail', text: line.trim().replace(/\*/g, '') });
-    } else if (line.startsWith('  `')) {
-      tokens.push({ type: 'since', text: line.trim().replace(/`/g, '') });
-    } else if (line.trim() === '') {
-      tokens.push({ type: 'blank' });
-    } else {
-      tokens.push({ type: 'paragraph', text: line.trim() });
-    }
-  }
-
-  // ── Pass 2: skip heading tokens whose section has no content ─────────────
-  // A heading is "empty" if there's no content token before the next heading
-  // of the same or shallower level. Deeper headings nested inside it (e.g. an
-  // "### " subsection under "## TODO") are content-bearing containers, not
-  // section boundaries, so they're skipped over rather than stopping the scan.
-  const HEADING_TYPES = new Set(['h1', 'h2', 'h3', 'h4']);
-  const HEADING_LEVEL = { h1: 1, h2: 2, h3: 3, h4: 4 };
-  const CONTENT_TYPES = new Set(['summary', 'check', 'item', 'subhead', 'detail', 'since', 'paragraph']);
-  const skipIdx = new Set();
-  for (let i = 0; i < tokens.length; i++) {
-    const t = tokens[i];
-    if (t.type !== 'h2' && t.type !== 'h3' && t.type !== 'h4') continue;
-    const level = HEADING_LEVEL[t.type];
-    // look ahead for content before the next heading at this level or shallower
-    let hasContent = false;
-    for (let j = i + 1; j < tokens.length; j++) {
-      const tj = tokens[j];
-      if (HEADING_TYPES.has(tj.type) && HEADING_LEVEL[tj.type] <= level) break;
-      if (CONTENT_TYPES.has(tj.type)) { hasContent = true; break; }
-    }
-    if (!hasContent) skipIdx.add(i);
-  }
+  const tokens = tokenizeMarkdown(md);
+  const skipIdx = findEmptyHeadingIndices(tokens, ['h2', 'h3', 'h4']);
 
   // ── Pass 3: render ────────────────────────────────────────────────────────
   let html = '';
-  let currentLabel = '';         // current h2 label (Research, Lions_IS, etc.)
-  let currentDepartmentKey = '';     // department key for currentLabel (e.g. "univ" for "University")
-  let currentSection = '';      // current h3 sub-section text (Phase:, Questions, etc.)
+  let currentLabel = '';
+  let currentDepartmentKey = '';
+  let currentSection = '';
   let itemIndex = 0;
   let inRoutine = false;
 
-  // Helper: flush a pending item-list run
   function flushList(listItems) {
     if (!listItems.length) return '';
     const liHtml = listItems.map(li => li).join('');
     return `<ul class="mr-list">${liHtml}</ul>`;
   }
 
-  // Helper: render a single item/check token as <li>
   function renderLi(t, section, isRoutine) {
     // Match "(#NNN)" (solo) or "(#NNN, label_key)" (Others section format)
     const numMatch = t.text.match(/\(#(\d+)(?:,\s*([^)]+))?\)$/);
@@ -236,7 +166,7 @@ function markdownToHtml(md) {
     return `<li class="mr-item" data-mention-index="${idx}"><span class="mr-bullet" data-item-key="${esc(itemKey(t.text))}">-</span>${esc(t.text)}</li>`;
   }
 
-  let pendingList = [];  // accumulates <li> strings for the current run
+  let pendingList = [];
 
   for (let i = 0; i < tokens.length; i++) {
     if (skipIdx.has(i)) continue;
@@ -249,7 +179,6 @@ function markdownToHtml(md) {
       continue;
     }
 
-    // Flush any accumulated list before rendering non-list token
     if (pendingList.length) {
       html += flushList(pendingList);
       pendingList = [];
@@ -285,7 +214,6 @@ function markdownToHtml(md) {
     }
   }
 
-  // Flush any remaining list at end
   if (pendingList.length) {
     html += flushList(pendingList);
   }
@@ -297,13 +225,10 @@ function attachMentionButtons(el) {
   el.querySelectorAll('.mr-item[data-mention-index]').forEach(p => {
     const idx = Number(p.dataset.mentionIndex);
 
-    // bullet span is already in DOM from renderLi; extract it before rewriting
     const bulletSpan = p.querySelector('.mr-bullet');
 
-    // Wrap text in span so button sits right next to it
     const textSpan = document.createElement('span');
     textSpan.className = 'mr-item-text';
-    // Text content = li text minus the bullet span text
     textSpan.textContent = p.textContent.replace(/^-\s*/, '').trim();
     p.textContent = '';
     if (bulletSpan) p.appendChild(bulletSpan);
@@ -327,24 +252,20 @@ function attachRoutineItems(el) {
     const key = p.dataset.routineKey;
     if (!key) return;
 
-    // Restore saved state
-    const savedState = doneState[key] || 'none'; // 'none' | 'hidden'
+    const savedState = doneState[key] || 'none';
     if (savedState === 'hidden') {
       p.style.display = 'none';
     }
 
     p.style.cursor = 'pointer';
     p.addEventListener('click', (e) => {
-      // Ignore clicks on the @ mention button
       if (e.target.classList.contains('mr-mention-btn')) return;
       const state = loadRoutineDone();
       const cur = state[key] || 'none';
       if (cur === 'none') {
-        // First click: hide immediately
         p.style.display = 'none';
         state[key] = 'hidden';
       } else {
-        // Second click: restore
         p.classList.remove('mr-routine-struck');
         p.style.display = '';
         state[key] = 'none';
@@ -375,7 +296,6 @@ function attachBulletToggles(el) {
     const key = bullet.dataset.itemKey || '';
     const li = bullet.closest('li');
 
-    // Restore saved state
     if (activeItems.includes(key)) {
       bullet.textContent = '🔴';
       if (li) li.classList.add('mr-item--active');
@@ -386,13 +306,11 @@ function attachBulletToggles(el) {
       const state = loadActiveItems();
       const isActive = state.includes(key);
       if (isActive) {
-        // Remove from active
         const idx = state.indexOf(key);
         state.splice(idx, 1);
         bullet.textContent = '-';
         if (li) li.classList.remove('mr-item--active');
       } else {
-        // Add to active
         state.push(key);
         bullet.textContent = '🔴';
         if (li) li.classList.add('mr-item--active');

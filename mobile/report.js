@@ -80,9 +80,8 @@ async function renderDueToday(container) {
 
 // ── Status Report ─────────────────────────────────────────────────────────────
 
-// Re-applies auto-expand to already-rendered mobile-rd-section wrappers.
-// Called by location.js when GPS zone becomes available after initial render.
-// Never auto-collapses manually expanded sections.
+// Re-applies auto-expand to rendered mobile-rd-section wrappers (called by location.js when the
+// GPS zone arrives after the initial render). Never auto-collapses a manually expanded section.
 async function reapplyReportAutoExpand() {
   const section = document.querySelector('.report-section[data-report="status"]');
   if (!section) return;
@@ -99,13 +98,11 @@ async function reapplyReportAutoExpand() {
   });
 }
 
-// Build one collapsible department card inside the Status Report section.
 function buildDepartmentCard(name, status, autoExpandNames) {
   const wrapper = document.createElement('div');
   wrapper.className = 'mobile-rd-section';
   wrapper.dataset.name = name;
 
-  // Heading row (clickable)
   const headingRow = document.createElement('div');
   headingRow.className = 'mobile-rd-heading';
 
@@ -121,12 +118,10 @@ function buildDepartmentCard(name, status, autoExpandNames) {
   headingRow.appendChild(title);
   wrapper.appendChild(headingRow);
 
-  // Body
   const body = document.createElement('div');
   body.className = 'mobile-rd-body';
   wrapper.appendChild(body);
 
-  // Determine initial collapsed state
   const shouldExpand = [...autoExpandNames].some(n =>
     name === n || name.toLowerCase().includes(n.toLowerCase()) || n.toLowerCase().includes(name.toLowerCase())
   );
@@ -134,7 +129,6 @@ function buildDepartmentCard(name, status, autoExpandNames) {
     wrapper.classList.add('mobile-rd-collapsed');
   }
 
-  // Click handler
   headingRow.addEventListener('click', () => {
     wrapper.classList.toggle('mobile-rd-collapsed');
   });
@@ -170,7 +164,6 @@ async function renderStatusReport(container) {
 
         body.innerHTML = html;
 
-        // Attach @ buttons
         body.querySelectorAll('.mr-item[data-idx]').forEach(el => {
           const idx = idxOffset + Number(el.dataset.idx);
           const btn = document.createElement('button');
@@ -216,7 +209,6 @@ async function loadReport() {
   if (window.currentZone) reapplyReportAutoExpand();
 }
 
-// esc() comes from ../shared/github-client.js
 
 // Extract label_key from "(#NNN, label_key)" suffix, e.g. "Task text (#42, my_home_page)" → "my_home_page"
 function extractSourceLabel(text) {
@@ -225,63 +217,8 @@ function extractSourceLabel(text) {
 }
 
 function markdownToHtml(md, departmentKey) {
-  const lines = md.split('\n');
-
-  // ── Pass 1: parse into token objects ───────────────────────────────────────
-  // Mirrors js/status.js's tokenizer (desktop) — kept in sync by hand since
-  // the two renderers map onto genuinely different heading levels/markup.
-  const tokens = [];
-  for (const line of lines) {
-    if (line.startsWith('#### ')) {
-      tokens.push({ type: 'h4', text: line.slice(5).trim() });
-    } else if (line.startsWith('### ')) {
-      tokens.push({ type: 'h3', text: line.slice(4).trim() });
-    } else if (line.startsWith('## ')) {
-      tokens.push({ type: 'h2', text: line.slice(3).trim() });
-    } else if (line.startsWith('# ')) {
-      tokens.push({ type: 'h1', text: line.slice(2).trim() });
-    } else if (line.startsWith('> ')) {
-      tokens.push({ type: 'summary', text: line.slice(2).trim() });
-    } else if (line.startsWith('- [ ] ') || line.startsWith('- [x] ')) {
-      tokens.push({ type: 'check', text: line.slice(6).trim(), checked: line.startsWith('- [x] ') });
-    } else if (line.startsWith('- ')) {
-      tokens.push({ type: 'item', text: line.slice(2).trim() });
-    } else if (line.startsWith('・')) {
-      tokens.push({ type: 'item', text: line.slice(1).trim() });
-    } else if (line.startsWith('**') && line.endsWith('**')) {
-      tokens.push({ type: 'subhead', text: line.replace(/\*\*/g, '').trim() });
-    } else if (line.startsWith('  *')) {
-      tokens.push({ type: 'detail', text: line.trim().replace(/\*/g, '') });
-    } else if (line.startsWith('  `')) {
-      tokens.push({ type: 'since', text: line.trim().replace(/`/g, '') });
-    } else if (line.trim() === '') {
-      tokens.push({ type: 'blank' });
-    } else {
-      tokens.push({ type: 'paragraph', text: line.trim() });
-    }
-  }
-
-  // ── Pass 2: skip headings whose section has no content ────────────────────
-  // A heading is "empty" if there's no content token before the next heading
-  // of the same or shallower level — a deeper heading nested inside it (e.g.
-  // "#### " under "## ") is a content-bearing container, not a section
-  // boundary, so it's skipped over rather than stopping the scan.
-  const HEADING_TYPES = new Set(['h1', 'h2', 'h3', 'h4']);
-  const HEADING_LEVEL = { h1: 1, h2: 2, h3: 3, h4: 4 };
-  const CONTENT_TYPES = new Set(['summary', 'check', 'item', 'subhead', 'detail', 'since', 'paragraph']);
-  const skipIdx = new Set();
-  for (let i = 0; i < tokens.length; i++) {
-    const t = tokens[i];
-    if (!HEADING_TYPES.has(t.type)) continue;
-    const level = HEADING_LEVEL[t.type];
-    let hasContent = false;
-    for (let j = i + 1; j < tokens.length; j++) {
-      const tj = tokens[j];
-      if (HEADING_TYPES.has(tj.type) && HEADING_LEVEL[tj.type] <= level) break;
-      if (CONTENT_TYPES.has(tj.type)) { hasContent = true; break; }
-    }
-    if (!hasContent) skipIdx.add(i);
-  }
+  const tokens = tokenizeMarkdown(md);
+  const skipIdx = findEmptyHeadingIndices(tokens, ['h1', 'h2', 'h3', 'h4']);
 
   // ── Pass 3: render ─────────────────────────────────────────────────────────
   let html = '';

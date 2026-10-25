@@ -347,3 +347,101 @@
   flex-shrink: 0;
 }
 
+/* ── F1 ─────────────────────────────────────────────────────────────────────*/
+
+.f1-pos {
+  width: 1.4em;
+  font-size: 0.8rem;
+  color: #9aa0a6;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.f1-session-label {
+  font-size: 0.75rem;
+  color: #9aa0a6;
+  margin: 8px 0 2px;
+}
+
+.f1-next-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #202124;
+}
+
+.f1-next-circuit {
+  font-size: 0.78rem;
+  color: #5f6368;
+  margin-bottom: 6px;
+}
+
+.f1-countdown {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1a73e8;
+}
+
+.f1-last-col {
+  flex: 2;
+}
+
+.f1-last-grid {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.f1-session-stack {
+  flex: 1;
+  min-width: 0;
+}
+
+.f1-session-stack .f1-session-label:first-child {
+  margin-top: 0;
+}
+
+.f1-highlights .sports-highlights-grid {
+  display: flex;
+  align-items: flex-start;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: 6px;
+}
+
+.f1-highlights .sports-highlight-iframe {
+  flex: none;
+  width: calc((100% - 16px) / 3);
+  scroll-snap-align: start;
+}
+
+.f1-logo {
+  height: 28px;
+  width: auto;
+  display: block;
+  transition: opacity 0.15s;
+}
+
+.f1-logo:hover {
+  opacity: 0.8;
+}
+
+.f1-team-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  flex-shrink: 0;
+}
+
+.f1-team-badge {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.f1-team-logo {
+  width: 30px;
+  height: 22px;
+  object-fit: contain;
+}

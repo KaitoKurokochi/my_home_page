@@ -68,6 +68,7 @@ async function initSports() {
   const mlbContainer = document.getElementById('sports-mlb-content');
   const plContainer  = document.getElementById('sports-pl-content');
   const otherContainer = document.getElementById('sports-other-content');
+  const f1Container = document.getElementById('sports-f1-content');
   if (!npbContainer) return;
 
   try {
@@ -77,6 +78,7 @@ async function initSports() {
     if (mlbContainer) renderMlb(data);
     if (plContainer) renderPremierLeague(data);
     if (otherContainer) renderOtherSports(data);
+    if (f1Container) renderF1(data);
     sportsLoaded = true;
   } catch (e) {
     const errMsg404 = '<p class="sports-empty">データ未取得（main_routine 待ち）</p>';
@@ -86,11 +88,13 @@ async function initSports() {
       if (mlbContainer) mlbContainer.innerHTML = errMsg404;
       if (plContainer) plContainer.innerHTML = errMsg404;
       if (otherContainer) otherContainer.innerHTML = errMsg404;
+      if (f1Container) f1Container.innerHTML = errMsg404;
     } else {
       npbContainer.innerHTML = errMsgGen;
       if (mlbContainer) mlbContainer.innerHTML = '';
       if (plContainer) plContainer.innerHTML = '';
       if (otherContainer) otherContainer.innerHTML = '';
+      if (f1Container) f1Container.innerHTML = '';
     }
   }
 }

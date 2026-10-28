@@ -470,7 +470,7 @@
   margin-top: 0;
 }
 
-.f1-highlights .sports-highlights-grid {
+.sports-highlights--scroll .sports-highlights-grid {
   display: flex;
   align-items: flex-start;
   overflow-x: auto;
@@ -478,7 +478,7 @@
   padding-bottom: 6px;
 }
 
-.f1-highlights .sports-highlight-iframe {
+.sports-highlights--scroll .sports-highlight-iframe {
   flex: none;
   width: calc((100% - 16px) / 3);
   scroll-snap-align: start;

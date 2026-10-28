@@ -479,6 +479,10 @@
   min-width: 0;
 }
 
+.f1-session-stack--wide {
+  flex: 2;
+}
+
 .f1-session-stack .f1-session-label:first-child {
   margin-top: 0;
 }

@@ -211,7 +211,7 @@ function renderF1(data) {
 
   const hlEl = renderNpbHighlights(f1.videos);
   if (hlEl) {
-    hlEl.classList.add('f1-highlights');
+    hlEl.classList.add('sports-highlights--scroll');
     container.appendChild(hlEl);
   }
 }

@@ -156,6 +156,9 @@ function renderPremierLeague(data) {
 
   if (pl.highlights && pl.highlights.length) {
     const hlEl = renderNpbHighlights(pl.highlights);
-    if (hlEl) container.appendChild(hlEl);
+    if (hlEl) {
+      hlEl.classList.add('sports-highlights--scroll');
+      container.appendChild(hlEl);
+    }
   }
 }

@@ -1,6 +1,4 @@
-// ── Premier League: Japanese Players Section ──────────────────────────────────
-// Same shape as the MLB section above, but with one flat "出場選手成績" list
-// instead of a batter/pitcher split (soccer has no equivalent role division).
+// ── Premier League: results, standings, and Japanese players' appearances (flag tooltips) ──
 
 function makePlTeamLogo(teamId, teamName) {
   // Crests come from ESPN's static CDN by team_id; no local asset needed.
@@ -25,27 +23,115 @@ function buildPlStatLine(p) {
   return parts.join(' ');
 }
 
-function buildPlStatsList(players) {
-  const ul = document.createElement('ul');
-  ul.className = 'mlb-stats-list';
+// ESPN's country-flag image (square canvas, flag centred), served from the same CDN as the crests.
+const PL_JAPAN_FLAG_URL = 'https://a.espncdn.com/i/teamlogos/countries/500/jpn.png';
+
+// A small Japan flag at the crest's bottom-right; hovering (or focusing) it lists the players' appearances.
+function makeJapanFlagWithTooltip(players) {
+  const flag = document.createElement('span');
+  flag.className = 'pl-jp-flag';
+  flag.tabIndex = 0;
+
+  const img = document.createElement('img');
+  img.src = PL_JAPAN_FLAG_URL;
+  img.alt = '日本人選手';
+  img.className = 'pl-jp-flag-img';
+  flag.appendChild(img);
+
+  const tip = document.createElement('span');
+  tip.className = 'pl-jp-tip';
   for (const p of players) {
-    const li = document.createElement('li');
-    li.className = 'mlb-stats-item';
-
-    const logo = makePlTeamLogo(p.team_id, p.team);
-    if (logo) li.appendChild(logo);
-
-    const name = makeStatsName(p);
-
-    const stat = document.createElement('span');
-    stat.className = 'mlb-stats-line';
-    stat.textContent = buildPlStatLine(p);
-
-    li.appendChild(name);
-    li.appendChild(stat);
-    ul.appendChild(li);
+    const row = document.createElement('span');
+    row.className = 'pl-jp-tip-row';
+    row.textContent = `${p.name}  ${buildPlStatLine(p)}`;
+    tip.appendChild(row);
   }
+  flag.appendChild(tip);
+  return flag;
+}
+
+function makePlGameBadgeFactory(game) {
+  return (teamId, teamName) => {
+    const badge = makePlTeamBadge(teamId, teamName);
+    const players = (game.players || []).filter(p => p.team_id === teamId);
+    if (!players.length) return badge;
+
+    const wrap = document.createElement('span');
+    wrap.className = 'pl-badge-with-flag';
+    wrap.appendChild(badge);
+    wrap.appendChild(makeJapanFlagWithTooltip(players));
+    return wrap;
+  };
+}
+
+const PL_GAMES_PER_COLUMN = 5;
+
+function buildPlGameList(games) {
+  const ul = document.createElement('ul');
+  ul.className = 'sports-results-vlist';
+  for (const g of games) ul.appendChild(buildForeignGameItem(g, makePlGameBadgeFactory(g)));
   return ul;
+}
+
+const PL_STANDINGS_PER_COLUMN = 10;
+
+// rows: [{ rank, team, team_id, gd, points }]
+function renderPlStandingsTable(rows) {
+  const table = document.createElement('table');
+  table.className = 'sports-standings-table sports-standings-table--compact';
+  table.innerHTML = '<thead><tr><th>#</th><th></th><th>GD</th><th>Pts</th></tr></thead>';
+
+  const tbody = document.createElement('tbody');
+  for (const r of rows) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.rank}</td><td class="sports-standings-team"></td><td>${r.gd}</td><td>${r.points}</td>`;
+    const logo = makePlTeamLogo(r.team_id, r.team);
+    if (logo) tr.querySelector('.sports-standings-team').appendChild(logo);
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+  return table;
+}
+
+function buildPlResultsBlock(games) {
+  const block = document.createElement('div');
+  block.className = 'sports-section-block';
+  block.appendChild(makeSublabel('試合結果'));
+  if (!games.length) {
+    block.appendChild(makeEmptyNote('試合なし'));
+    return block;
+  }
+  const subcols = document.createElement('div');
+  subcols.className = 'sports-subcols';
+  for (let i = 0; i < games.length; i += PL_GAMES_PER_COLUMN) {
+    subcols.appendChild(buildPlGameList(games.slice(i, i + PL_GAMES_PER_COLUMN)));
+  }
+  block.appendChild(subcols);
+  return block;
+}
+
+function buildPlStandingsBlock(rows) {
+  const block = document.createElement('div');
+  block.className = 'sports-section-block';
+  block.appendChild(makeSublabel('順位'));
+  if (!rows.length) {
+    block.appendChild(makeEmptyNote('データなし'));
+    return block;
+  }
+  const subcols = document.createElement('div');
+  subcols.className = 'sports-subcols sports-subcols--table';
+  for (let i = 0; i < rows.length; i += PL_STANDINGS_PER_COLUMN) {
+    subcols.appendChild(renderPlStandingsTable(rows.slice(i, i + PL_STANDINGS_PER_COLUMN)));
+  }
+  block.appendChild(subcols);
+  return block;
+}
+
+function makeEmptyNote(text) {
+  const p = document.createElement('p');
+  p.className = 'sports-empty';
+  p.textContent = text;
+  return p;
 }
 
 function renderPremierLeague(data) {
@@ -62,41 +148,11 @@ function renderPremierLeague(data) {
     container.appendChild(dh);
   }
 
-  const grid = document.createElement('div');
-  grid.className = 'sports-two-col';
-
-  const gamesCol = document.createElement('div');
-  gamesCol.className = 'sports-col';
-  gamesCol.appendChild(makeSublabel('試合結果'));
-  const games = pl.games || [];
-  if (games.length) {
-    const ul = document.createElement('ul');
-    ul.className = 'sports-results-vlist';
-    for (const g of games) ul.appendChild(buildForeignGameItem(g, makePlTeamBadge));
-    gamesCol.appendChild(ul);
-  } else {
-    const p = document.createElement('p');
-    p.className = 'sports-empty';
-    p.textContent = '日本人選手の出場試合なし';
-    gamesCol.appendChild(p);
-  }
-  grid.appendChild(gamesCol);
-
-  const playersCol = document.createElement('div');
-  playersCol.className = 'sports-col';
-  playersCol.appendChild(makeSublabel('出場選手成績'));
-  const players = pl.players || [];
-  if (players.length) {
-    playersCol.appendChild(buildPlStatsList(players));
-  } else {
-    const p = document.createElement('p');
-    p.className = 'sports-empty';
-    p.textContent = 'データなし';
-    playersCol.appendChild(p);
-  }
-  grid.appendChild(playersCol);
-
-  container.appendChild(grid);
+  const mainRow = document.createElement('div');
+  mainRow.className = 'sports-main-row';
+  mainRow.appendChild(buildPlResultsBlock(pl.games || []));
+  mainRow.appendChild(buildPlStandingsBlock(pl.standings || []));
+  container.appendChild(mainRow);
 
   if (pl.highlights && pl.highlights.length) {
     const hlEl = renderNpbHighlights(pl.highlights);

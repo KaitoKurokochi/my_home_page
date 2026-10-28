@@ -3,8 +3,10 @@
 
 function buildGameLine(g) {
   let score = '';
+  let noScore = false;
   if (g.status === 'final') {
-    score = `${g.home_score}-${g.away_score}`;
+    noScore = g.home_score == null || g.away_score == null;
+    score = noScore ? '速報なし' : `${g.home_score}-${g.away_score}`;
   } else if (g.status === 'live') {
     score = (g.home_score != null && g.away_score != null)
       ? `${g.home_score}-${g.away_score}` : 'LIVE';
@@ -14,7 +16,7 @@ function buildGameLine(g) {
     score = g.time ? g.time : '予定';
   }
   const isLive = g.status === 'live';
-  return { homeInitial: g.home_initial, awayInitial: g.away_initial, score, lions: g.home_initial === 'L' || g.away_initial === 'L', isLive };
+  return { homeInitial: g.home_initial, awayInitial: g.away_initial, score, noScore, isLive };
 }
 
 function makeSublabel(text) {
@@ -31,9 +33,9 @@ function makeGameList(games) {
   const ul = document.createElement('ul');
   ul.className = 'sports-results-vlist';
   for (const g of games) {
-    const { homeInitial, awayInitial, score, lions, isLive } = buildGameLine(g);
+    const { homeInitial, awayInitial, score, noScore, isLive } = buildGameLine(g);
     const li = document.createElement('li');
-    let chipClass = lions ? 'sports-result-chip sports-result-chip--highlight' : 'sports-result-chip';
+    let chipClass = 'sports-result-chip';
     if (isLive) chipClass += ' sports-result-chip--live';
     li.className = chipClass;
     li.appendChild(makeTeamLogo(homeInitial));
@@ -42,12 +44,12 @@ function makeGameList(games) {
       a.href = g.game_url;
       a.target = '_blank';
       a.rel = 'noopener';
-      a.className = 'sports-result-score sports-result-score--link';
+      a.className = noScore ? 'sports-result-score sports-result-score--link sports-result-score--none' : 'sports-result-score sports-result-score--link';
       a.textContent = score;
       li.appendChild(a);
     } else {
       const scoreSpan = document.createElement('span');
-      scoreSpan.className = 'sports-result-score';
+      scoreSpan.className = noScore ? 'sports-result-score sports-result-score--none' : 'sports-result-score';
       scoreSpan.textContent = score;
       li.appendChild(scoreSpan);
     }
@@ -118,9 +120,9 @@ function renderResultsGrid(results, dateLabel) {
 }
 
 // ── Standings (compact, pa+ce stacked) ───────────────────────────────────────
-// rows: [{ rank, initial, win, lose, pct, gb, highlight }]
+// rows: [{ rank, initial, win, lose, pct, gb }]
 
-function renderStandingsTable(rows) {
+function renderNpbStandingsTable(rows) {
   const table = document.createElement('table');
   table.className = 'sports-standings-table';
 
@@ -131,7 +133,6 @@ function renderStandingsTable(rows) {
   const tbody = document.createElement('tbody');
   for (const r of rows) {
     const tr = document.createElement('tr');
-    if (r.highlight) tr.classList.add('sports-standings-highlight');
     const wl = `${r.win}-${r.lose}`;
     const gb = r.gb ?? '-';
     tr.innerHTML = `<td>${r.rank}</td><td class="sports-standings-team"></td><td>${wl}</td><td>${r.pct}</td><td>${gb}</td>`;
@@ -156,7 +157,7 @@ function renderStandingsGrid(standings) {
 
     const rows = standings[key] || [];
     if (rows.length) {
-      col.appendChild(renderStandingsTable(rows));
+      col.appendChild(renderNpbStandingsTable(rows));
     } else {
       const p = document.createElement('p');
       p.className = 'sports-empty';

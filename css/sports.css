@@ -42,6 +42,17 @@
   opacity: 0.8;
 }
 
+.pl-logo {
+  height: 36px;
+  width: auto;
+  display: block;
+  transition: opacity 0.15s;
+}
+
+.pl-logo:hover {
+  opacity: 0.8;
+}
+
 .sports-section-label {
   font-size: 0.72rem;
   font-weight: 600;
@@ -138,6 +149,10 @@
   align-items: flex-start;
 }
 
+.sports-subcols--table {
+  gap: 12px;
+}
+
 .sports-results-vlist {
   list-style: none;
   margin: 0;
@@ -177,6 +192,11 @@
   text-align: center;
 }
 
+.sports-result-score--none {
+  font-size: 0.75rem;
+  color: #80868b;
+}
+
 .sports-result-score--link {
   color: inherit;
   text-decoration: none;
@@ -185,11 +205,6 @@
 .sports-result-score--link:hover {
   text-decoration: underline;
   color: #1a73e8;
-}
-
-.sports-result-chip--highlight {
-  color: #1a73e8;
-  font-weight: 600;
 }
 
 .sports-standings-table {
@@ -221,17 +236,25 @@
   text-align: left;
 }
 
+.sports-standings-table--compact {
+  width: auto;
+  font-size: 0.8rem;
+}
+
+.sports-standings-table--compact th,
+.sports-standings-table--compact td {
+  padding: 2px 6px;
+}
+
+.sports-standings-table--compact .pl-team-logo {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
 .sports-standings-team {
   font-weight: 700;
   font-family: 'Roboto Mono', 'Courier New', monospace;
-}
-
-.sports-standings-highlight td {
-  background: #e8f0fe;
-}
-
-.sports-standings-highlight .sports-standings-team {
-  color: #1a73e8;
 }
 
 .sports-empty {
@@ -324,6 +347,52 @@
   height: 24px;
   object-fit: contain;
   flex-shrink: 0;
+}
+
+.pl-badge-with-flag {
+  position: relative;
+  display: inline-flex;
+}
+
+.pl-jp-flag {
+  position: absolute;
+  right: -8px;
+  bottom: -7px;
+  width: 18px;
+  height: 18px;
+  cursor: default;
+  outline: none;
+}
+
+.pl-jp-flag-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pl-jp-tip {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 16px;
+  z-index: 10;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #202124;
+  white-space: pre;
+}
+
+.pl-jp-flag:hover .pl-jp-tip,
+.pl-jp-flag:focus .pl-jp-tip {
+  display: flex;
 }
 
 .pl-team-logo {

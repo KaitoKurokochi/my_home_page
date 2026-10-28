@@ -451,6 +451,19 @@
   color: #1a73e8;
 }
 
+.f1-standings-col {
+  flex: 1.6;
+}
+
+.f1-standings-col .sports-subcols {
+  gap: 14px;
+}
+
+.f1-standings-col .sports-subcols > ul {
+  flex: 1;
+  min-width: 0;
+}
+
 .f1-last-col {
   flex: 2;
 }
@@ -464,6 +477,10 @@
 .f1-session-stack {
   flex: 1;
   min-width: 0;
+}
+
+.f1-session-stack--wide {
+  flex: 2;
 }
 
 .f1-session-stack .f1-session-label:first-child {

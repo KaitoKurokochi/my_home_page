@@ -88,6 +88,8 @@ function buildF1Rows(rows, { isTeamRow = false } = {}) {
   return ul;
 }
 
+const F1_STANDINGS_PER_COLUMN = 5;
+
 function makeF1Col(title) {
   const col = document.createElement('div');
   col.className = 'sports-col';
@@ -127,15 +129,27 @@ function buildF1SessionStack(sessions) {
     heading.className = 'f1-session-label';
     heading.textContent = label;
     stack.appendChild(heading);
-    stack.appendChild(buildF1Rows(rows.map(r => ({ position: r.position, name: r.code, team: r.team }))));
+    stack.appendChild(buildF1RowColumns(rows.map(r => ({ position: r.position, name: r.code, team: r.team }))));
+    if (rows.length > F1_STANDINGS_PER_COLUMN) stack.classList.add('f1-session-stack--wide');
   }
   return stack;
 }
 
+// Rows in columns of F1_STANDINGS_PER_COLUMN; a single list when they fit in one column.
+function buildF1RowColumns(rows, options) {
+  const subcols = document.createElement('div');
+  subcols.className = 'sports-subcols';
+  for (let i = 0; i < rows.length; i += F1_STANDINGS_PER_COLUMN) {
+    subcols.appendChild(buildF1Rows(rows.slice(i, i + F1_STANDINGS_PER_COLUMN), options));
+  }
+  return subcols;
+}
+
 function buildF1StandingsCol(title, rows, options) {
   const col = makeF1Col(title);
+  col.classList.add('f1-standings-col');
   if (rows && rows.length) {
-    col.appendChild(buildF1Rows(rows, options));
+    col.appendChild(buildF1RowColumns(rows, options));
   } else {
     appendF1Empty(col);
   }

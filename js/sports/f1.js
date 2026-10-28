@@ -132,10 +132,18 @@ function buildF1SessionStack(sessions) {
   return stack;
 }
 
+const F1_STANDINGS_PER_COLUMN = 5;
+
 function buildF1StandingsCol(title, rows, options) {
   const col = makeF1Col(title);
+  col.classList.add('f1-standings-col');
   if (rows && rows.length) {
-    col.appendChild(buildF1Rows(rows, options));
+    const subcols = document.createElement('div');
+    subcols.className = 'sports-subcols';
+    for (let i = 0; i < rows.length; i += F1_STANDINGS_PER_COLUMN) {
+      subcols.appendChild(buildF1Rows(rows.slice(i, i + F1_STANDINGS_PER_COLUMN), options));
+    }
+    col.appendChild(subcols);
   } else {
     appendF1Empty(col);
   }

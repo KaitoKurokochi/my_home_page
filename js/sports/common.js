@@ -71,7 +71,7 @@ function makeTeamBadge(logo, teamName) {
 // makeBadge(teamId, teamName) supplies each league's own logo CDN.
 function buildForeignGameItem(g, makeBadge) {
   const li = document.createElement('li');
-  li.className = 'sports-result-chip sports-result-chip--highlight';
+  li.className = 'sports-result-chip';
 
   li.appendChild(makeBadge(g.home_id, g.home));
 

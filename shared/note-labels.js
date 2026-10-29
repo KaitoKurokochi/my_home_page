@@ -16,6 +16,10 @@ function guessLabel(section) {
     if (found) return found;
   }
   if (labels.includes(section)) return section;
+  // Label ↔ key link from departments.json (e.g. "University" ↔ "univ"), which norm() can't bridge.
+  const sectionKey = departmentKeyForLabel(section);
+  const byKey = labels.find(l => departmentKeyForLabel(l) === sectionKey);
+  if (byKey) return byKey;
   const norm = s => s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
   return labels.find(l => norm(l) === norm(section)) || null;
 }

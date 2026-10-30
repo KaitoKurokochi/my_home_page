@@ -24,7 +24,7 @@ Vanilla HTML/CSS/JS single page. Two-column layout below the top bar.
 |------|------|
 | `index.html` | Main page; `.main-layout` splits into `.left-col` (news/sports) and `.right-col` (note) |
 | `style.css` | Theme + two-column flex layout |
-| `app.js` | Groups/shortcuts, weather widget, search suggestions, Claude bar |
+| `app.js` | Groups/shortcuts, location detection, search suggestions, Claude bar |
 | `status.js` | Status report fetch, rendering, section collapsing, location filter |
 | `note.js` | GitHub Issues-based note CRUD |
 | `location_zones.js` | Nominatim reverse geocoding + keyword match for zone detection |
@@ -36,7 +36,7 @@ Vanilla HTML/CSS/JS single page. Two-column layout below the top bar.
 ### Layout
 
 ```
-[ top-bar: search | claude | weather ]
+[ top-bar: search | claude | location ]
 [ groups section ]
 [ main-layout                         ]
 [ left-col            | right-col     ]

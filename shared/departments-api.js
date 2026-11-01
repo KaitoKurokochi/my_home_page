@@ -8,7 +8,7 @@
 // Used only if the fetch fails (network error, file missing, bad JSON) —
 // keeps the label bar usable rather than empty.
 const DEPARTMENTS_FALLBACK = [
-  'baseball', 'books', 'football', 'general', 'health', 'HQ',
+  'baseball', 'books', 'business', 'football', 'general', 'health', 'HQ',
   'Lions_IS', 'living', 'research', 'softball', 'univ', 'video_content',
 ];
 

@@ -37,7 +37,7 @@
     }
   }
 
-  // Same cache the desktop weather widget uses (same origin → shared localStorage):
+  // Same cache the desktop page's initLocation() uses (same origin → shared localStorage):
   // reuse coordinates younger than LOCATION_TTL so the GPS permission prompt
   // is not shown on every load.
   const LOCATION_TTL = 60 * 60 * 1000;

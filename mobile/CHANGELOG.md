@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Files button under the form opens a popup to browse and read the markdown mirrored from `~/docs` (folder navigation, formatted rendering) (#415)
+
 ## [1.5.0] - 2026-09-23
 
 ### Fixed

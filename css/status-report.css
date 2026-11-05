@@ -124,19 +124,6 @@
   text-align: right;
 }
 
-.auto-reload {
-  font-size: 0.68rem;
-  color: #9aa0a6;
-  white-space: nowrap;
-}
-
-.auto-reload select {
-  font-size: 0.68rem;
-  color: #9aa0a6;
-  border: none;
-  background: transparent;
-}
-
 /* ── Tasks Due Today section ─────────────────────────────────────────────────*/
 /* Uses mr-body / mr-list / mr-item from the status report for visual parity. */
 

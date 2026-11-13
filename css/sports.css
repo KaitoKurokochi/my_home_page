@@ -444,6 +444,44 @@
   margin-bottom: 6px;
 }
 
+.f1-this-week-col {
+  flex: 1.6;
+}
+
+/* Race-week row: columns hug their content so every horizontal gap is the same. */
+.f1-race-week-grid {
+  gap: 32px;
+}
+
+.f1-race-week-grid > .sports-col {
+  flex: none;
+}
+
+.f1-race-week-grid .f1-standings-col .sports-subcols {
+  gap: 32px;
+}
+
+.f1-race-week-grid .f1-standings-col .sports-subcols > ul {
+  flex: none;
+}
+
+/* Race-week sessions: Quali/Race on the left (slightly larger), practice on the right. */
+.f1-sessions-split {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.f1-session-list--key .mlb-stats-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.f1-session-list--key .mlb-stats-line {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
 .f1-countdown {
   margin-top: 6px;
   font-size: 0.85rem;

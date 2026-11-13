@@ -7,6 +7,9 @@ const F1_JST_FORMAT = new Intl.DateTimeFormat('ja-JP', {
   hour: '2-digit', minute: '2-digit', hour12: false,
 });
 
+const F1_JST_OFFSET_MS = 9 * 3600 * 1000;
+const F1_PRACTICE_NAME = /^FP\d$/;
+
 // Logos from formula1.com's team pages, saved under images/f1_teams/. A team without an entry gets a colour badge.
 const F1_TEAM_LOGOS = {
   mercedes:     'mercedes.webp',
@@ -156,8 +159,34 @@ function buildF1StandingsCol(title, rows, options) {
   return col;
 }
 
-function buildF1NextRaceCol(next) {
-  const col = makeF1Col('次のレース');
+function buildF1LatestSessionCol(session) {
+  const col = makeF1Col(session.name);
+  col.appendChild(buildF1RowColumns(session.rows.map(r => ({ position: r.position, name: r.code, team: r.team }))));
+  return col;
+}
+
+function buildF1SessionList(sessions, extraClass = '') {
+  const ul = document.createElement('ul');
+  ul.className = `mlb-stats-list ${extraClass}`.trim();
+  for (const s of sessions) {
+    const li = document.createElement('li');
+    li.className = 'mlb-stats-item';
+    const name = document.createElement('span');
+    name.className = 'mlb-stats-name';
+    name.textContent = s.name;
+    const time = document.createElement('span');
+    time.className = 'mlb-stats-line';
+    time.textContent = F1_JST_FORMAT.format(new Date(s.utc));
+    li.appendChild(name);
+    li.appendChild(time);
+    ul.appendChild(li);
+  }
+  return ul;
+}
+
+// splitSessions: race-week layout with Quali/Race (emphasised) beside the practice sessions.
+function buildF1NextRaceCol(next, columnTitle = '次のレース', { splitSessions = false } = {}) {
+  const col = makeF1Col(columnTitle);
   if (!next) {
     appendF1Empty(col);
     return col;
@@ -173,22 +202,17 @@ function buildF1NextRaceCol(next) {
   circuit.textContent = `${next.circuit}（${next.locality}）`;
   col.appendChild(circuit);
 
-  const ul = document.createElement('ul');
-  ul.className = 'mlb-stats-list';
-  for (const s of next.sessions) {
-    const li = document.createElement('li');
-    li.className = 'mlb-stats-item';
-    const name = document.createElement('span');
-    name.className = 'mlb-stats-name';
-    name.textContent = s.name;
-    const time = document.createElement('span');
-    time.className = 'mlb-stats-line';
-    time.textContent = F1_JST_FORMAT.format(new Date(s.utc));
-    li.appendChild(name);
-    li.appendChild(time);
-    ul.appendChild(li);
+  if (splitSessions) {
+    const practice = next.sessions.filter(s => F1_PRACTICE_NAME.test(s.name));
+    const competitive = next.sessions.filter(s => !F1_PRACTICE_NAME.test(s.name));
+    const split = document.createElement('div');
+    split.className = 'f1-sessions-split';
+    split.appendChild(buildF1SessionList(competitive, 'f1-session-list--key'));
+    split.appendChild(buildF1SessionList(practice));
+    col.appendChild(split);
+  } else {
+    col.appendChild(buildF1SessionList(next.sessions));
   }
-  col.appendChild(ul);
 
   const raceUtc = next.sessions[next.sessions.length - 1].utc;
   const daysLeft = Math.ceil((new Date(raceUtc) - Date.now()) / 86400000);
@@ -201,14 +225,38 @@ function buildF1NextRaceCol(next) {
   return col;
 }
 
+// Race week starts at 00:00 JST on the Wednesday on or before the race's JST date.
+// The race's own result then replaces it: Jolpica's `next` moves on to the following round.
+function f1RaceWeekStartMs(next) {
+  const raceUtc = next.sessions[next.sessions.length - 1].utc;
+  const raceJst = new Date(new Date(raceUtc).getTime() + F1_JST_OFFSET_MS);
+  const daysSinceWednesday = (raceJst.getUTCDay() + 4) % 7;
+  return Date.UTC(
+    raceJst.getUTCFullYear(), raceJst.getUTCMonth(), raceJst.getUTCDate() - daysSinceWednesday,
+  ) - F1_JST_OFFSET_MS;
+}
+
+// In race week only videos published since its start are shown (the last round's highlights are stale);
+// videos without `published` (Fuji TV) are the last round's, so they are dropped too.
+function filterF1RaceWeekVideos(videos, weekStartMs) {
+  return (videos || []).filter(v => v.published && new Date(v.published).getTime() >= weekStartMs);
+}
+
 function renderF1(data) {
   const container = document.getElementById('sports-f1-content');
   if (!container || !data.f1) return;
   container.innerHTML = '';
 
   const f1 = data.f1;
+  const weekStartMs = f1.next_race ? f1RaceWeekStartMs(f1.next_race) : null;
+  const raceWeek = weekStartMs !== null && Date.now() >= weekStartMs;
 
-  if (f1.season && f1.round && f1.total_rounds) {
+  if (raceWeek && f1.season && f1.total_rounds) {
+    const header = document.createElement('div');
+    header.className = 'sports-results-date';
+    header.textContent = `▽${f1.season} Season · Round ${f1.next_race.round} / ${f1.total_rounds} 開催週`;
+    container.appendChild(header);
+  } else if (f1.season && f1.round && f1.total_rounds) {
     const header = document.createElement('div');
     header.className = 'sports-results-date';
     header.textContent = `▽${f1.season} Season · Round ${f1.round} / ${f1.total_rounds} 終了`;
@@ -217,13 +265,23 @@ function renderF1(data) {
 
   const grid = document.createElement('div');
   grid.className = 'sports-two-col';
-  grid.appendChild(buildF1LastRaceCol(f1.last_race));
+  if (raceWeek) {
+    grid.classList.add('f1-race-week-grid');
+    const thisWeek = buildF1NextRaceCol(
+      f1.next_race, `今週のレース R${f1.next_race.round} ${f1.next_race.name}`, { splitSessions: true },
+    );
+    thisWeek.classList.add('f1-this-week-col');
+    grid.appendChild(thisWeek);
+    if (f1.latest_session) grid.appendChild(buildF1LatestSessionCol(f1.latest_session));
+  } else {
+    grid.appendChild(buildF1LastRaceCol(f1.last_race));
+  }
   grid.appendChild(buildF1StandingsCol('Drivers順位', f1.drivers));
   grid.appendChild(buildF1StandingsCol('Constructors順位', f1.constructors, { isTeamRow: true }));
-  grid.appendChild(buildF1NextRaceCol(f1.next_race));
+  if (!raceWeek) grid.appendChild(buildF1NextRaceCol(f1.next_race));
   container.appendChild(grid);
 
-  const hlEl = renderNpbHighlights(f1.videos);
+  const hlEl = renderNpbHighlights(raceWeek ? filterF1RaceWeekVideos(f1.videos, weekStartMs) : f1.videos);
   if (hlEl) {
     hlEl.classList.add('sports-highlights--scroll');
     container.appendChild(hlEl);

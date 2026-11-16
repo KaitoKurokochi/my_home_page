@@ -194,6 +194,7 @@ function renderForm() {
     pill.type = 'button';
     pill.className = 'label-pill' + (l === selectedLabel ? ' selected' : '');
     pill.textContent = l;
+    pill.dataset.label = l;
     pill.addEventListener('click', () => {
       selectedLabel = l;
       window.labelTouchedByUser = true;

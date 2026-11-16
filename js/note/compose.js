@@ -54,6 +54,7 @@ function renderLabelBar() {
     const nameSpan = document.createElement('span');
     nameSpan.className = 'note-label-name';
     nameSpan.textContent = name;
+    nameSpan.dataset.label = name;
     nameSpan.addEventListener('click', () => {
       selectedLabel = name;
       renderLabelBar();

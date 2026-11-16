@@ -199,7 +199,7 @@ function buildF1NextRaceCol(next, columnTitle = '次のレース', { splitSessio
 
   const circuit = document.createElement('div');
   circuit.className = 'f1-next-circuit';
-  circuit.textContent = `${next.circuit}（${next.locality}）`;
+  circuit.textContent = next.circuit === next.locality ? next.circuit : `${next.circuit}（${next.locality}）`;
   col.appendChild(circuit);
 
   if (splitSessions) {

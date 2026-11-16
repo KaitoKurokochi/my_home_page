@@ -72,6 +72,9 @@ function createFilesModal() {
         <span class="files-title">Files</span>
         <button type="button" class="files-close-btn" aria-label="Close">✕</button>
       </header>
+      <div class="files-search-row">
+        <input type="search" class="files-search" placeholder="ファイル名・本文を検索" autocomplete="off">
+      </div>
       <div class="files-body"></div>
     </div>`;
   document.body.appendChild(modal);
@@ -85,9 +88,13 @@ function initFilesViewer(openBtn) {
   const body = modal.querySelector('.files-body');
   const backBtn = modal.querySelector('.files-back-btn');
   const closeBtn = modal.querySelector('.files-close-btn');
+  const searchInput = modal.querySelector('.files-search');
 
   let currentDir = '';
   let viewingFile = false;
+  let searchQuery = '';  // non-empty while the body shows search results (or a file opened from them)
+  let searchSeq = 0;     // drops the answer of a search that a newer keystroke has superseded
+  let searchTimer = null;
 
   async function showDirectory(dir) {
     currentDir = dir;
@@ -118,14 +125,51 @@ function initFilesViewer(openBtn) {
     body.scrollTop = 0;
   }
 
+  async function showSearchResults(query) {
+    const seq = ++searchSeq;
+    searchQuery = query;
+    viewingFile = false;
+    title.textContent = 'Files';
+    backBtn.classList.add('hidden');
+    body.innerHTML = '<p class="placeholder">検索中...</p>';
+    let html;
+    try {
+      const terms = parseSearchTerms(query);
+      html = renderSearchResults(searchDocs(await loadSearchDocs(), terms), terms);
+    } catch (err) {
+      html = `<p class="placeholder">検索できませんでした (${esc(err.message)})</p>`;
+    }
+    if (seq !== searchSeq) return;
+    body.innerHTML = html;
+    body.scrollTop = 0;
+  }
+
+  function onSearchInput() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      const query = searchInput.value.trim();
+      if (query) { showSearchResults(query); return; }
+      searchSeq++;
+      searchQuery = '';
+      showDirectory(currentDir);
+    }, 200);
+  }
+
   function goBack() {
-    if (viewingFile) { viewingFile = false; showDirectory(currentDir); return; }
+    if (viewingFile) {
+      viewingFile = false;
+      if (searchQuery) showSearchResults(searchQuery); else showDirectory(currentDir);
+      return;
+    }
     showDirectory(currentDir.split('/').slice(0, -1).join('/'));
   }
 
   function openModal() {
     modal.classList.remove('hidden');
     document.body.classList.add('files-open');
+    searchInput.value = '';
+    searchQuery = '';
+    searchSeq++;
     showDirectory('');
   }
 
@@ -137,12 +181,13 @@ function initFilesViewer(openBtn) {
   openBtn.addEventListener('click', openModal);
   closeBtn.addEventListener('click', closeModal);
   backBtn.addEventListener('click', goBack);
+  searchInput.addEventListener('input', onSearchInput);
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
   body.addEventListener('click', e => {
     const folder = e.target.closest('.files-folder');
     if (folder) { showDirectory(folder.dataset.dir); return; }
-    const item = e.target.closest('.files-item');
+    const item = e.target.closest('.files-item, .files-result');
     if (item) showFile(item.dataset.path);
   });
 }

@@ -92,6 +92,38 @@ body.files-open { overflow: hidden; }
 
 .files-body .placeholder { color: #8e8e93; font-size: 0.9rem; text-align: center; padding-top: 40px; }
 
+.files-search-row { padding: 8px 12px; border-bottom: 1px solid #e5e5ea; }
+
+.files-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  font-size: 16px;  /* below 16px iOS zooms the page when the field gets focus */
+  border: 1px solid #d1d1d6;
+  border-radius: 8px;
+  background: #f2f2f7;
+  outline: none;
+}
+
+.files-search:focus { border-color: #007aff; background: #fff; }
+
+.files-result {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-top: 1px solid #f0f0f2;
+  padding: 10px 8px;
+  color: #1c1c1e;
+  cursor: pointer;
+}
+
+.files-result-name { font-weight: 600; font-size: 0.9rem; }
+.files-result-dir { margin-left: 8px; color: #8e8e93; font-size: 0.78rem; }
+.files-snippet { display: block; margin-top: 3px; color: #636366; font-size: 0.8rem; line-height: 1.45; word-break: break-word; }
+.files-result mark { background: #fff3a8; color: inherit; border-radius: 2px; }
+
 /* Desktop: a centered dialog instead of the mobile bottom sheet */
 @media (min-width: 768px) {
   .files-modal { align-items: center; justify-content: center; }

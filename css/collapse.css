@@ -35,14 +35,14 @@
   transition: transform 0.15s;
 }
 
-.collapsed > .collapse-head .collapse-toggle::before {
+.collapsible.collapsed > .collapse-head .collapse-toggle::before {
   transform: translateX(-2px) rotate(-45deg);
 }
 
-.collapsed > :not(.collapse-head) {
+.collapsible.collapsed > :not(.collapse-head) {
   display: none;
 }
 
-.collapsed > .collapse-head {
+.collapsible.collapsed > .collapse-head {
   margin-bottom: 0;
 }

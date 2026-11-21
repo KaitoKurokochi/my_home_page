@@ -13,7 +13,8 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Page</title>
-  <link rel="stylesheet" href="css/style.css?v=20261113g" />
+  <link rel="stylesheet" href="css/style.css?v=20261117c" />
+  <link rel="stylesheet" href="shared/files-viewer.css?v=20261117c" />
 </head>
 <body>
 
@@ -44,7 +45,6 @@
         <p class="news-meta" id="news-meta"></p>
       </section>
       <section id="sports">
-        <h2>Sports</h2>
         <!-- NPB -->
         <div class="sports-subsection" id="sports-npb">
           <div class="sports-section-header">
@@ -133,6 +133,11 @@
                 </g>
               </svg>
             </a>
+            <button type="button" class="google-app-link" id="vault-files-btn" title="Files (vault)">
+              <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#5f6368" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              </svg>
+            </button>
           </div>
           <div id="current-location" class="current-location">📍 --</div>
         </div>
@@ -148,19 +153,23 @@
   <script src="shared/note-labels.js?v=20261029"></script>
   <script src="shared/sync-api.js?v=20261017"></script>
   <script src="shared/markdown-tokens.js?v=20261017"></script>
+  <script src="shared/files-search.js?v=20261117a"></script>
+  <script src="shared/files-viewer.js?v=20261117c"></script>
   <script src="shared/status-report-data.js?v=20260928"></script>
   <script src="shared/departments-api.js?v=20261011"></script>
   <script src="js/sports/common.js?v=20261028b"></script>
   <script src="js/sports/npb.js?v=20261028c"></script>
   <script src="js/sports/mlb.js?v=20261017"></script>
   <script src="js/sports/premier_league.js?v=20261028h"></script>
-  <script src="js/sports/f1.js?v=20261113h"></script>
+  <script src="js/sports/f1.js?v=20261117a"></script>
   <script src="js/sports.js?v=20261021"></script>
   <script src="js/news.js?v=20260718"></script>
+  <script src="js/collapse.js?v=20261117a"></script>
+  <script>initFilesViewer(document.getElementById('vault-files-btn'));</script>
   <script src="js/location_zones.js?v=20260617"></script>
   <script src="js/app.js?v=20261031"></script>
   <script src="js/note/config.js?v=20261017"></script>
-  <script src="js/note/compose.js?v=20261017"></script>
+  <script src="js/note/compose.js?v=20261117a"></script>
   <script src="js/note/dropdown.js?v=20261017"></script>
   <script src="js/note/list.js?v=20261017"></script>
   <script src="js/note.js?v=20261018"></script>

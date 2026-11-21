@@ -1,5 +1,5 @@
 // ── Files viewer: popup over the markdown that agent-scripts mirrors to vault's docs/ ──
-// Depends on: shared/github-client.js (githubFetch, esc), shared/markdown-tokens.js (tokenizeMarkdown)
+// Used by desktop and mobile. Depends on: shared/github-client.js (githubFetch, esc), shared/markdown-tokens.js (tokenizeMarkdown)
 
 const DOCS_INDEX_PATH = 'docs/index.json';
 const MAX_RENDERED_TOKENS = 2000;  // history.md files run to 400KB, newest entry first
@@ -62,16 +62,39 @@ function renderMarkdownTokens(tokens) {
   return omitted > 0 ? `${html}<p class="md-detail">… 残り${omitted}行は省略</p>` : html;
 }
 
-(function initFilesViewer() {
-  const openBtn = document.getElementById('files-open-btn');
-  const modal = document.getElementById('files-modal');
-  const title = document.getElementById('files-title');
-  const body = document.getElementById('files-body');
-  const backBtn = document.getElementById('files-back-btn');
-  const closeBtn = document.getElementById('files-close-btn');
+function createFilesModal() {
+  const modal = document.createElement('div');
+  modal.className = 'files-modal hidden';
+  modal.innerHTML = `
+    <div class="files-sheet">
+      <header class="files-header">
+        <button type="button" class="files-back-btn hidden" aria-label="Back">←</button>
+        <span class="files-title">Files</span>
+        <button type="button" class="files-close-btn" aria-label="Close">✕</button>
+      </header>
+      <div class="files-search-row">
+        <input type="search" class="files-search" placeholder="ファイル名・本文を検索" autocomplete="off">
+      </div>
+      <div class="files-body"></div>
+    </div>`;
+  document.body.appendChild(modal);
+  return modal;
+}
+
+// Adds the popup to the page and opens it when openBtn is clicked.
+function initFilesViewer(openBtn) {
+  const modal = createFilesModal();
+  const title = modal.querySelector('.files-title');
+  const body = modal.querySelector('.files-body');
+  const backBtn = modal.querySelector('.files-back-btn');
+  const closeBtn = modal.querySelector('.files-close-btn');
+  const searchInput = modal.querySelector('.files-search');
 
   let currentDir = '';
   let viewingFile = false;
+  let searchQuery = '';  // non-empty while the body shows search results (or a file opened from them)
+  let searchSeq = 0;     // drops the answer of a search that a newer keystroke has superseded
+  let searchTimer = null;
 
   async function showDirectory(dir) {
     currentDir = dir;
@@ -102,21 +125,69 @@ function renderMarkdownTokens(tokens) {
     body.scrollTop = 0;
   }
 
+  async function showSearchResults(query) {
+    const seq = ++searchSeq;
+    searchQuery = query;
+    viewingFile = false;
+    title.textContent = 'Files';
+    backBtn.classList.add('hidden');
+    body.innerHTML = '<p class="placeholder">検索中...</p>';
+    let html;
+    try {
+      const terms = parseSearchTerms(query);
+      html = renderSearchResults(searchDocs(await loadSearchDocs(), terms), terms);
+    } catch (err) {
+      html = `<p class="placeholder">検索できませんでした (${esc(err.message)})</p>`;
+    }
+    if (seq !== searchSeq) return;
+    body.innerHTML = html;
+    body.scrollTop = 0;
+  }
+
+  function onSearchInput() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      const query = searchInput.value.trim();
+      if (query) { showSearchResults(query); return; }
+      searchSeq++;
+      searchQuery = '';
+      showDirectory(currentDir);
+    }, 200);
+  }
+
   function goBack() {
-    if (viewingFile) { viewingFile = false; showDirectory(currentDir); return; }
+    if (viewingFile) {
+      viewingFile = false;
+      if (searchQuery) showSearchResults(searchQuery); else showDirectory(currentDir);
+      return;
+    }
     showDirectory(currentDir.split('/').slice(0, -1).join('/'));
   }
 
-  function closeModal() { modal.classList.add('hidden'); }
+  function openModal() {
+    modal.classList.remove('hidden');
+    document.body.classList.add('files-open');
+    searchInput.value = '';
+    searchQuery = '';
+    searchSeq++;
+    showDirectory('');
+  }
 
-  openBtn.addEventListener('click', () => { modal.classList.remove('hidden'); showDirectory(''); });
+  function closeModal() {
+    modal.classList.add('hidden');
+    document.body.classList.remove('files-open');
+  }
+
+  openBtn.addEventListener('click', openModal);
   closeBtn.addEventListener('click', closeModal);
   backBtn.addEventListener('click', goBack);
+  searchInput.addEventListener('input', onSearchInput);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
   body.addEventListener('click', e => {
     const folder = e.target.closest('.files-folder');
     if (folder) { showDirectory(folder.dataset.dir); return; }
-    const item = e.target.closest('.files-item');
+    const item = e.target.closest('.files-item, .files-result');
     if (item) showFile(item.dataset.path);
   });
-})();
+}

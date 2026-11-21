@@ -10,6 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="My Note" />
   <meta name="theme-color" content="#ffffff" />
+  <link rel="stylesheet" href="../shared/files-viewer.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -50,18 +51,6 @@
 
   </main>
 
-  <!-- Files viewer popup -->
-  <div class="files-modal hidden" id="files-modal">
-    <div class="files-sheet">
-      <header class="files-header">
-        <button type="button" class="files-back-btn hidden" id="files-back-btn" aria-label="Back">←</button>
-        <span class="files-title" id="files-title">Files</span>
-        <button type="button" class="files-close-btn" id="files-close-btn" aria-label="Close">✕</button>
-      </header>
-      <div class="files-body" id="files-body"></div>
-    </div>
-  </div>
-
   <script src="../shared/github-client.js"></script>
   <script src="../shared/notes-api.js"></script>
   <script src="../shared/note-labels.js"></script>
@@ -71,7 +60,9 @@
   <script src="../shared/departments-api.js"></script>
   <script src="sync.js"></script>
   <script src="report.js"></script>
-  <script src="files.js"></script>
+  <script src="../shared/files-search.js"></script>
+  <script src="../shared/files-viewer.js"></script>
+  <script>initFilesViewer(document.getElementById('files-open-btn'));</script>
   <script src="location.js"></script>
   <script src="app.js"></script>
 </body>

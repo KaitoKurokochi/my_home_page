@@ -235,6 +235,18 @@
 
 .note-label-name {
   cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Hidden bold copy reserves the selected (bold) width, so selecting a label never widens its pill and re-wraps the bar. */
+.note-label-name::after {
+  content: attr(data-label);
+  font-weight: 600;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
 }
 
 .note-item-tags {
